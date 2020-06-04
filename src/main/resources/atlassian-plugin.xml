@@ -36,14 +36,8 @@
   <web-item name="" i18n-name-key="cp-config-item.name" key="cp-config-item" section="cp-item-link/cp-section" weight="1000">
     <description key="cp-config-item.description" />
     <label key="cp-config-item.label" />
-    <link linkId="cp-config-item.link">/customer-priority/config</link>
+    <link linkId="cp-config-item.link">/plugins/servlet/customer-priority/config</link>
   </web-item>
-
-<!--  <web-item name="Atlassian Developers Site" i18n-name-key="atlassian-developers-site.name" key="atlassian-developers-site" section="cp-item-link/cp-section" weight="1000">-->
-<!--    <description key="atlassian-developers-site.description">The Atlassian Developers Site Plugin</description>  -->
-<!--    <label key="atlassian-developers-site.label"></label>  -->
-<!--    <link linkId="atlassian-developers-site-link">http://developer.atlassian.com/docs</link> -->
-<!--  </web-item>-->
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <web-resource key="customer-priority-plugin-admin" name="customer-priority-plugin Admin Web Resources">
@@ -57,7 +51,6 @@
   </servlet>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ config ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <web-resource key="customer-priority-plugin-config" name="Config Web Resource">
     <dependency>com.atlassian.auiplugin:ajs</dependency>
@@ -69,7 +62,6 @@
     <url-pattern>/customer-priority/config</url-pattern>
   </servlet>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ common ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <rest key="rest" path="/customer-priority" version="1.0">

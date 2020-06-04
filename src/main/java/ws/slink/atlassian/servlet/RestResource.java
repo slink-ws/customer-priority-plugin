@@ -68,7 +68,7 @@ public class RestResource {
     @GET
     @Path("/admin")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@Context HttpServletRequest request) {
+    public Response getAdminParams(@Context HttpServletRequest request) {
         UserKey userKey = userManager.getRemoteUser().getUserKey();
         if (userKey == null || !userManager.isSystemAdmin(userKey)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -85,7 +85,7 @@ public class RestResource {
     @PUT
     @Path("/admin")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response put(final Config config, @Context HttpServletRequest request) {
+    public Response putAdminParams(final Config config, @Context HttpServletRequest request) {
         UserKey userKey = userManager.getRemoteUser().getUserKey();
         if (userKey == null || !userManager.isSystemAdmin(userKey)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -98,4 +98,18 @@ public class RestResource {
         });
         return Response.noContent().build();
     }
+
+    @GET
+    @Path("/config")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getConfigParams(@Context HttpServletRequest request) {
+        if (!isPluginManager())
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        return Response.noContent().build();
+    }
+
+    private boolean isPluginManager() {
+        UserKey userKey = userManager.getRemoteUser().getUserKey();
+    }
+
 }
