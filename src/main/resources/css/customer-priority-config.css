@@ -1,0 +1,33 @@
+html,
+body{
+    height: 100%;
+    background-color: gray;
+}
+
+.column {
+    float:left;
+    /*border: 2px solid blue;*/
+    margin: 10px 10px 10px 10px;
+    /*padding: 10px 10px 10px 10px;*/
+    display: block;
+    /*width: 400px;*/
+}
+
+.text {
+    background-color: yellow;
+    color: #888888;
+    min-width: 350px;
+}
+
+.label {
+    margin-top: 10px;
+    padding-top: 10px;
+    color: #888888;
+    min-width: 350px;
+}
+
+.submit_button {
+    text-align: left;
+    font-size: larger;
+    font-weight: lighter;
+}

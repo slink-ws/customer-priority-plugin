@@ -32,15 +32,15 @@ function updateConfig() {
         processData: false,
         data:'{ ' +
             // '  "viewers":"'+ sanitize(AJS.$("#viewers").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-            // ' ,"style1":"' + sanitize(AJS.$("#style1").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-            // ' ,"style2":"' + sanitize(AJS.$("#style2").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-            // ' ,"style3":"' + sanitize(AJS.$("#style3").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-            // ' ,"style4":"' + sanitize(AJS.$("#style4").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-            // ' ,"text1": "' + sanitize(AJS.$("#text1").attr("value"), false)  + '"' +
-            // ' ,"text2": "' + sanitize(AJS.$("#text2").attr("value"), false)  + '"' +
-            // ' ,"text3": "' + sanitize(AJS.$("#text3").attr("value"), false)  + '"' +
-            // ' ,"text4": "' + sanitize(AJS.$("#text4").attr("value"), false)  + '"' +
-            '  "list1":"'  + sanitize(AJS.$("#list1").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            '  "style1":"' + sanitize(AJS.$("#style1").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            ' ,"style2":"' + sanitize(AJS.$("#style2").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            ' ,"style3":"' + sanitize(AJS.$("#style3").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            ' ,"style4":"' + sanitize(AJS.$("#style4").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            ' ,"text1": "' + sanitize(AJS.$("#text1").attr("value"), false)  + '"' +
+            ' ,"text2": "' + sanitize(AJS.$("#text2").attr("value"), false)  + '"' +
+            ' ,"text3": "' + sanitize(AJS.$("#text3").attr("value"), false)  + '"' +
+            ' ,"text4": "' + sanitize(AJS.$("#text4").attr("value"), false)  + '"' +
+            ' ,"list1":"'  + sanitize(AJS.$("#list1").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             ' ,"list2":"'  + sanitize(AJS.$("#list2").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             ' ,"list3":"'  + sanitize(AJS.$("#list3").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             ' ,"list4":"'  + sanitize(AJS.$("#list4").attr("value").replace(/\n/g, "\\n"), true) + '"' +

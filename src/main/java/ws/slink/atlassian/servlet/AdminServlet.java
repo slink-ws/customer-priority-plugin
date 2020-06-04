@@ -7,7 +7,7 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
-import ws.slink.atlassian.service.PluginConfigService;
+import ws.slink.atlassian.service.ConfigService;
 import ws.slink.atlassian.tools.CommonTools;
 
 import javax.inject.Inject;
@@ -31,7 +31,7 @@ public class AdminServlet extends HttpServlet {
         this.loginUriProvider = loginUriProvider;
         this.renderer = renderer;
         this.pluginSettingsFactory = pluginSettingsFactory;
-        PluginConfigService.instance().setPluginSettings(pluginSettingsFactory.createGlobalSettings());
+        ConfigService.instance().setPluginSettings(pluginSettingsFactory.createGlobalSettings());
     }
 
     @Override

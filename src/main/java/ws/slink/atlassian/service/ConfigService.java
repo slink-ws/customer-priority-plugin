@@ -8,19 +8,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PluginConfigService {
+public class ConfigService {
 
     private static class PluginConfigServiceSingleton {
-        private static final PluginConfigService INSTANCE = new PluginConfigService();
+        private static final ConfigService INSTANCE = new ConfigService();
     }
-    public static PluginConfigService instance () {
+    public static ConfigService instance () {
         return PluginConfigServiceSingleton.INSTANCE;
     }
 
     public static final String CONFIG_PREFIX = "ws.slink.customer-priority-plugin";
     private PluginSettings pluginSettings;
 
-    private PluginConfigService(){}
+    private ConfigService(){}
 
     public void setPluginSettings(PluginSettings pluginSettings) {
         if (null == this.pluginSettings)
@@ -64,6 +64,18 @@ public class PluginConfigService {
     }
     public void setStyle(int id, String value) {
         pluginSettings.put(CONFIG_PREFIX + ".style" + id, value);
+    }
+    public String getText(int id) {
+        return (String) pluginSettings.get(CONFIG_PREFIX + ".text" + id);
+    }
+    public void setText(int id, String value) {
+        pluginSettings.put(CONFIG_PREFIX + ".text" + id, value);
+    }
+    public String getViewers() {
+        return (String) pluginSettings.get(CONFIG_PREFIX + ".viewers");
+    }
+    public void setViewers(String value) {
+        pluginSettings.put(CONFIG_PREFIX + ".viewers", value);
     }
 
 }

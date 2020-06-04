@@ -3,7 +3,7 @@ package ws.slink.atlassian.conditions;
 import com.atlassian.jira.plugin.webfragment.conditions.AbstractWebCondition;
 import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
 import com.atlassian.jira.user.ApplicationUser;
-import ws.slink.atlassian.service.PluginConfigService;
+import ws.slink.atlassian.service.ConfigService;
 import ws.slink.atlassian.tools.JiraTools;
 
 import java.util.List;
@@ -15,8 +15,8 @@ public class ConfigurationEnabledCondition extends AbstractWebCondition {
     @Override
     public boolean shouldDisplay(ApplicationUser applicationUser, JiraHelper jiraHelper) {
         AtomicBoolean allowed = new AtomicBoolean(false);
-        List<String> configuredRoles    = PluginConfigService.instance().rolesList();
-        List<String> configuredProjects = PluginConfigService.instance().projectsList();
+        List<String> configuredRoles    = ConfigService.instance().rolesList();
+        List<String> configuredProjects = ConfigService.instance().projectsList();
         if (configuredRoles.isEmpty()) {
             if (configuredProjects.isEmpty()) {
                 System.out.println("allow for all roles and projects");

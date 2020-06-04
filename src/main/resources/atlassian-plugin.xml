@@ -21,10 +21,20 @@
     <context>customer-priority-plugin</context> 
   </web-resource>
 
+
+  <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1">
+    <description key="customer-priority-panel.description">Customer Priority Panel Module</description>
+    <conditions type="AND">
+      <condition class="ws.slink.atlassian.conditions.PanelCondition"/>
+    </conditions>
+    <context-provider class="ws.slink.atlassian.panel.ContextProvider"/>
+    <resource name="view" type="velocity" location="templates/panel.vm"/>
+  </web-panel>
+
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <web-section name="cpSection" i18n-name-key="cp-section.name" key="cp-section" location="cp-item-link" weight="1000">
     <description key="cp-section.description">The mySection Plugin</description>
-  </web-section>  
-
+  </web-section>
   <web-item name="cpItem" i18n-name-key="cp-item.name" key="cp-item" section="system.top.navigation.bar" weight="1000">
     <description key="cp-item.description">The myItem Plugin</description>
     <label key="cp-item.label"/>
@@ -38,6 +48,7 @@
     <label key="cp-config-item.label" />
     <link linkId="cp-config-item.link">/plugins/servlet/customer-priority/config</link>
   </web-item>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <web-resource key="customer-priority-plugin-admin" name="customer-priority-plugin Admin Web Resources">
@@ -55,6 +66,7 @@
   <web-resource key="customer-priority-plugin-config" name="Config Web Resource">
     <dependency>com.atlassian.auiplugin:ajs</dependency>
     <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
+    <resource type="download" name="customer-priority-config.css" location="/css/customer-priority-config.css"/>
     <context>customer-priority-plugin</context>
   </web-resource>
   <servlet key="config-servlet" class="ws.slink.atlassian.servlet.ConfigServlet">

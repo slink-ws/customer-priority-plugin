@@ -6,7 +6,7 @@ import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
-import ws.slink.atlassian.service.PluginConfigService;
+import ws.slink.atlassian.service.ConfigService;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -29,7 +29,7 @@ public class ConfigServlet extends HttpServlet {
         this.loginUriProvider = loginUriProvider;
         this.renderer = renderer;
         this.pluginSettingsFactory = pluginSettingsFactory;
-        PluginConfigService.instance().setPluginSettings(pluginSettingsFactory.createGlobalSettings());
+        ConfigService.instance().setPluginSettings(pluginSettingsFactory.createGlobalSettings());
     }
 
     @Override

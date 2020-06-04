@@ -8,7 +8,7 @@ import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
-import ws.slink.atlassian.service.PluginConfigService;
+import ws.slink.atlassian.service.ConfigService;
 import ws.slink.atlassian.tools.JiraTools;
 
 import javax.inject.Inject;
@@ -38,7 +38,7 @@ public class RestResource {
         this.userManager = userManager;
         this.pluginSettingsFactory = pluginSettingsFactory;
         this.transactionTemplate = transactionTemplate;
-        PluginConfigService.instance().setPluginSettings(pluginSettingsFactory.createGlobalSettings());
+        ConfigService.instance().setPluginSettings(pluginSettingsFactory.createGlobalSettings());
     }
 
     @XmlRootElement
@@ -80,6 +80,11 @@ public class RestResource {
         @XmlElement private String style2;
         @XmlElement private String style3;
         @XmlElement private String style4;
+
+        @XmlElement private String text1;
+        @XmlElement private String text2;
+        @XmlElement private String text3;
+        @XmlElement private String text4;
 
         public String getList1() {
             return list1;
@@ -139,6 +144,35 @@ public class RestResource {
             return this;
         }
 
+        public String getText1() {
+            return text1;
+        }
+        public ConfigParams setText1(String value) {
+            this.text1 = value;
+            return this;
+        }
+        public String getText2() {
+            return text2;
+        }
+        public ConfigParams setText2(String value) {
+            this.text2 = value;
+            return this;
+        }
+        public String getText3() {
+            return text3;
+        }
+        public ConfigParams setText3(String value) {
+            this.text3 = value;
+            return this;
+        }
+        public String getText4() {
+            return text4;
+        }
+        public ConfigParams setText4(String value) {
+            this.text4 = value;
+            return this;
+        }
+
         public String toString() {
             return new StringBuilder()
                 .append("#1 ").append(list1).append(" : ").append(style1).append("\n")
@@ -164,8 +198,8 @@ public class RestResource {
         }
         return Response.ok(transactionTemplate.execute((TransactionCallback) () -> {
             return new AdminParams()
-                .setProjects(PluginConfigService.instance().getProjects())
-                .setRoles(PluginConfigService.instance().getRoles())
+                .setProjects(ConfigService.instance().getProjects())
+                .setRoles(ConfigService.instance().getRoles())
                 .log("~~~ prepared configuration: ")
             ;
         })).build();
@@ -181,8 +215,8 @@ public class RestResource {
         }
         transactionTemplate.execute((TransactionCallback) () -> {
             config.log("~~~ received configuration: ");
-            PluginConfigService.instance().setProjects(config.getProjects());
-            PluginConfigService.instance().setRoles(config.getRoles());
+            ConfigService.instance().setProjects(config.getProjects());
+            ConfigService.instance().setRoles(config.getRoles());
             return null;
         });
         return Response.noContent().build();
@@ -196,14 +230,21 @@ public class RestResource {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         return Response.ok(transactionTemplate.execute((TransactionCallback) () -> {
             return new ConfigParams()
-                    .setList1(PluginConfigService.instance().getList(1)).setStyle1(PluginConfigService.instance().getStyle(1))
-                    .setList2(PluginConfigService.instance().getList(2)).setStyle2(PluginConfigService.instance().getStyle(2))
-                    .setList3(PluginConfigService.instance().getList(3)).setStyle3(PluginConfigService.instance().getStyle(3))
-                    .setList4(PluginConfigService.instance().getList(4)).setStyle4(PluginConfigService.instance().getStyle(4))
-                    .log("~~~ prepared configuration: \n")
-                    ;
+                .setList1(ConfigService.instance().getList(1))
+                    .setStyle1(ConfigService.instance().getStyle(1))
+                        .setText1(ConfigService.instance().getText(1))
+                .setList2(ConfigService.instance().getList(2))
+                    .setStyle2(ConfigService.instance().getStyle(2))
+                        .setText2(ConfigService.instance().getText(2))
+                .setList3(ConfigService.instance().getList(3))
+                    .setStyle3(ConfigService.instance().getStyle(3))
+                        .setText3(ConfigService.instance().getText(3))
+                .setList4(ConfigService.instance().getList(4))
+                    .setStyle4(ConfigService.instance().getStyle(4))
+                        .setText4(ConfigService.instance().getText(4))
+                .log("~~~ prepared configuration: \n")
+            ;
         })).build();
-//        return Response.noContent().build();
     }
 
     @PUT
@@ -218,15 +259,20 @@ public class RestResource {
         transactionTemplate.execute((TransactionCallback) () -> {
             config.log("~~~ received configuration: \n");
 
-            PluginConfigService.instance().setList(1, config.getList1());
-            PluginConfigService.instance().setList(2, config.getList2());
-            PluginConfigService.instance().setList(3, config.getList3());
-            PluginConfigService.instance().setList(4, config.getList4());
+            ConfigService.instance().setList(1, config.getList1());
+            ConfigService.instance().setList(2, config.getList2());
+            ConfigService.instance().setList(3, config.getList3());
+            ConfigService.instance().setList(4, config.getList4());
 
-            PluginConfigService.instance().setStyle(1, config.getStyle1());
-            PluginConfigService.instance().setStyle(2, config.getStyle2());
-            PluginConfigService.instance().setStyle(3, config.getStyle3());
-            PluginConfigService.instance().setStyle(4, config.getStyle4());
+            ConfigService.instance().setStyle(1, config.getStyle1());
+            ConfigService.instance().setStyle(2, config.getStyle2());
+            ConfigService.instance().setStyle(3, config.getStyle3());
+            ConfigService.instance().setStyle(4, config.getStyle4());
+
+            ConfigService.instance().setText(1, config.getText1());
+            ConfigService.instance().setText(2, config.getText2());
+            ConfigService.instance().setText(3, config.getText3());
+            ConfigService.instance().setText(4, config.getText4());
 
             return null;
         });
@@ -235,9 +281,9 @@ public class RestResource {
 
     private boolean isPluginManager() {
         return JiraTools.userHasRolesInProjects(
-            PluginConfigService.instance().projectsList().stream()
+            ConfigService.instance().projectsList().stream()
                 .map(JiraTools::getProjectByKey).filter(Objects::nonNull).collect(Collectors.toList()),
-            PluginConfigService.instance().rolesList().stream()
+            ConfigService.instance().rolesList().stream()
                 .map(JiraTools::getProjectRoleByKey).filter(Objects::nonNull).collect(Collectors.toList()),
             ComponentAccessor.getUserManager().getUserByName(userManager.getRemoteUser().getUsername()));
     }
