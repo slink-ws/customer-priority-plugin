@@ -1,5 +1,6 @@
 package ws.slink.atlassian.service;
 
+import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
@@ -7,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//@Scanned
 public class PluginConfigService {
 
     private static final String ALLOWED_GROUPS = "Users, Managers, Administrators"; // Administrators
