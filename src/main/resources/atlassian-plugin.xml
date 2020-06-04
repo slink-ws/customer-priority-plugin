@@ -33,12 +33,17 @@
       <condition class="ws.slink.atlassian.conditions.ConfigurationEnabledCondition"/>
     </conditions>
   </web-item>
-
-  <web-item name="Atlassian Developers Site" i18n-name-key="atlassian-developers-site.name" key="atlassian-developers-site" section="cp-item-link/cp-section" weight="1000">
-    <description key="atlassian-developers-site.description">The Atlassian Developers Site Plugin</description>  
-    <label key="atlassian-developers-site.label"></label>  
-    <link linkId="atlassian-developers-site-link">http://developer.atlassian.com/docs</link> 
+  <web-item name="" i18n-name-key="cp-config-item.name" key="cp-config-item" section="cp-item-link/cp-section" weight="1000">
+    <description key="cp-config-item.description" />
+    <label key="cp-config-item.label" />
+    <link linkId="cp-config-item.link">/customer-priority/config</link>
   </web-item>
+
+<!--  <web-item name="Atlassian Developers Site" i18n-name-key="atlassian-developers-site.name" key="atlassian-developers-site" section="cp-item-link/cp-section" weight="1000">-->
+<!--    <description key="atlassian-developers-site.description">The Atlassian Developers Site Plugin</description>  -->
+<!--    <label key="atlassian-developers-site.label"></label>  -->
+<!--    <link linkId="atlassian-developers-site-link">http://developer.atlassian.com/docs</link> -->
+<!--  </web-item>-->
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <web-resource key="customer-priority-plugin-admin" name="customer-priority-plugin Admin Web Resources">
@@ -49,6 +54,19 @@
   <servlet key="admin-servlet" class="ws.slink.atlassian.servlet.AdminServlet">
     <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
     <url-pattern>/customer-priority/admin</url-pattern>
+  </servlet>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ config ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <web-resource key="customer-priority-plugin-config" name="Config Web Resource">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
+    <context>customer-priority-plugin</context>
+  </web-resource>
+  <servlet key="config-servlet" class="ws.slink.atlassian.servlet.ConfigServlet">
+    <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
+    <url-pattern>/customer-priority/config</url-pattern>
   </servlet>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
