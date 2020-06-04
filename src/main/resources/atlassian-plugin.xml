@@ -1,24 +1,42 @@
-<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
-    <plugin-info>
-        <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
-    </plugin-info>
+<?xml version="1.0" encoding="UTF-8"?>
 
-    <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
-    
-    <!-- add our web resources -->
-    <web-resource key="customer-priority-plugin-resources" name="customer-priority-plugin Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>
-        <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>
-        <resource type="download" name="images/" location="/images"/>
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2"> 
+  <!-- info -->  
+  <plugin-info> 
+    <description>${project.description}</description>  
+    <version>${project.version}</version>  
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>  
+    <param name="plugin-icon">images/plugin-icon.png</param>  
+    <param name="plugin-logo">images/plugin-logo.png</param> 
+  </plugin-info>  
+  <!-- add our i18n resource -->  
+  <resource type="i18n" name="i18n" location="customer-priority-plugin"/>  
+  <!-- add our web resources -->  
+  <web-resource key="customer-priority-plugin-resources" name="customer-priority-plugin Web Resources"> 
+    <dependency>com.atlassian.auiplugin:ajs</dependency>  
+    <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>  
+    <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>  
+    <resource type="download" name="images/" location="/images"/>  
+    <context>customer-priority-plugin</context> 
+  </web-resource>
 
-        <context>customer-priority-plugin</context>
-    </web-resource>
-    
+  <web-section name="cpSection" i18n-name-key="cp-section.name" key="cp-section" location="cp-item-link" weight="1000">
+    <description key="cp-section.description">The mySection Plugin</description>
+  </web-section>  
+
+  <web-item name="cpItem" i18n-name-key="cp-item.name" key="cp-item" section="system.top.navigation.bar" weight="1000">
+    <description key="cp-item.description">The myItem Plugin</description>
+    <label key="cp-item.label"/>
+    <link linkId="cp-item-link"/>
+    <conditions type="AND" >
+      <condition class="ws.slink.atlassian.conditions.ConfigurationEnabledCondition"/>
+    </conditions>
+  </web-item>
+
+  <web-item name="Atlassian Developers Site" i18n-name-key="atlassian-developers-site.name" key="atlassian-developers-site" section="cp-item-link/cp-section" weight="1000">
+    <description key="atlassian-developers-site.description">The Atlassian Developers Site Plugin</description>  
+    <label key="atlassian-developers-site.label"></label>  
+    <link linkId="atlassian-developers-site-link">http://developer.atlassian.com/docs</link> 
+  </web-item>
+
 </atlassian-plugin>
