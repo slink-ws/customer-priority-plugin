@@ -2,10 +2,12 @@ package ws.slink.atlassian.servlet;
 
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
+import ws.slink.atlassian.service.PluginConfigService;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -19,14 +21,17 @@ import java.net.URI;
 public class AdminServlet extends HttpServlet {
 
     @ComponentImport private final UserManager userManager;
-    @ComponentImport private final LoginUriProvider loginUriProvider;
     @ComponentImport private final TemplateRenderer renderer;
+    @ComponentImport private final LoginUriProvider loginUriProvider;
+    @ComponentImport private final PluginSettingsFactory pluginSettingsFactory;
 
     @Inject
-    public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer) {
+    public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer, PluginSettingsFactory pluginSettingsFactory) {
         this.userManager = userManager;
         this.loginUriProvider = loginUriProvider;
         this.renderer = renderer;
+        this.pluginSettingsFactory = pluginSettingsFactory;
+        PluginConfigService.instance().setPluginSettings(pluginSettingsFactory.createGlobalSettings());
     }
 
     @Override

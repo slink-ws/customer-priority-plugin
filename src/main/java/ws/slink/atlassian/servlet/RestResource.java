@@ -22,15 +22,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Scanned
 @Path("/")
-public class ConfigResource {
+public class RestResource {
 
     @ComponentImport private final UserManager userManager;
-    @ComponentImport private final PluginSettingsFactory pluginSettingsFactory;
     @ComponentImport private final TransactionTemplate transactionTemplate;
+    @ComponentImport private final PluginSettingsFactory pluginSettingsFactory;
 
     @Inject
-    public ConfigResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory,
-                          TransactionTemplate transactionTemplate) {
+    public RestResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory,
+                        TransactionTemplate transactionTemplate) {
         this.userManager = userManager;
         this.pluginSettingsFactory = pluginSettingsFactory;
         this.transactionTemplate = transactionTemplate;
@@ -66,6 +66,7 @@ public class ConfigResource {
     }
 
     @GET
+    @Path("/admin")
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(@Context HttpServletRequest request) {
         UserKey userKey = userManager.getRemoteUser().getUserKey();
@@ -82,6 +83,7 @@ public class ConfigResource {
     }
 
     @PUT
+    @Path("/admin")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response put(final Config config, @Context HttpServletRequest request) {
         UserKey userKey = userManager.getRemoteUser().getUserKey();

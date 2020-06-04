@@ -1,7 +1,7 @@
 
 (function ($) { // This pattern is known as an "iife" - immediately invoked function expression
 
-    var url = AJS.contextPath() + "/rest/customer-priority/1.0/";
+    var url = AJS.contextPath() + "/rest/customer-priority/1.0/admin";
 
     $(document).ready(function() {
         $.ajax({
@@ -24,7 +24,7 @@ function updateConfig() {
     console.log("       roles   : " + AJS.$("#roles").attr("value"));
     console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~")
     AJS.$.ajax({
-        url: AJS.contextPath() + "/rest/customer-priority/1.0/",
+        url: AJS.contextPath() + "/rest/customer-priority/1.0/admin",
         type: "PUT",
         contentType: "application/json",
         data: '{ "projects": "' + AJS.$("#projects").attr("value") + '", "roles": "' +  AJS.$("#roles").attr("value") + '" }',

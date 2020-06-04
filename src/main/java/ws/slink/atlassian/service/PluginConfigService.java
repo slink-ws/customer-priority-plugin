@@ -23,7 +23,8 @@ public class PluginConfigService {
     private PluginConfigService(){}
 
     public void setPluginSettings(PluginSettings pluginSettings) {
-        this.pluginSettings = pluginSettings;
+        if (null == this.pluginSettings)
+            this.pluginSettings = pluginSettings;
     }
 
     public void setRoles(String roles) {

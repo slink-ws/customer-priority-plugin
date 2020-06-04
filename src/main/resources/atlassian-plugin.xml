@@ -50,6 +50,10 @@
     <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
     <url-pattern>/customer-priority/admin</url-pattern>
   </servlet>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ common ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <rest key="rest" path="/customer-priority" version="1.0">
     <description>Provides REST resources for the admin UI</description>
   </rest>
