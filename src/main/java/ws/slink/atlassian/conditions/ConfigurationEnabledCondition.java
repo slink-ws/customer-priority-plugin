@@ -15,8 +15,8 @@ public class ConfigurationEnabledCondition extends AbstractWebCondition {
     @Override
     public boolean shouldDisplay(ApplicationUser applicationUser, JiraHelper jiraHelper) {
         AtomicBoolean allowed = new AtomicBoolean(false);
-        List<String> configuredRoles    = new PluginConfigService().configuredRoles();
-        List<String> configuredProjects = new PluginConfigService().configuredProjects();
+        List<String> configuredRoles    = PluginConfigService.instance().rolesList();
+        List<String> configuredProjects = PluginConfigService.instance().projectsList();
         if (configuredRoles.isEmpty()) {
             if (configuredProjects.isEmpty()) {
                 System.out.println("allow for all roles and projects");
@@ -60,41 +60,3 @@ public class ConfigurationEnabledCondition extends AbstractWebCondition {
         }
     }
 }
-
-
-
-//JiraAuthenticationContext jiraAuthenticationContext = ComponentAccessor.getJiraAuthenticationContext();
-//        com.atlassian.jira.user.ApplicationUser user = jiraAuthenticationContext.getUser();
-//        ProjectRoleService prs = ComponentAccessor.getComponent(ProjectRoleService.class);
-//        prs.get
-
-
-//        ProjectRole projectRole = ComponentAccessor.getComponent(ProjectRoleManager.class).getProjectRole("Administrators");
-//        ArrayList<String> actors = new ArrayList<String>(Arrays.asList("replace by username"));
-//        ApplicationUser adminUser = ComponentAccessor.getUserManager().getUserByName("replace by admin username");
-//        SimpleErrorCollection simpleErrorCollection = new SimpleErrorCollection();
-
-//        ProjectRoleService projectRoleService = ComponentAccessor.getComponent(ProjectRoleService.class);
-//        projectRoleService.getProjectRoleActors().addActorsToProjectRole(adminUser, (Collection<String>)actors, projectRole, project, "atlassian-user-role-actor", simpleErrorCollection);
-//        if (simpleErrorCollection.hasAnyErrors()){
-//            for (String msg: simpleErrorCollection.getErrorMessages()){
-//                log.info("add user to project error msg: " + msg);
-//            }
-//        }
-
-//        System.err.println("~~~~~~ CONFIGURATION ENABLED CONDITION CHECK ~~~~~~");
-//        System.err.println("~~~~~~ PROJECT: " + projectId);
-//        System.err.println("~~~~~~ USER   : " + userKey);
-////        System.err.println("~~~~~~ ROLES  : " + jiraHelper.);
-//
-//        System.err.println("~~~~~~ USER   : " + userKey);
-//        System.err.println("~~~~~~ COMPNTS: ");
-//        jiraHelper.getProject().getProjectComponents().stream().forEach(c -> System.err.println(c.getId() + " " + c.getName() + " " + c.getDescription()));
-//
-//        System.err.println("~~~~~~ COMPNTS: ");
-//        jiraHelper.getProject().getComponents().stream().forEach(c -> System.err.println(c.getId() + " " + c.getName() + " " + c.getDescription()));
-//
-//        System.err.println("~~~~~~ PARAMS: ");
-//        jiraHelper.getContextParams().entrySet().stream().forEach(e -> System.err.println(e.getKey() + " -> " + e.getValue()));
-//
-//        return true;

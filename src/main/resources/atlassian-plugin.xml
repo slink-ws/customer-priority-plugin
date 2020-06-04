@@ -40,18 +40,19 @@
     <link linkId="atlassian-developers-site-link">http://developer.atlassian.com/docs</link> 
   </web-item>
 
-  <!-- admin -->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <web-resource key="customer-priority-plugin-admin" name="customer-priority-plugin Admin Web Resources">
     <dependency>com.atlassian.auiplugin:ajs</dependency>
     <resource type="download" name="customer-priority-admin.js" location="/js/customer-priority-admin.js"/>
     <context>customer-priority-plugin</context>
   </web-resource>
-  <servlet key="admin-servlet" class="ws.slink.atlassian.admin.AdminServlet">
+  <servlet key="admin-servlet" class="ws.slink.atlassian.servlet.AdminServlet">
     <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
     <url-pattern>/customer-priority/admin</url-pattern>
   </servlet>
   <rest key="rest" path="/customer-priority" version="1.0">
     <description>Provides REST resources for the admin UI</description>
   </rest>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
 </atlassian-plugin>

@@ -2,13 +2,12 @@ package ws.slink.atlassian.servlet;
 
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
-import ws.slink.atlassian.tools.JsonBuilder;
+import ws.slink.atlassian.service.PluginConfigService;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -29,14 +28,13 @@ public class ConfigResource {
     @ComponentImport private final PluginSettingsFactory pluginSettingsFactory;
     @ComponentImport private final TransactionTemplate transactionTemplate;
 
-//    @ComponentImport private final PluginConfigService pluginConfigService;
-
     @Inject
     public ConfigResource(UserManager userManager, PluginSettingsFactory pluginSettingsFactory,
                           TransactionTemplate transactionTemplate) {
         this.userManager = userManager;
         this.pluginSettingsFactory = pluginSettingsFactory;
         this.transactionTemplate = transactionTemplate;
+        PluginConfigService.instance().setPluginSettings(pluginSettingsFactory.createGlobalSettings());
     }
 
     @XmlRootElement
@@ -47,17 +45,23 @@ public class ConfigResource {
         public String getProjects() {
             return projects;
         }
-        public void setProjects(String projects) {
+        public Config setProjects(String projects) {
             this.projects = projects;
+            return this;
         }
         public String getRoles() {
             return roles;
         }
-        public void setRoles(String roles) {
+        public Config setRoles(String roles) {
             this.roles = roles;
+            return this;
         }
         public String toString() {
             return projects + " : " + roles;
+        }
+        public Config log(String prefix) {
+            System.out.println(prefix + this);
+            return this;
         }
     }
 
@@ -69,16 +73,11 @@ public class ConfigResource {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         return Response.ok(transactionTemplate.execute((TransactionCallback) () -> {
-            PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-            Config config = new Config();
-            config.setProjects((String)settings.get(Config.class.getName() + ".projects"));
-            config.setRoles((String)settings.get(Config.class.getName() + ".roles"));
-            System.out.println("~~~ prepared configuration: " + config);
-            return config;
-//            return new JsonBuilder()
-//                .put("projects", settings.get(Config.class.getName() + ".projects"))
-//                .put("roles", settings.get(Config.class.getName() + ".roles"))
-//                .build();
+            return new Config()
+                .setProjects(PluginConfigService.instance().getProjects())
+                .setRoles(PluginConfigService.instance().getRoles())
+                .log("~~~ prepared configuration: ")
+            ;
         })).build();
     }
 
@@ -90,11 +89,10 @@ public class ConfigResource {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         transactionTemplate.execute((TransactionCallback) () -> {
-            System.out.println("~~~ received configuration: " + config);
-            PluginSettings pluginSettings = pluginSettingsFactory.createGlobalSettings();
-            pluginSettings.put(Config.class.getName() + ".projects", config.getProjects());
-            pluginSettings.put(Config.class.getName()  +".roles", config.getRoles());
-            return config;
+            config.log("~~~ received configuration: ");
+            PluginConfigService.instance().setProjects(config.getProjects());
+            PluginConfigService.instance().setRoles(config.getRoles());
+            return null;
         });
         return Response.noContent().build();
     }

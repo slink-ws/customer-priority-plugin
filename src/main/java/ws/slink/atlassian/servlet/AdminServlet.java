@@ -1,4 +1,4 @@
-package ws.slink.atlassian.admin;
+package ws.slink.atlassian.servlet;
 
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;

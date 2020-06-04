@@ -26,7 +26,6 @@ public class JiraTools {
     public static ProjectRole getProjectRoleByKey(String roleKey) {
         try {
             ProjectRole projectRole = ComponentAccessor.getComponent(ProjectRoleManager.class).getProjectRole(roleKey);
-//            System.err.println("FOUND ROLE: " + projectRole.getName());
             return projectRole;
         } catch (Exception e) {
             System.err.println("ERROR CONVERTING ROLE KEY TO PROJECT ROLE: " + e.getMessage());
