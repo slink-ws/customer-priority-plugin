@@ -53,4 +53,17 @@ public class PluginConfigService {
             return Arrays.stream(value.split(",")).map(s -> s.trim()).collect(Collectors.toList());
     }
 
+    public String getList(int id) {
+        return (String) pluginSettings.get(CONFIG_PREFIX + ".list" + id);
+    }
+    public void setList(int id, String value) {
+        pluginSettings.put(CONFIG_PREFIX + ".list" + id, value);
+    }
+    public String getStyle(int id) {
+        return (String) pluginSettings.get(CONFIG_PREFIX + ".style" + id);
+    }
+    public void setStyle(int id, String value) {
+        pluginSettings.put(CONFIG_PREFIX + ".style" + id, value);
+    }
+
 }
