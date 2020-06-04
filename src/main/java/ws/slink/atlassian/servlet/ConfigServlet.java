@@ -4,7 +4,6 @@ import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
-import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import ws.slink.atlassian.service.PluginConfigService;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
 
 @Scanned
 public class ConfigServlet extends HttpServlet {
@@ -43,17 +41,5 @@ public class ConfigServlet extends HttpServlet {
 //        }
         response.setContentType("text/html;charset=utf-8");
         renderer.render("templates/config.vm", response.getWriter());
-    }
-
-    private void redirectToLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
-    }
-    private URI getUri(HttpServletRequest request) {
-        StringBuffer builder = request.getRequestURL();
-        if (request.getQueryString() != null) {
-            builder.append("?");
-            builder.append(request.getQueryString());
-        }
-        return URI.create(builder.toString());
     }
 }
