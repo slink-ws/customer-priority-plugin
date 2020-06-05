@@ -10,12 +10,10 @@ import ws.slink.atlassian.service.ConfigService;
 import ws.slink.atlassian.service.CustomerLevelService;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PanelCondition extends AbstractWebCondition {
 
-    @ComponentImport
-    private final PluginSettingsFactory pluginSettingsFactory;
+    @ComponentImport private final PluginSettingsFactory pluginSettingsFactory;
 
     private final CustomerLevelService customerLevelService;
 
@@ -27,21 +25,16 @@ public class PanelCondition extends AbstractWebCondition {
 
     @Override
     public boolean shouldDisplay(ApplicationUser applicationUser, JiraHelper jiraHelper) {
-        AtomicBoolean result = new AtomicBoolean(/*false*/ true);
-//        String list = ConfigService.instance().getViewers();//(String)settings.get(ConfigResource.Config.class.getName() + ".viewers"));//.replaceAll("[*]", "@");
-//        Arrays.asList(list.split(";"))
-//            .stream()
-//            .forEach(s -> {
-//                if (s.contains("*") && applicationUser.getEmailAddress().contains(s.replaceAll("[*]", ""))
-//                ||  applicationUser.getEmailAddress().equalsIgnoreCase(s)) {
-//                    result.set(true);
-//                }
-//            });
         Issue currentIssue = (Issue) jiraHelper.getContextParams().get("issue");
-        return result.get()
-//           &&  customerLevelService.getLevel(currentIssue.getReporter().getEmailAddress()) > 0
-//           && !customerLevelService.isCustom(applicationUser.getEmailAddress())
+        return
+            (null != currentIssue)
+            && Arrays.asList(ConfigService.instance().getViewers().split(" "))
+                .stream()
+                .anyMatch(s -> (s.contains("*")
+                            && applicationUser.getEmailAddress().toLowerCase().contains(s.replaceAll("\\*", "").toLowerCase())
+                            ||  applicationUser.getEmailAddress().equalsIgnoreCase(s))
+            )
+            && customerLevelService.getLevel(currentIssue.getReporter().getEmailAddress()) > 0
         ;
     }
-
 }

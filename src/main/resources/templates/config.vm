@@ -84,7 +84,10 @@
                 <input type="text" id="color4" name="color4" class="text" placeholder="level 4 color">
             </div>
         </div>
-
+        <div class="field-group">
+            <div class="label">$i18n.getText("cp.config.viewers.label")</div>
+            <input type="text" id="viewers" name="viewers" class="text" placeholder="users to show customer priority to">
+        </div>
         <div class="field-group">
             <button class="submit_button" onclick="updateConfig();" type='button'>$i18n.getText("cp.config.save.label")</button>
         </div>

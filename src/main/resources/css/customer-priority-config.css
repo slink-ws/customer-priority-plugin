@@ -1,9 +1,3 @@
-html,
-body{
-    height: 100%;
-    background-color: gray;
-}
-
 .column {
     float:left;
     /*border: 2px solid blue;*/
@@ -14,10 +8,20 @@ body{
 }
 
 .text {
-    background-color: yellow;
     color: #888888;
     min-width: 350px;
 }
+
+.textColor {
+    color: #888888;
+    min-width: 150px;
+}
+
+.colorSpan {
+    min-width: 50px;
+    display: inline-block;
+}
+
 
 .label {
     margin-top: 10px;

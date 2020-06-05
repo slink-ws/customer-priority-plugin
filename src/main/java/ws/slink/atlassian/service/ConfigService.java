@@ -47,9 +47,6 @@ public class ConfigService {
     }
     private List<String> getListParam(String param) {
         String value = (String) pluginSettings.get(CONFIG_PREFIX + "." + param);
-//        System.out.println(" ~~~~~~~~~~~~~~~~~~~~~~~~ ");
-//        System.out.println(" ~~~ RETURN LIST: " + value);
-//        System.out.println(" ~~~~~~~~~~~~~~~~~~~~~~~~ ");
         if (StringUtils.isBlank(value))
             return Collections.EMPTY_LIST;
         else
@@ -60,7 +57,7 @@ public class ConfigService {
         return (String) pluginSettings.get(CONFIG_PREFIX + ".list" + id);
     }
     public void setList(int id, String value) {
-        pluginSettings.put(CONFIG_PREFIX + ".list" + id, value);
+        pluginSettings.put(CONFIG_PREFIX + ".list" + id, setString(value, "", ""));
     }
     public String getStyle(int id) {
         return (String) pluginSettings.get(CONFIG_PREFIX + ".style" + id);
@@ -72,13 +69,13 @@ public class ConfigService {
         return (String) pluginSettings.get(CONFIG_PREFIX + ".text" + id);
     }
     public void setText(int id, String value) {
-        pluginSettings.put(CONFIG_PREFIX + ".text" + id, value);
+        pluginSettings.put(CONFIG_PREFIX + ".text" + id, setString(value, "", ""));
     }
     public String getViewers() {
         return (String) pluginSettings.get(CONFIG_PREFIX + ".viewers");
     }
     public void setViewers(String value) {
-        pluginSettings.put(CONFIG_PREFIX + ".viewers", value);
+        pluginSettings.put(CONFIG_PREFIX + ".viewers", setString(value, "", ""));
     }
 
     public String getColor(int id) {
@@ -89,4 +86,14 @@ public class ConfigService {
         pluginSettings.put(CONFIG_PREFIX + ".color" + id, value);
     }
 
+    private String setString(String value, String defaultValue, String newLineReplacement) {
+        if (null == value || value.isEmpty())
+            return defaultValue;
+        else
+            return value
+                .replaceAll(" +", " ")
+                .replaceAll(";" , " ")
+                .replaceAll("," , " ")
+                .replaceAll("\n", newLineReplacement);
+    }
 }

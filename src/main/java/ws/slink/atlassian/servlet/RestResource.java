@@ -92,6 +92,8 @@ public class RestResource {
         @XmlElement private String color3;
         @XmlElement private String color4;
 
+        @XmlElement private String viewers;
+
         public String getList1() {
             return list1;
         }
@@ -208,12 +210,21 @@ public class RestResource {
             return this;
         }
 
+        public String getViewers() {
+            return viewers;
+        }
+        public ConfigParams setViewers(String value) {
+            this.viewers = value;
+            return this;
+        }
+
         public String toString() {
             return new StringBuilder()
                 .append("#1 ").append(list1).append(" : ").append(style1).append(" : ").append(text1).append(" : ").append(color1).append("\n")
                 .append("#2 ").append(list2).append(" : ").append(style2).append(" : ").append(text2).append(" : ").append(color2).append("\n")
                 .append("#3 ").append(list3).append(" : ").append(style3).append(" : ").append(text3).append(" : ").append(color3).append("\n")
                 .append("#4 ").append(list4).append(" : ").append(style4).append(" : ").append(text4).append(" : ").append(color4).append("\n")
+                .append("#V ").append(viewers).append("\n")
                 .toString()
             ;
         }
@@ -242,7 +253,6 @@ public class RestResource {
             return this;
         }
     }
-
 
     @GET
     @Path("/admin")
@@ -282,6 +292,7 @@ public class RestResource {
         if (!isPluginManager())
             return Response.status(Response.Status.UNAUTHORIZED).build();
         return Response.ok(transactionTemplate.execute((TransactionCallback) () -> new ConfigParams()
+                .setViewers(ConfigService.instance().getViewers())
                 .setList1(ConfigService.instance().getList(1))
                     .setStyle1(ConfigService.instance().getStyle(1))
                         .setText1(ConfigService.instance().getText(1))
@@ -333,6 +344,8 @@ public class RestResource {
             ConfigService.instance().setColor(3, config.getColor3());
             ConfigService.instance().setColor(4, config.getColor4());
 
+            ConfigService.instance().setViewers(config.getViewers());
+
             return null;
         });
         return Response.noContent().build();
@@ -342,15 +355,12 @@ public class RestResource {
     @Path("/color")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getIssueColor(@Context HttpServletRequest request) {
-        if (!isPluginViewer())
-            return Response.status(Response.Status.UNAUTHORIZED).build();
-        else
-            return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
-                new ColorParams()
-                .setColor(ConfigService.instance().getColor(CustomerLevelService.getLevel(userManager.getRemoteUser().getEmail())))
-                .log("~~~ prepared color: \n")))
-                .build()
-            ;
+        return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
+            new ColorParams()
+            .setColor(ConfigService.instance().getColor(CustomerLevelService.getLevel(userManager.getRemoteUser().getEmail())))
+            .log("~~~ prepared color: \n")))
+            .build()
+        ;
     }
 
     private boolean isPluginManager() {
@@ -361,18 +371,5 @@ public class RestResource {
                 .map(JiraTools::getProjectRoleByKey).filter(Objects::nonNull).collect(Collectors.toList()),
             ComponentAccessor.getUserManager().getUserByName(userManager.getRemoteUser().getUsername()));
     }
-    private boolean isPluginViewer() {
-        return true;
-    }
 
 }
-
-
-
-
-//        UserKey userKey = userManager.getRemoteUser().getUserKey();
-//        System.err.println("~~~ REMOTE USERNAME: " + userManager.getRemoteUser().getUsername());
-//        System.err.println("~~~ REMOTE USERKEY : " + userManager.getRemoteUser().getUserKey());
-//        System.err.println("~~~ APPLIC USERNAME: " + ComponentAccessor.getUserManager().getUserByName(userManager.getRemoteUser().getUsername()).getName());
-//        System.err.println("~~~ APPLIC USERKEY : " + ComponentAccessor.getUserManager().getUserByName(userManager.getRemoteUser().getUsername()).getKey());
-//        return true;

@@ -24,6 +24,12 @@
             $("#color2").val(config.color2);
             $("#color3").val(config.color3);
             $("#color4").val(config.color4);
+            $("#viewers").val(config.viewers);
+
+            $("#color-span-1").style.backgroundColor = config.color1;
+            $("#color-span-2").style.backgroundColor = config.color2;
+            $("#color-span-3").style.backgroundColor = config.color3;
+            $("#color-span-4").style.backgroundColor = config.color4;
         });
     });
 
@@ -53,6 +59,7 @@ function updateConfig() {
             ' ,"color2":"' + sanitize(AJS.$("#color2").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             ' ,"color3":"' + sanitize(AJS.$("#color3").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             ' ,"color4":"' + sanitize(AJS.$("#color4").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            ' ,"viewers":"'+ sanitize(AJS.$("#viewers").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             '}',
     });
 }
