@@ -1,6 +1,7 @@
 package ws.slink.atlassian.servlet;
 
-import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -22,8 +23,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Scanned
 @Path("/")
@@ -289,9 +288,11 @@ public class RestResource {
     @Path("/config")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getConfigParams(@Context HttpServletRequest request) {
-        if (!isPluginManager())
+        if (!JiraTools.isPluginManager(userManager.getRemoteUser()))
             return Response.status(Response.Status.UNAUTHORIZED).build();
-        return Response.ok(transactionTemplate.execute((TransactionCallback) () -> new ConfigParams()
+        else
+            return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
+                new ConfigParams()
                 .setViewers(ConfigService.instance().getViewers())
                 .setList1(ConfigService.instance().getList(1))
                     .setStyle1(ConfigService.instance().getStyle(1))
@@ -315,9 +316,10 @@ public class RestResource {
     @PUT
     @Path("/config")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putConfigParams(final ConfigParams config /*String string*/, @Context HttpServletRequest request) {
-        UserKey userKey = userManager.getRemoteUser().getUserKey();
-        if (userKey == null || !userManager.isSystemAdmin(userKey)) {
+    public Response putConfigParams(final ConfigParams config, @Context HttpServletRequest request) {
+        if (!JiraTools.isPluginManager(userManager.getRemoteUser())) {
+//        UserKey userKey = userManager.getRemoteUser().getUserKey();
+//        if (userKey == null || !userManager.isSystemAdmin(userKey)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 //        System.out.println("~~~~~~~ PUT REQUEST: " + string);
@@ -355,21 +357,39 @@ public class RestResource {
     @Path("/color")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getIssueColor(@Context HttpServletRequest request) {
-        return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
-            new ColorParams()
-            .setColor(ConfigService.instance().getColor(CustomerLevelService.getLevel(userManager.getRemoteUser().getEmail())))
-            .log("~~~ prepared color: \n")))
-            .build()
-        ;
+        System.out.println("REST COLOR REQUEST: trying to get issue color...");
+        try {
+            String reporterEmail = ((Issue) new JiraHelper().getContextParams().get("issue"))
+                .getReporter()
+                .getEmailAddress()
+            ;
+
+            System.out.println("reporterEmail: " + reporterEmail);
+
+            return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
+                new ColorParams()
+                    .setColor(
+                        ConfigService.instance().getColor(
+                            CustomerLevelService.getLevel(
+                                reporterEmail
+                            )
+                        )
+                    ).log("REST COLOR REQUEST: ~~~ prepared color: \n"))
+                ).build()
+            ;
+        } catch (Exception e) {
+            System.err.println("REST COLOR REQUEST: ERROR: " + e.getClass().getName() + " : " + e.getMessage());
+            return Response.serverError().build();
+        }
     }
 
-    private boolean isPluginManager() {
-        return JiraTools.userHasRolesInProjects(
-            ConfigService.instance().projectsList().stream()
-                .map(JiraTools::getProjectByKey).filter(Objects::nonNull).collect(Collectors.toList()),
-            ConfigService.instance().rolesList().stream()
-                .map(JiraTools::getProjectRoleByKey).filter(Objects::nonNull).collect(Collectors.toList()),
-            ComponentAccessor.getUserManager().getUserByName(userManager.getRemoteUser().getUsername()));
-    }
+//    private boolean isPluginManager() {
+//        return JiraTools.userHasRolesInProjects(
+//            ConfigService.instance().projectsList().stream()
+//                .map(JiraTools::getProjectByKey).filter(Objects::nonNull).collect(Collectors.toList()),
+//            ConfigService.instance().rolesList().stream()
+//                .map(JiraTools::getProjectRoleByKey).filter(Objects::nonNull).collect(Collectors.toList()),
+//            ComponentAccessor.getUserManager().getUserByName(userManager.getRemoteUser().getUsername()));
+//    }
 
 }

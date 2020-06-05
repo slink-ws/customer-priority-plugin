@@ -1,6 +1,5 @@
 package ws.slink.atlassian.servlet;
 
-import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.auth.LoginUriProvider;
@@ -16,8 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Scanned
 public class ConfigServlet extends HttpServlet {
@@ -38,7 +35,7 @@ public class ConfigServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        if (!isPluginManager()) {
+        if (!JiraTools.isPluginManager(userManager.getRemoteUser())) {
             response.setContentType("text/html;charset=utf-8");
             renderer.render("templates/unauthorized.vm", response.getWriter());
         } else {
@@ -46,14 +43,4 @@ public class ConfigServlet extends HttpServlet {
             renderer.render("templates/config.vm", response.getWriter());
         }
     }
-
-    private boolean isPluginManager() {
-        return JiraTools.userHasRolesInProjects(
-            ConfigService.instance().projectsList().stream()
-                .map(JiraTools::getProjectByKey).filter(Objects::nonNull).collect(Collectors.toList()),
-            ConfigService.instance().rolesList().stream()
-                .map(JiraTools::getProjectRoleByKey).filter(Objects::nonNull).collect(Collectors.toList()),
-            ComponentAccessor.getUserManager().getUserByName(userManager.getRemoteUser().getUsername()));
-    }
-
 }

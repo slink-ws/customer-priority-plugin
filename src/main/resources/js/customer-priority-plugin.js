@@ -1,4 +1,6 @@
 
+var TEST_VALUE = 10101;
+
 console.log("~~~ LOADING CUSTOM SCRIPT ~~~");
 console.log("~~~ LOADING CUSTOM SCRIPT ~~~");
 console.log("~~~ LOADING CUSTOM SCRIPT ~~~");

@@ -8,6 +8,7 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import ws.slink.atlassian.service.ConfigService;
 import ws.slink.atlassian.service.CustomerLevelService;
+import ws.slink.atlassian.tools.JiraTools;
 
 import java.util.Arrays;
 
@@ -26,15 +27,13 @@ public class PanelCondition extends AbstractWebCondition {
     @Override
     public boolean shouldDisplay(ApplicationUser applicationUser, JiraHelper jiraHelper) {
         Issue currentIssue = (Issue) jiraHelper.getContextParams().get("issue");
+
         return
-            (null != currentIssue)
-            && Arrays.asList(ConfigService.instance().getViewers().split(" "))
-                .stream()
-                .anyMatch(s -> (s.contains("*")
-                            && applicationUser.getEmailAddress().toLowerCase().contains(s.replaceAll("\\*", "").toLowerCase())
-                            ||  applicationUser.getEmailAddress().equalsIgnoreCase(s))
+            (null != currentIssue
+          && customerLevelService.getLevel(currentIssue.getReporter().getEmailAddress()) > 0
+          && JiraTools.isViewer(applicationUser)
+          && ConfigService.instance().projectsList().contains(currentIssue.getProjectObject().getKey())
             )
-            && customerLevelService.getLevel(currentIssue.getReporter().getEmailAddress()) > 0
         ;
     }
 }

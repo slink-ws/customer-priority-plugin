@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2"> 
-  <!-- info -->  
+
+  <!-- info -->
   <plugin-info> 
     <description>${project.description}</description>  
     <version>${project.version}</version>  
@@ -20,7 +21,6 @@
     <resource type="download" name="images/" location="/images"/>  
     <context>customer-priority-plugin</context> 
   </web-resource>
-
 
   <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1000">
     <description key="customer-priority-panel.description">Customer Priority Panel Module</description>
