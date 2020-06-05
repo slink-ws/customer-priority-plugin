@@ -13,7 +13,7 @@
   <!-- add our i18n resource -->  
   <resource type="i18n" name="i18n" location="customer-priority-plugin"/>  
   <!-- add our web resources -->  
-  <web-resource key="customer-priority-plugin-resources" name="customer-priority-plugin Web Resources"> 
+  <web-resource key="customer-priority-plugin-panel" name="customer-priority-plugin Web Resources">
     <dependency>com.atlassian.auiplugin:ajs</dependency>  
     <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>  
     <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>  
@@ -22,7 +22,7 @@
   </web-resource>
 
 
-  <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1">
+  <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1000">
     <description key="customer-priority-panel.description">Customer Priority Panel Module</description>
     <conditions type="AND">
       <condition class="ws.slink.atlassian.conditions.PanelCondition"/>

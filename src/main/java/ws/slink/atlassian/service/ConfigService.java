@@ -47,6 +47,9 @@ public class ConfigService {
     }
     private List<String> getListParam(String param) {
         String value = (String) pluginSettings.get(CONFIG_PREFIX + "." + param);
+//        System.out.println(" ~~~~~~~~~~~~~~~~~~~~~~~~ ");
+//        System.out.println(" ~~~ RETURN LIST: " + value);
+//        System.out.println(" ~~~~~~~~~~~~~~~~~~~~~~~~ ");
         if (StringUtils.isBlank(value))
             return Collections.EMPTY_LIST;
         else
@@ -76,6 +79,14 @@ public class ConfigService {
     }
     public void setViewers(String value) {
         pluginSettings.put(CONFIG_PREFIX + ".viewers", value);
+    }
+
+    public String getColor(int id) {
+        String color = (String) pluginSettings.get(CONFIG_PREFIX + ".color" + id);
+        return StringUtils.isNotBlank(color) ? color : "#FFFFFF";
+    }
+    public void setColor(int id, String value) {
+        pluginSettings.put(CONFIG_PREFIX + ".color" + id, value);
     }
 
 }

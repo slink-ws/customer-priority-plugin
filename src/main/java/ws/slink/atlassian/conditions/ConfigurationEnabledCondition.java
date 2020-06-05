@@ -17,6 +17,10 @@ public class ConfigurationEnabledCondition extends AbstractWebCondition {
         AtomicBoolean allowed = new AtomicBoolean(false);
         List<String> configuredRoles    = ConfigService.instance().rolesList();
         List<String> configuredProjects = ConfigService.instance().projectsList();
+
+        if (null == jiraHelper.getProject())
+            return false;
+
         if (configuredRoles.isEmpty()) {
             if (configuredProjects.isEmpty()) {
                 System.out.println("allow for all roles and projects");

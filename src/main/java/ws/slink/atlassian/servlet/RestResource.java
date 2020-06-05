@@ -9,6 +9,7 @@ import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
 import ws.slink.atlassian.service.ConfigService;
+import ws.slink.atlassian.service.CustomerLevelService;
 import ws.slink.atlassian.tools.JiraTools;
 
 import javax.inject.Inject;
@@ -85,6 +86,11 @@ public class RestResource {
         @XmlElement private String text2;
         @XmlElement private String text3;
         @XmlElement private String text4;
+
+        @XmlElement private String color1;
+        @XmlElement private String color2;
+        @XmlElement private String color3;
+        @XmlElement private String color4;
 
         public String getList1() {
             return list1;
@@ -173,12 +179,41 @@ public class RestResource {
             return this;
         }
 
+        public String getColor1() {
+            return color1;
+        }
+        public ConfigParams setColor1(String value) {
+            this.color1 = value;
+            return this;
+        }
+        public String getColor2() {
+            return color2;
+        }
+        public ConfigParams setColor2(String value) {
+            this.color2 = value;
+            return this;
+        }
+        public String getColor3() {
+            return color3;
+        }
+        public ConfigParams setColor3(String value) {
+            this.color3 = value;
+            return this;
+        }
+        public String getColor4() {
+            return color4;
+        }
+        public ConfigParams setColor4(String value) {
+            this.color4 = value;
+            return this;
+        }
+
         public String toString() {
             return new StringBuilder()
-                .append("#1 ").append(list1).append(" : ").append(style1).append("\n")
-                .append("#2 ").append(list2).append(" : ").append(style2).append("\n")
-                .append("#3 ").append(list3).append(" : ").append(style3).append("\n")
-                .append("#4 ").append(list4).append(" : ").append(style4).append("\n")
+                .append("#1 ").append(list1).append(" : ").append(style1).append(" : ").append(text1).append(" : ").append(color1).append("\n")
+                .append("#2 ").append(list2).append(" : ").append(style2).append(" : ").append(text2).append(" : ").append(color2).append("\n")
+                .append("#3 ").append(list3).append(" : ").append(style3).append(" : ").append(text3).append(" : ").append(color3).append("\n")
+                .append("#4 ").append(list4).append(" : ").append(style4).append(" : ").append(text4).append(" : ").append(color4).append("\n")
                 .toString()
             ;
         }
@@ -188,6 +223,27 @@ public class RestResource {
         }
     }
 
+    @XmlRootElement
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static final class ColorParams {
+        @XmlElement private String color;
+        public String getColor() {
+            return color;
+        }
+        public ColorParams setColor(String color) {
+            this.color = color;
+            return this;
+        }
+        public String toString() {
+            return "color: " + color;
+        }
+        public ColorParams log(String prefix) {
+            System.out.println(prefix + this);
+            return this;
+        }
+    }
+
+
     @GET
     @Path("/admin")
     @Produces(MediaType.APPLICATION_JSON)
@@ -196,13 +252,10 @@ public class RestResource {
         if (userKey == null || !userManager.isSystemAdmin(userKey)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-        return Response.ok(transactionTemplate.execute((TransactionCallback) () -> {
-            return new AdminParams()
-                .setProjects(ConfigService.instance().getProjects())
-                .setRoles(ConfigService.instance().getRoles())
-                .log("~~~ prepared configuration: ")
-            ;
-        })).build();
+        return Response.ok(transactionTemplate.execute((TransactionCallback) () -> new AdminParams()
+            .setProjects(ConfigService.instance().getProjects())
+            .setRoles(ConfigService.instance().getRoles())
+            .log("~~~ prepared configuration: "))).build();
     }
 
     @PUT
@@ -228,23 +281,24 @@ public class RestResource {
     public Response getConfigParams(@Context HttpServletRequest request) {
         if (!isPluginManager())
             return Response.status(Response.Status.UNAUTHORIZED).build();
-        return Response.ok(transactionTemplate.execute((TransactionCallback) () -> {
-            return new ConfigParams()
+        return Response.ok(transactionTemplate.execute((TransactionCallback) () -> new ConfigParams()
                 .setList1(ConfigService.instance().getList(1))
                     .setStyle1(ConfigService.instance().getStyle(1))
                         .setText1(ConfigService.instance().getText(1))
+                            .setColor1(ConfigService.instance().getColor(1))
                 .setList2(ConfigService.instance().getList(2))
                     .setStyle2(ConfigService.instance().getStyle(2))
                         .setText2(ConfigService.instance().getText(2))
+                            .setColor2(ConfigService.instance().getColor(2))
                 .setList3(ConfigService.instance().getList(3))
                     .setStyle3(ConfigService.instance().getStyle(3))
                         .setText3(ConfigService.instance().getText(3))
+                            .setColor3(ConfigService.instance().getColor(3))
                 .setList4(ConfigService.instance().getList(4))
                     .setStyle4(ConfigService.instance().getStyle(4))
                         .setText4(ConfigService.instance().getText(4))
-                .log("~~~ prepared configuration: \n")
-            ;
-        })).build();
+                            .setColor4(ConfigService.instance().getColor(4))
+                .log("~~~ prepared configuration: \n"))).build();
     }
 
     @PUT
@@ -274,9 +328,29 @@ public class RestResource {
             ConfigService.instance().setText(3, config.getText3());
             ConfigService.instance().setText(4, config.getText4());
 
+            ConfigService.instance().setColor(1, config.getColor1());
+            ConfigService.instance().setColor(2, config.getColor2());
+            ConfigService.instance().setColor(3, config.getColor3());
+            ConfigService.instance().setColor(4, config.getColor4());
+
             return null;
         });
         return Response.noContent().build();
+    }
+
+    @GET
+    @Path("/color")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getIssueColor(@Context HttpServletRequest request) {
+        if (!isPluginViewer())
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        else
+            return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
+                new ColorParams()
+                .setColor(ConfigService.instance().getColor(CustomerLevelService.getLevel(userManager.getRemoteUser().getEmail())))
+                .log("~~~ prepared color: \n")))
+                .build()
+            ;
     }
 
     private boolean isPluginManager() {
@@ -286,6 +360,9 @@ public class RestResource {
             ConfigService.instance().rolesList().stream()
                 .map(JiraTools::getProjectRoleByKey).filter(Objects::nonNull).collect(Collectors.toList()),
             ComponentAccessor.getUserManager().getUserByName(userManager.getRemoteUser().getUsername()));
+    }
+    private boolean isPluginViewer() {
+        return true;
     }
 
 }

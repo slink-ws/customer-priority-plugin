@@ -20,10 +20,15 @@
             $("#list2").val(config.list2);
             $("#list3").val(config.list3);
             $("#list4").val(config.list4);
+            $("#color1").val(config.color1);
+            $("#color2").val(config.color2);
+            $("#color3").val(config.color3);
+            $("#color4").val(config.color4);
         });
     });
 
 })(AJS.$ || jQuery);
+
 function updateConfig() {
     AJS.$.ajax({
         url: AJS.contextPath() + "/rest/customer-priority/1.0/config",
@@ -44,6 +49,10 @@ function updateConfig() {
             ' ,"list2":"'  + sanitize(AJS.$("#list2").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             ' ,"list3":"'  + sanitize(AJS.$("#list3").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             ' ,"list4":"'  + sanitize(AJS.$("#list4").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            ' ,"color1":"' + sanitize(AJS.$("#color1").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            ' ,"color2":"' + sanitize(AJS.$("#color2").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            ' ,"color3":"' + sanitize(AJS.$("#color3").attr("value").replace(/\n/g, "\\n"), true) + '"' +
+            ' ,"color4":"' + sanitize(AJS.$("#color4").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             '}',
     });
 }

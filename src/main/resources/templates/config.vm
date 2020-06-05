@@ -66,6 +66,25 @@
             </div>
         </div>
 
+        <div class="column">
+            <div>
+                <div class="label">$i18n.getText("cp.config.color1.label")</div>
+                <input type="text" id="color1" name="color1" class="text" placeholder="level 1 color">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.color2.label")</div>
+                <input type="text" id="color2" name="color2" class="text" placeholder="level 2 color">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.color3.label")</div>
+                <input type="text" id="color3" name="color3" class="text" placeholder="level 3 color">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.color4.label")</div>
+                <input type="text" id="color4" name="color4" class="text" placeholder="level 4 color">
+            </div>
+        </div>
+
         <div class="field-group">
             <button class="submit_button" onclick="updateConfig();" type='button'>$i18n.getText("cp.config.save.label")</button>
         </div>

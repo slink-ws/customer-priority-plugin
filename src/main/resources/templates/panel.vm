@@ -1,3 +1,4 @@
+$webResourceManager.requireResource("ws.slink.customer-priority-plugin:customer-priority-plugin-panel")
 <div style="$panelStyle">
     $panelText
 </div>
