@@ -2,6 +2,7 @@ package ws.slink.atlassian.tools;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.project.Project;
+import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.user.ApplicationUser;
@@ -129,5 +130,9 @@ public class JiraTools {
         );
         System.out.println("IS VIEWER '" + applicationUser.getName() + "': " + result);
         return result;
+    }
+    public static ApplicationUser getLoggedInUser() {
+        JiraAuthenticationContext jiraAuthenticationContext = ComponentAccessor.getJiraAuthenticationContext();
+        return jiraAuthenticationContext.getLoggedInUser();
     }
 }

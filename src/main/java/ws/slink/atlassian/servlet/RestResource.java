@@ -1,7 +1,11 @@
 package ws.slink.atlassian.servlet;
 
+import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
+import com.atlassian.jira.project.Project;
+import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
@@ -9,6 +13,7 @@ import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
+import sun.awt.AWTAccessor;
 import ws.slink.atlassian.service.ConfigService;
 import ws.slink.atlassian.service.CustomerLevelService;
 import ws.slink.atlassian.tools.JiraTools;
@@ -354,33 +359,47 @@ public class RestResource {
     }
 
     @GET
-    @Path("/color")
+    @Path("/color/{issueId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getIssueColor(@Context HttpServletRequest request) {
-        System.out.println("REST COLOR REQUEST: trying to get issue color...");
+    public Response getIssueColor(@PathParam("issueId") String issueId, @Context HttpServletRequest request) {
+        System.out.println("REST COLOR REQUEST: trying to get issue color..." + issueId + " : " + request.getQueryString());
         try {
-            String reporterEmail = ((Issue) new JiraHelper().getContextParams().get("issue"))
-                .getReporter()
-                .getEmailAddress()
-            ;
 
-            System.out.println("reporterEmail: " + reporterEmail);
+            ApplicationUser user = JiraTools.getLoggedInUser();
+            Issue issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueId); //((Issue) new JiraHelper().getContextParams().get("issue"));
 
-            return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
-                new ColorParams()
-                    .setColor(
-                        ConfigService.instance().getColor(
-                            CustomerLevelService.getLevel(
-                                reporterEmail
-                            )
+            if (null == user || null == issue) {
+                return createColorResponse("#FFFFFF");
+            }
+
+            Project project = ComponentAccessor.getProjectManager().getProjectObj(issue.getProjectId());
+
+            if (null == project) {
+                return createColorResponse("#FFFFFF");
+            } else if (JiraTools.isViewer(user) && ConfigService.instance().projectsList().contains(project.getKey())){
+                String reporterEmail = issue.getReporter().getEmailAddress();
+                return createColorResponse(
+                    ConfigService.instance().getColor(
+                        CustomerLevelService.getLevel(
+                            reporterEmail
                         )
-                    ).log("REST COLOR REQUEST: ~~~ prepared color: \n"))
-                ).build()
-            ;
+                    )
+                );
+            } else {
+                return createColorResponse("#FFFFFF");
+            }
         } catch (Exception e) {
             System.err.println("REST COLOR REQUEST: ERROR: " + e.getClass().getName() + " : " + e.getMessage());
             return Response.serverError().build();
         }
+    }
+
+    private Response createColorResponse(String color) {
+        return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
+            new ColorParams()
+                .setColor(color
+                ).log("REST COLOR REQUEST: ~~~ prepared color: \n"))
+        ).build();
     }
 
 //    private boolean isPluginManager() {
@@ -393,3 +412,17 @@ public class RestResource {
 //    }
 
 }
+
+
+
+//            return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
+//                new ColorParams()
+//                    .setColor(
+//                        ConfigService.instance().getColor(
+//                            CustomerLevelService.getLevel(
+//                                reporterEmail
+//                            )
+//                        )
+//                    ).log("REST COLOR REQUEST: ~~~ prepared color: \n"))
+//                ).build()
+;

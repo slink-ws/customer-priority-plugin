@@ -12,16 +12,26 @@
     <param name="configure.url">/plugins/servlet/customer-priority/admin</param>
   </plugin-info>  
   <!-- add our i18n resource -->  
-  <resource type="i18n" name="i18n" location="customer-priority-plugin"/>  
-  <!-- add our web resources -->  
-  <web-resource key="customer-priority-plugin-panel" name="customer-priority-plugin Web Resources">
-    <dependency>com.atlassian.auiplugin:ajs</dependency>  
-    <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>  
-    <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>  
-    <resource type="download" name="images/" location="/images"/>  
-    <context>customer-priority-plugin</context> 
-  </web-resource>
+  <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
 
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ panel ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <web-resource key="customer-priority-plugin-panel" name="customer-priority-plugin-panel Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+<!--    <resource type="download" name="customer-priority-panel.css" location="/css/customer-priority-panel.css"/>  -->
+    <resource type="download" name="customer-priority-panel.js" location="js/customer-priority-panel.js"/>
+    <resource type="download" name="images/" location="/images"/>  
+    <context>customer-priority-plugin</context>
+<!--    <context>issue</context>-->
+<!--    <context>issueaction</context>-->
+<!--    <context>issuenavigation</context>-->
+<!--    <context>issuenavigationF</context>-->
+<!--    <context>jira-g-common-lite</context>-->
+<!--    <context>jira.edit.issue</context>-->
+<!--    <context>jira.global</context>-->
+<!--    <context>jira.navigator.advanced</context>-->
+<!--    <context>jira.navigator.simple</context>-->
+    <context>jira.view.issue</context>
+  </web-resource>
   <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1000">
     <description key="customer-priority-panel.description">Customer Priority Panel Module</description>
     <conditions type="AND">
@@ -30,6 +40,8 @@
     <context-provider class="ws.slink.atlassian.panel.ContextProvider"/>
     <resource name="view" type="velocity" location="templates/panel.vm"/>
   </web-panel>
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <web-section name="cpSection" i18n-name-key="cp-section.name" key="cp-section" location="cp-item-link" weight="1000">
@@ -82,3 +94,30 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
 </atlassian-plugin>
+
+
+
+        <!--  <web-resource key="1-resource" name="1 Web Resource">-->
+        <!--    <dependency>jira.webresources:global-static</dependency>-->
+        <!--    <dependency>com.atlassian.auiplugin:ajs</dependency>-->
+        <!--    <dependency>jira.webresources:jira-global</dependency>-->
+        <!--    <dependency>jira.web.resources:ajs</dependency>-->
+        <!--    <dependency>jira.web.resources:jquery</dependency>-->
+        <!--    <dependency>confluence.web.resources:ajs</dependency>-->
+        <!--    <dependency>confluence.web.resources:jquery</dependency>-->
+
+        <!--    <description>JavaScript</description>-->
+
+        <!--    <resource type="download" name="1.css" location="/css/1.css"/>-->
+        <!--    <resource type="download" name="1.js" location="/js/1.js"/>-->
+        <!--    <resource type="download" name="images/" location="/images"/>-->
+
+        <!--    <context>dashboard</context>-->
+        <!--    <context>jira.dashboard</context>-->
+        <!--    <context>atl.dashboard</context>-->
+        <!--    <context>atl.general</context>-->
+        <!--    <context>atl.admin</context>-->
+        <!--    <context>atl.userprofile</context>-->
+        <!--    <context>atl.popup</context>-->
+        <!--  </web-resource>-->
+

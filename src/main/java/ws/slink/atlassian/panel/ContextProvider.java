@@ -5,7 +5,6 @@ import com.atlassian.jira.plugin.webfragment.contextproviders.AbstractJiraContex
 import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import ws.slink.atlassian.service.ConfigService;
 import ws.slink.atlassian.service.CustomerLevelService;
@@ -37,8 +36,7 @@ public class ContextProvider extends AbstractJiraContextProvider {
         return contextMap;
     }
     public String getPanelStyle(int reporterLevel) {
-        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        String style = ConfigService.instance().getStyle(reporterLevel);//(String)settings.get(ConfigResource.Config.class.getName() + ".style" + reporterLevel);
+        String style = ConfigService.instance().getStyle(reporterLevel);
         if (null == style || style.isEmpty())
             switch (reporterLevel) {
                 case 1:
@@ -56,8 +54,7 @@ public class ContextProvider extends AbstractJiraContextProvider {
             return style;
     }
     public String getPanelText(int reporterLevel) {
-        PluginSettings settings = pluginSettingsFactory.createGlobalSettings();
-        String text = ConfigService.instance().getText(reporterLevel);//(String)settings.get(ConfigService.Config.class.getName() + ".text" + reporterLevel);
+        String text = ConfigService.instance().getText(reporterLevel);
         if (null == text || text.isEmpty())
             return "";
         else

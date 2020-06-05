@@ -10,8 +10,6 @@ import ws.slink.atlassian.service.ConfigService;
 import ws.slink.atlassian.service.CustomerLevelService;
 import ws.slink.atlassian.tools.JiraTools;
 
-import java.util.Arrays;
-
 public class PanelCondition extends AbstractWebCondition {
 
     @ComponentImport private final PluginSettingsFactory pluginSettingsFactory;
@@ -27,7 +25,6 @@ public class PanelCondition extends AbstractWebCondition {
     @Override
     public boolean shouldDisplay(ApplicationUser applicationUser, JiraHelper jiraHelper) {
         Issue currentIssue = (Issue) jiraHelper.getContextParams().get("issue");
-
         return
             (null != currentIssue
           && customerLevelService.getLevel(currentIssue.getReporter().getEmailAddress()) > 0
