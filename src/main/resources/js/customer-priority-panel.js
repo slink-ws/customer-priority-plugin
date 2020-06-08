@@ -1,42 +1,77 @@
 
-function colorRequest() {
+function setIssueColor() {
     var url = AJS.contextPath() + "/rest/customer-priority/1.0/color/" + JIRA.Issue.getIssueKey();
     $.ajax({
         url: url,
         dataType: "json"
     }).done(function(config) {
-        console.log("~~~ GOT COLOR:");
-        console.log(JSON.stringify(config));
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        if (null != config.color) {
-            console.log("~~~ SET COLOR TO: " + config.color);
-            console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        // console.log("~~~ GOT COLOR:");
+        // console.log(JSON.stringify(config));
+        // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        if (null != config && null != config.color) {
+            // console.log("~~~ SET COLOR TO: " + config.color);
+            // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             document.getElementById("details-module").style.backgroundColor = config.color;
             document.getElementById("details-module").getElementsByTagName("h4")[0].style.backgroundColor = config.color;
         }
     }).error(function (error) {
-        console.log("~~~ ERROR QUERYING FOR COLOR: ");
-        console.log("~~~ " + JSON.stringify(error));
-        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        // console.log("~~~ ERROR QUERYING FOR COLOR: ");
+        // console.log("~~~ " + JSON.stringify(error));
+        // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     });
 }
 
-// JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function(e, context, reason) {
-//     if (reason==JIRA.CONTENT_ADDED_REASON.pageLoad) {
-//         // colorRequest();
-//         console.warn("~~~~ page load: " + JIRA.Issue.getIssueKey());
-//     }
-// });
+function resetColor(item) {
+    item.parentNode.style.backgroundColor = '';
+}
 
-JIRA.bind("issueRefreshed", function() {
-    console.warn("~~~~ issue refreshed: " + JIRA.Issue.getIssueKey());
-    colorRequest();
+function setListItemColor(item, issue) {
+    var url = AJS.contextPath() + "/rest/customer-priority/1.0/color/" + issue;
+    $.ajax({
+        url: url,
+        dataType: "json"
+    }).done(function(config) {
+        if (null != config && null != config.color) {
+            item.parentNode.style.backgroundColor = config.color;
+        } else {
+            resetColor(item);
+        }
+    }).error(function (error) {
+    });
+}
+
+function setFocusedColor(item) {
+    item.parentNode.style.backgroundColor = '#DEEBFF';
+}
+
+function updateIssuesList() {
+    var issueLinks = document.getElementsByClassName('splitview-issue-link');
+    for (var i = 0; i < issueLinks.length; ++i) {
+        var item = issueLinks[i];
+        if (item.parentNode.className.split(' ').indexOf('focused')>=0) {
+            setFocusedColor(item);
+        } else {
+            setListItemColor(item, item.href.substring(item.href.lastIndexOf('/') + 1));
+        }
+    }
+}
+
+JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function(e, context, reason) {
+    if (reason==JIRA.CONTENT_ADDED_REASON.pageLoad) {
+        updateIssuesList();
+    }
 });
+JIRA.bind("issueRefreshed", function()  {
+    setIssueColor();
+});
+// JIRA.bind("layoutRendered", function()  {
+//     setIssueColor();
+// });
 
 (function ($) {
     var url = AJS.contextPath() + "/rest/customer-priority/1.0/color";
     $(document).ready(function() {
-        colorRequest();
+        setIssueColor();
     });
 })(AJS.$ || jQuery);
 

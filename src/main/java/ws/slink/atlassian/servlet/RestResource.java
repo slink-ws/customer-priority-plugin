@@ -11,6 +11,7 @@ import com.atlassian.sal.api.transaction.TransactionCallback;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
+import org.apache.commons.lang.StringUtils;
 import ws.slink.atlassian.service.ConfigService;
 import ws.slink.atlassian.service.CustomerLevelService;
 import ws.slink.atlassian.tools.JiraTools;
@@ -359,7 +360,7 @@ public class RestResource {
     @Path("/color/{issueId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getIssueColor(@PathParam("issueId") String issueId, @Context HttpServletRequest request) {
-        System.out.println("REST COLOR REQUEST: trying to get issue color..." + issueId + " : " + request.getQueryString());
+//        System.out.println("REST COLOR REQUEST: trying to get issue color..." + issueId + " : " + request.getQueryString());
         try {
 
             ApplicationUser user = JiraTools.getLoggedInUser();
@@ -375,18 +376,17 @@ public class RestResource {
                 return emptyResponse();//createColorResponse("#FFFFFF");
             } else if (JiraTools.isViewer(user) && ConfigService.instance().projectsList().contains(project.getKey())){
                 String reporterEmail = issue.getReporter().getEmailAddress();
-                return createColorResponse(
-                    ConfigService.instance().getColor(
-                        CustomerLevelService.getLevel(
-                            reporterEmail
-                        )
-                    )
-                );
+                String color = ConfigService.instance().getColor(CustomerLevelService.getLevel(reporterEmail));
+                if (StringUtils.isNotBlank(color))
+//                    System.out.println("CREATE COLOR RESPONSE FOR ISSUE '"+ issueId +"': " + ConfigService.instance().getColor(CustomerLevelService.getLevel(reporterEmail)));
+                    return createColorResponse(color);
+                else
+                    return emptyResponse();
             } else {
                 return emptyResponse(); //createColorResponse("#FFFFFF");
             }
         } catch (Exception e) {
-            System.err.println("REST COLOR REQUEST: ERROR: " + e.getClass().getName() + " : " + e.getMessage());
+//            System.err.println("REST COLOR REQUEST: ERROR: " + e.getClass().getName() + " : " + e.getMessage());
             return Response.serverError().build();
         }
     }
@@ -395,7 +395,9 @@ public class RestResource {
         return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
             new ColorParams()
                 .setColor(color
-                ).log("REST COLOR REQUEST: ~~~ prepared color: \n"))
+                )
+//                .log("REST COLOR REQUEST: ~~~ prepared color: \n")
+            )
         ).build();
     }
 
@@ -403,24 +405,4 @@ public class RestResource {
         return Response.noContent().build();
     }
 }
-
-//            return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
-//                new ColorParams()
-//                    .setColor(
-//                        ConfigService.instance().getColor(
-//                            CustomerLevelService.getLevel(
-//                                reporterEmail
-//                            )
-//                        )
-//                    ).log("REST COLOR REQUEST: ~~~ prepared color: \n"))
-//                ).build()
-;
-//    private boolean isPluginManager() {
-//        return JiraTools.userHasRolesInProjects(
-//            ConfigService.instance().projectsList().stream()
-//                .map(JiraTools::getProjectByKey).filter(Objects::nonNull).collect(Collectors.toList()),
-//            ConfigService.instance().rolesList().stream()
-//                .map(JiraTools::getProjectRoleByKey).filter(Objects::nonNull).collect(Collectors.toList()),
-//            ComponentAccessor.getUserManager().getUserByName(userManager.getRemoteUser().getUsername()));
-//    }
 

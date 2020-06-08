@@ -23,13 +23,8 @@ public class CustomerLevelService {
                 break;
             }
         }
-        System.out.println("LEVEL FOR '" + value + "' is " + result);
+        // System.out.println("LEVEL FOR '" + value + "' is " + result);
         return result.get();
-    }
-
-    public boolean isCustom(String value) {
-        return getLevel(value) > 0;
-//        return levels.values().stream().flatMap(x -> x.stream()).collect(Collectors.toList()).contains(value);
     }
 
 }

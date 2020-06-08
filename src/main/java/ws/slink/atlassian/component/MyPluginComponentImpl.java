@@ -1,9 +1,8 @@
-package ws.slink.atlassian.impl;
+package ws.slink.atlassian.component;
 
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.ApplicationProperties;
-import ws.slink.atlassian.api.MyPluginComponent;
 
 import javax.inject.Inject;
 import javax.inject.Named;

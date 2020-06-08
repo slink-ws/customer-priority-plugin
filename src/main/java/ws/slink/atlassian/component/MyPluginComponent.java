@@ -1,4 +1,4 @@
-package ws.slink.atlassian.api;
+package ws.slink.atlassian.component;
 
 public interface MyPluginComponent
 {

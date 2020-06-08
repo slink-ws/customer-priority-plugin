@@ -52,15 +52,3 @@ public class DefaultCSS {
     ;
 
 }
-
-
-//font-size: initial;
-//border-radius: 5px;
-//text-align: center;
-//font-weight: lighter;
-//background-color: yellowgreen;
-//padding-top: 10px;
-//padding-bottom: 10px;
-//padding-left: 10px;
-//padding-right: 10px;
-//width: 100px;

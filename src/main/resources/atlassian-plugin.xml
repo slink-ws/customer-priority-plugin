@@ -17,7 +17,7 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ panel ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <web-resource key="customer-priority-plugin-panel" name="customer-priority-plugin-panel Web Resources">
     <dependency>com.atlassian.auiplugin:ajs</dependency>
-<!--    <resource type="download" name="customer-priority-panel.css" location="/css/customer-priority-panel.css"/>  -->
+    <resource type="download" name="customer-priority-panel.css" location="/css/customer-priority-panel.css"/>
     <resource type="download" name="customer-priority-panel.js" location="js/customer-priority-panel.js"/>
     <resource type="download" name="images/" location="/images"/>  
     <context>customer-priority-plugin</context>

@@ -91,6 +91,19 @@ public class JiraTools {
                 ComponentAccessor.getUserManager().getUserByName(user))
         ;
     }
+    public static boolean isViewer(ApplicationUser applicationUser) {
+        boolean result =
+            // TODO: add support for "*" to allow views for all ?
+            Arrays.asList(ConfigService.instance().getViewers().split(" "))
+                .stream()
+                .anyMatch(s -> (s.contains("*")
+                    && applicationUser.getEmailAddress().toLowerCase().contains(s.replaceAll("\\*", "").toLowerCase())
+                    || applicationUser.getEmailAddress().equalsIgnoreCase(s))
+                );
+        // System.out.println("IS VIEWER '" + applicationUser.getName() + "': " + result);
+        return result;
+    }
+
     public static boolean userHasRolesInProjects(Collection<Project> projects, Collection<ProjectRole> roles, ApplicationUser user) {
         return projects.stream().filter(Objects::nonNull).anyMatch(p -> roles.stream().filter(Objects::nonNull).anyMatch(r -> userHasRoleInProject(p, user, r)));
     }
@@ -100,7 +113,7 @@ public class JiraTools {
     public static boolean userHasRoleInProject(Project project, ApplicationUser user, ProjectRole role) {
         ProjectRoleManager projectRoleManager = ComponentAccessor.getComponentOfType(ProjectRoleManager.class);
         boolean result = projectRoleManager.isUserInProjectRole(user, role, project);
-        System.out.println(user.getUsername() + " : " + project.getKey() + " : " + role.getName() + " => " + result);
+        // System.out.println(user.getUsername() + " : " + project.getKey() + " : " + role.getName() + " => " + result);
         return result;
     }
     public static ProjectRole getProjectRoleByKey(String roleKey) {
@@ -108,7 +121,7 @@ public class JiraTools {
             ProjectRole projectRole = ComponentAccessor.getComponent(ProjectRoleManager.class).getProjectRole(roleKey);
             return projectRole;
         } catch (Exception e) {
-            System.err.println("ERROR CONVERTING ROLE KEY TO PROJECT ROLE: " + e.getMessage());
+            // System.err.println("ERROR CONVERTING ROLE KEY TO PROJECT ROLE: " + e.getMessage());
             return null;
         }
     }
@@ -116,20 +129,9 @@ public class JiraTools {
         try {
             return ComponentAccessor.getProjectManager().getProjectByCurrentKey(projectKey);
         } catch (Exception e) {
-            System.err.println("ERROR CONVERTING PROJECT KEY TO PROJECT: " + e.getMessage());
+            // System.err.println("ERROR CONVERTING PROJECT KEY TO PROJECT: " + e.getMessage());
             return null;
         }
-    }
-    public static boolean isViewer(ApplicationUser applicationUser) {
-        boolean result =
-        Arrays.asList(ConfigService.instance().getViewers().split(" "))
-            .stream()
-            .anyMatch(s -> (s.contains("*")
-                && applicationUser.getEmailAddress().toLowerCase().contains(s.replaceAll("\\*", "").toLowerCase())
-                || applicationUser.getEmailAddress().equalsIgnoreCase(s))
-        );
-        System.out.println("IS VIEWER '" + applicationUser.getName() + "': " + result);
-        return result;
     }
     public static ApplicationUser getLoggedInUser() {
         JiraAuthenticationContext jiraAuthenticationContext = ComponentAccessor.getJiraAuthenticationContext();

@@ -80,7 +80,7 @@ public class ConfigService {
 
     public String getColor(int id) {
         String color = (String) pluginSettings.get(CONFIG_PREFIX + ".color" + id);
-        return StringUtils.isNotBlank(color) ? color : "#FFFFFF";
+        return StringUtils.isNotBlank(color) ? color : "";
     }
     public void setColor(int id, String value) {
         pluginSettings.put(CONFIG_PREFIX + ".color" + id, value);
