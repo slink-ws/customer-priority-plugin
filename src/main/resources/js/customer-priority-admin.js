@@ -29,5 +29,9 @@ function updateConfig() {
         contentType: "application/json",
         data: '{ "projects": "' + AJS.$("#projects").attr("value") + '", "roles": "' +  AJS.$("#roles").attr("value") + '" }',
         processData: false
+    }).done(function () {
+        JIRA.Messages.showSuccessMsg("configuration saved")
+    }).error(function () {
+        JIRA.Messages.showErrorMsg("could not save configuration")
     });
 }

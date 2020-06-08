@@ -18,7 +18,7 @@
             <input type="text" id="roles" name="roles" class="text" placeholder="roles..." >
         </div>
         <div class="field-group">
-            <button onclick="updateConfig();" type='button'>$i18n.getText("cp.admin.save.label")</button>
+            <button class="submit_button" onclick="updateConfig();" type='button'>$i18n.getText("cp.admin.save.label")</button>
         </div>
     </form>
 </body>

@@ -9,10 +9,10 @@ public class CustomerLevelService {
 
     private static final int MAX_LEVEL=4;
 
-    public static int getLevel(String value) {
+    public static int getLevel(String projectKey, String value) {
         AtomicInteger result = new AtomicInteger(0);
         for (int i = 1; i <= MAX_LEVEL; i++) {
-            if (Arrays.stream(ConfigService.instance().getList(i).split(" "))
+            if (Arrays.stream(ConfigService.instance().getList(projectKey, i).split(" "))
                 .map(s -> s.trim())
                 .filter(StringUtils::isNotBlank)
                 .anyMatch(s

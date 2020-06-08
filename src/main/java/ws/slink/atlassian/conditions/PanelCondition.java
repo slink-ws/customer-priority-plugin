@@ -27,8 +27,8 @@ public class PanelCondition extends AbstractWebCondition {
         Issue currentIssue = (Issue) jiraHelper.getContextParams().get("issue");
         return
             (null != currentIssue
-          && customerLevelService.getLevel(currentIssue.getReporter().getEmailAddress()) > 0
-          && JiraTools.isViewer(applicationUser)
+          && customerLevelService.getLevel(jiraHelper.getProject().getKey(), currentIssue.getReporter().getEmailAddress()) > 0
+          && JiraTools.isViewer(jiraHelper.getProject().getKey(), applicationUser)
           && ConfigService.instance().projectsList().contains(currentIssue.getProjectObject().getKey())
             )
         ;

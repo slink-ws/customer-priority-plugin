@@ -1,4 +1,4 @@
-package ws.slink.atlassian.panel;
+package ws.slink.atlassian.context;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.webfragment.contextproviders.AbstractJiraContextProvider;
@@ -13,14 +13,14 @@ import ws.slink.atlassian.tools.DefaultCSS;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ContextProvider extends AbstractJiraContextProvider {
+public class PanelContextProvider extends AbstractJiraContextProvider {
 
     @ComponentImport
     private final PluginSettingsFactory pluginSettingsFactory;
 
     private final CustomerLevelService customerLevelService;
 
-    public ContextProvider(PluginSettingsFactory pluginSettingsFactory) {
+    public PanelContextProvider(PluginSettingsFactory pluginSettingsFactory) {
         this.pluginSettingsFactory = pluginSettingsFactory;
         this.customerLevelService = new CustomerLevelService();
         ConfigService.instance().setPluginSettings(pluginSettingsFactory.createGlobalSettings());
@@ -30,13 +30,13 @@ public class ContextProvider extends AbstractJiraContextProvider {
     public Map getContextMap(ApplicationUser applicationUser, JiraHelper jiraHelper) {
         Map<String, Object> contextMap = new HashMap<>();
         Issue currentIssue = (Issue) jiraHelper.getContextParams().get("issue");
-        int reporterLevel = customerLevelService.getLevel(currentIssue.getReporter().getEmailAddress());
-        contextMap.put("panelStyle", getPanelStyle(reporterLevel));
-        contextMap.put("panelText", getPanelText(reporterLevel));
+        int reporterLevel = customerLevelService.getLevel(jiraHelper.getProject().getKey(), currentIssue.getReporter().getEmailAddress());
+        contextMap.put("panelStyle", getPanelStyle(jiraHelper.getProject().getKey(), reporterLevel));
+        contextMap.put("panelText", getPanelText(jiraHelper.getProject().getKey(), reporterLevel));
         return contextMap;
     }
-    public String getPanelStyle(int reporterLevel) {
-        String style = ConfigService.instance().getStyle(reporterLevel);
+    public String getPanelStyle(String projectKey, int reporterLevel) {
+        String style = ConfigService.instance().getStyle(projectKey, reporterLevel);
         if (null == style || style.isEmpty())
             switch (reporterLevel) {
                 case 1:
@@ -53,8 +53,8 @@ public class ContextProvider extends AbstractJiraContextProvider {
         else
             return style;
     }
-    public String getPanelText(int reporterLevel) {
-        String text = ConfigService.instance().getText(reporterLevel);
+    public String getPanelText(String projectKey, int reporterLevel) {
+        String text = ConfigService.instance().getText(projectKey, reporterLevel);
         if (null == text || text.isEmpty())
             return "";
         else

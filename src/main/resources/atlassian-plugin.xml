@@ -23,39 +23,54 @@
     <context>customer-priority-plugin</context>
     <context>jira.view.issue</context>
   </web-resource>
-  <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1000">
+  <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1">
     <description key="customer-priority-panel.description">Customer Priority Panel Module</description>
     <conditions type="AND">
       <condition class="ws.slink.atlassian.conditions.PanelCondition"/>
     </conditions>
-    <context-provider class="ws.slink.atlassian.panel.ContextProvider"/>
+    <context-provider class="ws.slink.atlassian.context.PanelContextProvider"/>
     <resource name="view" type="velocity" location="templates/panel.vm"/>
   </web-panel>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <web-section name="cpSection" i18n-name-key="cp-section.name" key="cp-section" location="cp-item-link" weight="1000">
-    <description key="cp-section.description">The mySection Plugin</description>
-  </web-section>
-  <web-item name="cpItem" i18n-name-key="cp-item.name" key="cp-item" section="system.top.navigation.bar" weight="1000">
-    <description key="cp-item.description">The myItem Plugin</description>
-    <label key="cp-item.label"/>
-    <link linkId="cp-item-link"/>
+  <!--  <web-section name="cpSection" i18n-name-key="cp-section.name" key="cp-section" location="cp-item-link" weight="1000">-->
+  <!--    <description key="cp-section.description">The mySection Plugin</description>-->
+  <!--  </web-section>-->
+  <!--  <web-item name="cpItem" i18n-name-key="cp-item.name" key="cp-item" section="system.top.navigation.bar" weight="1000">-->
+  <!--    <description key="cp-item.description">The myItem Plugin</description>-->
+  <!--    <label key="cp-item.label"/>-->
+  <!--    <link linkId="cp-item-link"/>-->
+  <!--    <conditions type="AND" >-->
+  <!--      <condition class="ws.slink.atlassian.conditions.ConfigurationEnabledCondition"/>-->
+  <!--    </conditions>-->
+  <!--  </web-item>-->
+  <!--  <web-item name="" i18n-name-key="cp-config-item.name" key="cp-config-item" section="cp-item-link/cp-section" weight="1000">-->
+  <!--    <description key="cp-config-item.description" />-->
+  <!--    <label key="cp-config-item.label" />-->
+  <!--    <link linkId="cp-config-item.link">/plugins/servlet/customer-priority/config</link>-->
+  <!--  </web-item>-->
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~ config menu ~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <web-section key="cp-item-cfg-section" location="atl.jira.proj.config" weight="1000">
     <conditions type="AND" >
       <condition class="ws.slink.atlassian.conditions.ConfigurationEnabledCondition"/>
     </conditions>
-  </web-item>
-  <web-item name="" i18n-name-key="cp-config-item.name" key="cp-config-item" section="cp-item-link/cp-section" weight="1000">
+  </web-section>
+  <web-item key="cp-item-cfg" section="atl.jira.proj.config/cp-item-cfg-section">
     <description key="cp-config-item.description" />
     <label key="cp-config-item.label" />
-    <link linkId="cp-config-item.link">/plugins/servlet/customer-priority/config</link>
+    <link linkId="cp-config-item-cfg.link">
+      /plugins/servlet/project-config/$helper.project.key/customer-priority
+    </link>
   </web-item>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <web-resource key="customer-priority-plugin-admin" name="customer-priority-plugin Admin Web Resources">
     <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource type="download" name="customer-priority-admin.css" location="/css/customer-priority-admin.css"/>
     <resource type="download" name="customer-priority-admin.js" location="/js/customer-priority-admin.js"/>
     <context>customer-priority-plugin</context>
   </web-resource>
@@ -74,7 +89,10 @@
   </web-resource>
   <servlet key="config-servlet" class="ws.slink.atlassian.servlet.ConfigServlet">
     <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
-    <url-pattern>/customer-priority/config</url-pattern>
+    <url-pattern>
+<!--  /customer-priority/config-->
+      /project-config/*/customer-priority
+    </url-pattern>
   </servlet>
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 

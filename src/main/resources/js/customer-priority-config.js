@@ -1,10 +1,7 @@
 (function ($) {
-
-    var url = AJS.contextPath() + "/rest/customer-priority/1.0/config";
-
     $(document).ready(function() {
         $.ajax({
-            url: url,
+            url: AJS.contextPath() + "/rest/customer-priority/1.0/config/" + JIRA.API.Projects.getCurrentProjectKey(),
             dataType: "json"
         }).done(function(config) {
             $("#viewers").val(config.viewers);
@@ -37,7 +34,7 @@
 
 function updateConfig() {
     AJS.$.ajax({
-        url: AJS.contextPath() + "/rest/customer-priority/1.0/config",
+        url: AJS.contextPath() + "/rest/customer-priority/1.0/config/" + JIRA.API.Projects.getCurrentProjectKey(),
         type: "PUT",
         contentType: "application/json",
         processData: false,
@@ -61,6 +58,10 @@ function updateConfig() {
             ' ,"color4":"' + sanitize(AJS.$("#color4").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             ' ,"viewers":"'+ sanitize(AJS.$("#viewers").attr("value").replace(/\n/g, "\\n"), true) + '"' +
             '}',
+    }).done(function () {
+        JIRA.Messages.showSuccessMsg("configuration saved")
+    }).error(function () {
+        JIRA.Messages.showErrorMsg("could not save configuration")
     });
 }
 

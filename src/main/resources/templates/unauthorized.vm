@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <title>$i18n.getText("cp.config.label")</title>
-    <meta name="decorator" content="atl.admin" />
+    <meta name="decorator"            content="admin"/>
+    <meta name="projectKey"           content="$projectKey"/>
+    <meta name="projectId"            content="$projectId"/>
+    <meta name="admin.active.tab"     content="cp-item-cfg"/>
+    <meta name="admin.active.section" content="atl.jira.proj.config"/>
     $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
 </head>
 <body>

@@ -288,68 +288,65 @@ public class RestResource {
     }
 
     @GET
-    @Path("/config")
+    @Path("/config/{projectKey}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getConfigParams(@Context HttpServletRequest request) {
+    public Response getConfigParams(@PathParam("projectKey") String projectKey, @Context HttpServletRequest request) {
         if (!JiraTools.isPluginManager(userManager.getRemoteUser()))
             return Response.status(Response.Status.UNAUTHORIZED).build();
         else
             return Response.ok(transactionTemplate.execute((TransactionCallback) () ->
                 new ConfigParams()
-                .setViewers(ConfigService.instance().getViewers())
-                .setList1(ConfigService.instance().getList(1))
-                    .setStyle1(ConfigService.instance().getStyle(1))
-                        .setText1(ConfigService.instance().getText(1))
-                            .setColor1(ConfigService.instance().getColor(1))
-                .setList2(ConfigService.instance().getList(2))
-                    .setStyle2(ConfigService.instance().getStyle(2))
-                        .setText2(ConfigService.instance().getText(2))
-                            .setColor2(ConfigService.instance().getColor(2))
-                .setList3(ConfigService.instance().getList(3))
-                    .setStyle3(ConfigService.instance().getStyle(3))
-                        .setText3(ConfigService.instance().getText(3))
-                            .setColor3(ConfigService.instance().getColor(3))
-                .setList4(ConfigService.instance().getList(4))
-                    .setStyle4(ConfigService.instance().getStyle(4))
-                        .setText4(ConfigService.instance().getText(4))
-                            .setColor4(ConfigService.instance().getColor(4))
+                .setViewers(ConfigService.instance().getViewers(projectKey))
+                .setList1(ConfigService.instance().getList(projectKey, 1))
+                    .setStyle1(ConfigService.instance().getStyle(projectKey, 1))
+                        .setText1(ConfigService.instance().getText(projectKey, 1))
+                            .setColor1(ConfigService.instance().getColor(projectKey, 1))
+                .setList2(ConfigService.instance().getList(projectKey, 2))
+                    .setStyle2(ConfigService.instance().getStyle(projectKey, 2))
+                        .setText2(ConfigService.instance().getText(projectKey, 2))
+                            .setColor2(ConfigService.instance().getColor(projectKey, 2))
+                .setList3(ConfigService.instance().getList(projectKey, 3))
+                    .setStyle3(ConfigService.instance().getStyle(projectKey, 3))
+                        .setText3(ConfigService.instance().getText(projectKey, 3))
+                            .setColor3(ConfigService.instance().getColor(projectKey, 3))
+                .setList4(ConfigService.instance().getList(projectKey, 4))
+                    .setStyle4(ConfigService.instance().getStyle(projectKey, 4))
+                        .setText4(ConfigService.instance().getText(projectKey, 4))
+                            .setColor4(ConfigService.instance().getColor(projectKey, 4))
                 .log("~~~ prepared configuration: \n"))).build();
     }
 
     @PUT
-    @Path("/config")
+    @Path("/config/{projectKey}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putConfigParams(final ConfigParams config, @Context HttpServletRequest request) {
+    public Response putConfigParams(final ConfigParams config, @PathParam("projectKey") String projectKey, @Context HttpServletRequest request) {
         if (!JiraTools.isPluginManager(userManager.getRemoteUser())) {
-//        UserKey userKey = userManager.getRemoteUser().getUserKey();
-//        if (userKey == null || !userManager.isSystemAdmin(userKey)) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
-//        System.out.println("~~~~~~~ PUT REQUEST: " + string);
         transactionTemplate.execute((TransactionCallback) () -> {
             config.log("~~~ received configuration: \n");
 
-            ConfigService.instance().setList(1, config.getList1());
-            ConfigService.instance().setList(2, config.getList2());
-            ConfigService.instance().setList(3, config.getList3());
-            ConfigService.instance().setList(4, config.getList4());
+            ConfigService.instance().setList(projectKey,1, config.getList1());
+            ConfigService.instance().setList(projectKey,2, config.getList2());
+            ConfigService.instance().setList(projectKey,3, config.getList3());
+            ConfigService.instance().setList(projectKey,4, config.getList4());
 
-            ConfigService.instance().setStyle(1, config.getStyle1());
-            ConfigService.instance().setStyle(2, config.getStyle2());
-            ConfigService.instance().setStyle(3, config.getStyle3());
-            ConfigService.instance().setStyle(4, config.getStyle4());
+            ConfigService.instance().setStyle(projectKey,1, config.getStyle1());
+            ConfigService.instance().setStyle(projectKey,2, config.getStyle2());
+            ConfigService.instance().setStyle(projectKey,3, config.getStyle3());
+            ConfigService.instance().setStyle(projectKey,4, config.getStyle4());
 
-            ConfigService.instance().setText(1, config.getText1());
-            ConfigService.instance().setText(2, config.getText2());
-            ConfigService.instance().setText(3, config.getText3());
-            ConfigService.instance().setText(4, config.getText4());
+            ConfigService.instance().setText(projectKey,1, config.getText1());
+            ConfigService.instance().setText(projectKey,2, config.getText2());
+            ConfigService.instance().setText(projectKey,3, config.getText3());
+            ConfigService.instance().setText(projectKey,4, config.getText4());
 
-            ConfigService.instance().setColor(1, config.getColor1());
-            ConfigService.instance().setColor(2, config.getColor2());
-            ConfigService.instance().setColor(3, config.getColor3());
-            ConfigService.instance().setColor(4, config.getColor4());
+            ConfigService.instance().setColor(projectKey,1, config.getColor1());
+            ConfigService.instance().setColor(projectKey,2, config.getColor2());
+            ConfigService.instance().setColor(projectKey,3, config.getColor3());
+            ConfigService.instance().setColor(projectKey,4, config.getColor4());
 
-            ConfigService.instance().setViewers(config.getViewers());
+            ConfigService.instance().setViewers(projectKey, config.getViewers());
 
             return null;
         });
@@ -360,33 +357,37 @@ public class RestResource {
     @Path("/color/{issueId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getIssueColor(@PathParam("issueId") String issueId, @Context HttpServletRequest request) {
-//        System.out.println("REST COLOR REQUEST: trying to get issue color..." + issueId + " : " + request.getQueryString());
+//        System.out.print("color request for '" + issueId + "': ");
         try {
-
             ApplicationUser user = JiraTools.getLoggedInUser();
             Issue issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueId); //((Issue) new JiraHelper().getContextParams().get("issue"));
-
             if (null == user || null == issue) {
-                return emptyResponse(); //createColorResponse("#FFFFFF");
+                // System.out.println("none (1)");
+                return emptyResponse();
             }
 
-            Project project = ComponentAccessor.getProjectManager().getProjectObj(issue.getProjectId());
+//            System.out.println("~~~~~~ PROJECT: " + issue.getProjectObject().getKey()
+//                             + "; CONFIGURED PROJECTS: " + ConfigService.instance().projectsList()
+//                             + "; VIEWER '" + user.getName() + "': " + JiraTools.isViewer(issue.getProjectObject().getKey(), user)
+//            );
 
-            if (null == project) {
-                return emptyResponse();//createColorResponse("#FFFFFF");
-            } else if (JiraTools.isViewer(user) && ConfigService.instance().projectsList().contains(project.getKey())){
+            if (JiraTools.isViewer(issue.getProjectObject().getKey(), user) && ConfigService.instance().projectsList().contains(issue.getProjectObject().getKey())){
                 String reporterEmail = issue.getReporter().getEmailAddress();
-                String color = ConfigService.instance().getColor(CustomerLevelService.getLevel(reporterEmail));
-                if (StringUtils.isNotBlank(color))
-//                    System.out.println("CREATE COLOR RESPONSE FOR ISSUE '"+ issueId +"': " + ConfigService.instance().getColor(CustomerLevelService.getLevel(reporterEmail)));
+                String color = ConfigService.instance().getColor(issue.getProjectObject().getKey(), CustomerLevelService.getLevel(issue.getProjectObject().getKey(), reporterEmail));
+                if (StringUtils.isNotBlank(color)) {
+                    // System.out.println(color);
                     return createColorResponse(color);
-                else
+                }
+                else {
+                    // System.out.println("none (2)");
                     return emptyResponse();
+                }
             } else {
-                return emptyResponse(); //createColorResponse("#FFFFFF");
+                // System.out.println("none (3)");
+                return emptyResponse();
             }
         } catch (Exception e) {
-//            System.err.println("REST COLOR REQUEST: ERROR: " + e.getClass().getName() + " : " + e.getMessage());
+            // System.out.println("error: " + e.getClass().getName() + " : " + e.getMessage());
             return Response.serverError().build();
         }
     }
