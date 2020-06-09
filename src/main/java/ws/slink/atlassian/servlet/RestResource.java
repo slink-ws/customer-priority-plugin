@@ -267,7 +267,8 @@ public class RestResource {
         return Response.ok(transactionTemplate.execute((TransactionCallback) () -> new AdminParams()
             .setProjects(ConfigService.instance().getProjects())
             .setRoles(ConfigService.instance().getRoles())
-            .log("~~~ prepared configuration: "))).build();
+//            .log("~~~ prepared configuration: ")
+        )).build();
     }
 
     @PUT
@@ -279,7 +280,7 @@ public class RestResource {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         transactionTemplate.execute((TransactionCallback) () -> {
-            config.log("~~~ received configuration: ");
+//            config.log("~~~ received configuration: ");
             ConfigService.instance().setProjects(config.getProjects());
             ConfigService.instance().setRoles(config.getRoles());
             return null;
@@ -313,7 +314,8 @@ public class RestResource {
                     .setStyle4(ConfigService.instance().getStyle(projectKey, 4))
                         .setText4(ConfigService.instance().getText(projectKey, 4))
                             .setColor4(ConfigService.instance().getColor(projectKey, 4))
-                .log("~~~ prepared configuration: \n"))).build();
+//                .log("~~~ prepared configuration: \n")
+            )).build();
     }
 
     @PUT
@@ -324,8 +326,7 @@ public class RestResource {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         transactionTemplate.execute((TransactionCallback) () -> {
-            config.log("~~~ received configuration: \n");
-
+//            config.log("~~~ received configuration: \n");
             ConfigService.instance().setList(projectKey,1, config.getList1());
             ConfigService.instance().setList(projectKey,2, config.getList2());
             ConfigService.instance().setList(projectKey,3, config.getList3());
