@@ -11,3 +11,6 @@ Plugin is provided "as is" and not supported.
 
 ## Privacy
 Plugin does not collect and store any personal data.
+
+## Atlassian Marketplace
+Plugin is available on Atlassian Marketplace: https://marketplace.atlassian.com/apps/1222853/customer-priority?hosting=server&tab=overview
