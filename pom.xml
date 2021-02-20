@@ -10,8 +10,8 @@
     <version>2.0.0-SNAPSHOT</version>
 
     <organization>
-        <name>Example Company</name>
-        <url>http://www.example.com/</url>
+        <name>slink</name>
+        <url>http://www.github.com/ws-slink/</url>
     </organization>
 
     <name>customer-priority-plugin</name>
@@ -115,7 +115,7 @@
 
                         <!-- Add package to export here -->
                         <Export-Package>
-                            ws.slink.cp.api,
+                            ws.slink.cp.plugin,
                         </Export-Package>
 
                         <!-- Add package import here -->
