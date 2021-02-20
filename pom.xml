@@ -20,39 +20,55 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.atlassian.templaterenderer</groupId>
+            <artifactId>atlassian-template-renderer-api</artifactId>
+            <version>4.0.0</version>
+            <scope>provided</scope>
+        </dependency> <!-- atlassian-template-renderer-api -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency> <!-- jaxb-api -->
+        <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-api</artifactId>
             <version>${jira.version}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency> <!-- jira-api -->
         <!-- Add dependency on jira-core if you want access to JIRA implementation classes as well as the sanctioned API. -->
         <!-- This is not normally recommended, but may be required eg when migrating a plugin originally developed against JIRA 4.x -->
-        <!--
         <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-core</artifactId>
             <version>${jira.version}</version>
             <scope>provided</scope>
-        </dependency>
-        -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-
+        </dependency> <!-- jira-core -->
         <dependency>
             <groupId>com.atlassian.plugin</groupId>
             <artifactId>atlassian-spring-scanner-annotation</artifactId>
             <version>${atlassian.spring.scanner.version}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency> <!-- atlassian-spring-scanner-annotation -->
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-runtime</artifactId>
+            <version>${atlassian.spring.scanner.version}</version>
+            <scope>runtime</scope>
+        </dependency> <!-- atlassian-spring-scanner-runtime -->
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>
             <scope>provided</scope>
+        </dependency> <!-- javax.inject -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- WIRED TEST RUNNER DEPENDENCIES -->
@@ -153,7 +169,8 @@
         <jira.version>8.3.1</jira.version>
         <amps.version>8.1.0</amps.version>
         <plugin.testrunner.version>2.0.1</plugin.testrunner.version>
-        <atlassian.spring.scanner.version>2.1.7</atlassian.spring.scanner.version>
+        <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
+<!--        <atlassian.spring.scanner.version>2.1.7</atlassian.spring.scanner.version>-->
         <!-- This property ensures consistency between the key in atlassian-plugin.xml and the OSGi bundle's key. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
         <!-- TestKit version 6.x for JIRA 6.x -->
