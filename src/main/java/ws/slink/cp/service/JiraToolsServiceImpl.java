@@ -38,13 +38,7 @@ public class JiraToolsServiceImpl implements JiraToolsService {
         return isPluginManager(user.getUsername());
     }
     private boolean isPluginManager(String user) {
-//        System.out.println("----> selected project id: " + new ProjectActionSupport().getSelectedProjectId());
         Project currentProject = ComponentAccessor.getProjectManager().getProjectObj(new ProjectActionSupport().getSelectedProjectId());
-//        System.out.println("----> current project: " + currentProject);
-//        boolean enabledForProject = configService.getAdminProjects().contains(currentProject.getKey());
-        System.out.println(configService.getAdminProjects());
-        System.out.println(configService.getAdminRoles());
-
         boolean canManage = (null != currentProject
                 && configService.getAdminProjects().contains(currentProject.getKey())
                 && userHasRoles(
@@ -57,8 +51,6 @@ public class JiraToolsServiceImpl implements JiraToolsService {
         );
 //        System.out.println(user + ((canManage) ? " can " : " can't ") + "manage " + currentProject.getKey());
         return canManage;
-
-
     }
 
     public boolean isViewer(String projectKey, ApplicationUser applicationUser) {

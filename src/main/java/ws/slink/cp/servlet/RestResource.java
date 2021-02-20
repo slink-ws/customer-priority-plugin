@@ -2,17 +2,19 @@ package ws.slink.cp.servlet;
 
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.plugin.webresource.impl.support.Tuple;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
+import org.apache.http.HttpStatus;
+import ws.slink.cp.model.StyleElement;
 import ws.slink.cp.service.ConfigService;
+import ws.slink.cp.service.JiraToolsService;
 import ws.slink.cp.tools.Common;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -20,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -31,15 +34,18 @@ public class RestResource {
     @ComponentImport private final TransactionTemplate transactionTemplate;
 
     private final ConfigService configService;
+    private final JiraToolsService jiraToolsService;
 
     @Inject
     public RestResource(
         UserManager userManager,
         TransactionTemplate transactionTemplate,
-        ConfigService configService) {
+        ConfigService configService,
+        JiraToolsService jiraToolsService) {
         this.userManager = userManager;
         this.transactionTemplate = transactionTemplate;
         this.configService = configService;
+        this.jiraToolsService = jiraToolsService;
     }
 
     @XmlRootElement
@@ -73,6 +79,7 @@ public class RestResource {
     @PUT
     @Path("/admin")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response putAdminParams(final AdminParams config, @Context HttpServletRequest request) {
         UserKey userKey = userManager.getRemoteUser().getUserKey();
         if (userKey == null || !userManager.isSystemAdmin(userKey)) {
@@ -96,6 +103,212 @@ public class RestResource {
         }
     }
 
+    @GET
+    @Path("/styles/{projectKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listStyles(
+        @PathParam("projectKey") String projectKey,
+        @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        return Response.ok(Common.instance().getGsonObject().toJson(configService.getStyles(projectKey))).build();
+    }
+
+    @GET
+    @Path("/styles/{projectKey}/{styleId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getStyle(
+        @PathParam("projectKey") String projectKey,
+        @PathParam("styleId") String styleId,
+        @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        try {
+            Optional<StyleElement> style = configService.getStyle(projectKey, styleId);
+            if (style.isPresent())
+                return Response.ok(Common.instance().getGsonObject().toJson(style.get(), StyleElement.class)).build();
+            else
+                return Response.status(HttpStatus.SC_NOT_FOUND).entity(resultMessage("could not find style with id #" + styleId + " for project " + projectKey, HttpStatus.SC_NOT_FOUND)).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(resultMessage("could not find style with id #" + styleId + " for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+        }
+    }
+
+    @PUT
+    @Path("/styles/{projectKey}/{styleId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateStyleA(
+            final StyleElement styleElement,
+            @PathParam("projectKey") String projectKey,
+            @PathParam("styleId") String styleId,
+            @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        Optional<StyleElement> style = configService.getStyle(projectKey, styleId);
+        if (style.isPresent()) {
+            styleElement.id(styleId);
+            if (configService.updateStyle(projectKey, styleElement))
+                return Response.ok(Common.instance().getGsonObject().toJson(styleElement)).build();
+            else
+                return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not update style with id #" + styleId +" for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+        }
+        else
+            return Response.status(HttpStatus.SC_NOT_FOUND).entity(resultMessage("could not find style with id #" + styleId +" for project " + projectKey, HttpStatus.SC_NOT_FOUND)).build();
+    }
+
+    @PUT
+    @Path("/styles/{projectKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateStyleB(
+            final StyleElement styleElement,
+            @PathParam("projectKey") String projectKey,
+            @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey, styleElement);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+
+        try {
+            if (configService.updateStyle(projectKey, styleElement))
+                return Response.ok(Common.instance().getGsonObject().toJson(styleElement)).build();
+            else
+                return Response.status(HttpStatus.SC_NOT_FOUND).entity(resultMessage("could not update style with id #" + styleElement.id() + " for project " + projectKey, HttpStatus.SC_NOT_FOUND)).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(resultMessage("could not update style with id #" + styleElement.id() + " for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+        }
+    }
+
+    @POST
+    @Path("/styles/{projectKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addStyle(
+        final StyleElement styleElement,
+        @PathParam("projectKey") String projectKey,
+        @Context HttpServletRequest request
+    ) {
+//        System.out.println("----> input param: " + styleElement);
+
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey, styleElement);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+
+        try {
+//            System.out.println("----> trying to add style: " + styleElement);
+            if (configService.addStyle(projectKey, styleElement)) {
+                return Response.ok().build();
+            } else {
+                return Response.notModified().entity(resultMessage("could not add style", HttpStatus.SC_NOT_MODIFIED)).build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity(resultMessage("could not add style", HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+        }
+    }
+
+    @DELETE
+    @Path("/styles/{projectKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response clearStyles(
+        @PathParam("projectKey") String projectKey,
+        @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        configService.setStyles(projectKey, null);
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Path("/styles/{projectKey}/{styleId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeStyle(
+        @PathParam("projectKey") String projectKey,
+        @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        configService.setStyles(projectKey, null);
+        return Response.ok().build();
+    }
+
+    @DELETE
+    @Path("/styles/{projectKey}/{styleId}/reporter")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response removeReporter(
+            @PathParam("projectKey") String projectKey,
+            @PathParam("styleId") String styleId,
+            @QueryParam("reporter") String reporter,
+            @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        if (configService.removeReporter(projectKey, styleId, reporter))
+            return Response.ok(resultMessage("reporter " + reporter + " removed", HttpStatus.SC_OK)).build();
+        else
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not remove reporter " + reporter + " from style #" + styleId +" for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+    }
+
+    @POST
+    @Path("/styles/{projectKey}/{styleId}/reporter")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addReporter(
+            @PathParam("projectKey") String projectKey,
+            @PathParam("styleId") String styleId,
+            @QueryParam("reporter") String reporter,
+            @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        if (configService.addReporter(projectKey, styleId, reporter))
+            return Response.ok(resultMessage("reporter " + reporter + " added", HttpStatus.SC_OK)).build();
+        else
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not add reporter " + reporter + " from style #" + styleId +" for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+    }
+
+    private Tuple<Boolean, Response> inputCheck(String projectKey) {
+
+        if (null == jiraToolsService.getProjectByKey(projectKey))
+            return new Tuple<>(false, Response.status(HttpStatus.SC_BAD_REQUEST).entity(resultMessage("project " + projectKey + " not found", HttpStatus.SC_BAD_REQUEST)).build());
+
+        if (!(jiraToolsService.isPluginManager(userManager.getRemoteUser())
+            ||jiraToolsService.isViewer(projectKey, jiraToolsService.getLoggedInUser())))
+            return new Tuple<>(false, Response.status(HttpStatus.SC_FORBIDDEN).entity(resultMessage("not authorized", HttpStatus.SC_FORBIDDEN)).build());
+
+        return new Tuple<>(true, null);
+    }
+    private Tuple<Boolean, Response> inputCheck(String projectKey, StyleElement styleElement) {
+        Tuple<Boolean, Response> accessCheck = inputCheck(projectKey);
+        if (!accessCheck.getFirst())
+            return accessCheck;
+        if (null == styleElement)
+            return new Tuple<>(false, Response.status(HttpStatus.SC_BAD_REQUEST).entity(resultMessage("null style passed as input", HttpStatus.SC_BAD_REQUEST)).build());
+        return new Tuple<>(true, null);
+    }
+
+    private String resultMessage(String message, int code) {
+        return "{\"message\": \"" + message + "\", \"code\": " + code + "}";
+    }
 }
 
 

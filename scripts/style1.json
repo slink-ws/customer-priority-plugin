@@ -1,0 +1,13 @@
+{
+    "id": "test-style-id",
+    "title": "important customers",
+    "text": "attention!",
+    "style": {
+      "glance": "glance style",
+      "list": "list style",
+      "issue": "issue style"
+    },
+    "reporters": [
+       "*@mail.ru"
+    ]
+}

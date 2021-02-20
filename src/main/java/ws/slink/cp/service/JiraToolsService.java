@@ -13,5 +13,5 @@ public interface JiraToolsService {
 
     boolean isPluginManager(UserProfile user);
     boolean isPluginManager(ApplicationUser user);
-
+    boolean isViewer(String projectKey, ApplicationUser applicationUser);
 }
