@@ -31,11 +31,14 @@ public class AdminServlet extends HttpServlet {
     @ComponentImport private final TemplateRenderer renderer;
     @ComponentImport private final LoginUriProvider loginUriProvider;
 
+    private final ConfigService configService;
+
     @Inject
-    public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer) {
+    public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer, ConfigService configService) {
         this.userManager = userManager;
         this.loginUriProvider = loginUriProvider;
         this.renderer = renderer;
+        this.configService = configService;
     }
 
     @Override
@@ -47,8 +50,8 @@ public class AdminServlet extends HttpServlet {
             } else {
                 response.setContentType("text/html;charset=utf-8");
 
-                Collection<String> selectedProjectsParam = ConfigService.instance().getAdminProjects();
-                Collection<String> selectedRolesParam    = ConfigService.instance().getAdminRoles();
+                Collection<String> selectedProjectsParam = configService.getAdminProjects();
+                Collection<String> selectedRolesParam    = configService.getAdminRoles();
 
                 ProjectManager projectManager            = ComponentManager.getInstance().getComponentInstanceOfType(ProjectManager.class);
                 Collection<Project> allProjects          = projectManager.getProjectObjects();

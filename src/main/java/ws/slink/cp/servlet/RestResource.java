@@ -30,12 +30,16 @@ public class RestResource {
     @ComponentImport private final UserManager userManager;
     @ComponentImport private final TransactionTemplate transactionTemplate;
 
+    private final ConfigService configService;
+
     @Inject
     public RestResource(
         UserManager userManager,
-        TransactionTemplate transactionTemplate) {
+        TransactionTemplate transactionTemplate,
+        ConfigService configService) {
         this.userManager = userManager;
         this.transactionTemplate = transactionTemplate;
+        this.configService = configService;
     }
 
     @XmlRootElement
@@ -80,8 +84,8 @@ public class RestResource {
 
         transactionTemplate.execute(/*(TransactionCallback)*/ () -> {
             config.log("----> received configuration: " + config);
-            ConfigService.instance().setAdminProjects(config.getProjects());
-            ConfigService.instance().setAdminRoles(config.getRoles());
+            configService.setAdminProjects(config.getProjects());
+            configService.setAdminRoles(config.getRoles());
             saveResult.set(true);
             return null;
         });
