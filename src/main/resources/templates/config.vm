@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>$i18n.getText("cp.config.label")</title>
+    <meta name="decorator"            content="admin"/>
+    <meta name="projectKey"           content="$projectKey"/>
+    <meta name="projectId"            content="$projectId"/>
+    <meta name="admin.active.tab"     content="cp-item-cfg"/>
+    <meta name="admin.active.section" content="atl.jira.proj.config"/>
+    $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
+    $webResourceManager.requireResource("ws.slink.customer-priority-plugin:customer-priority-plugin-config")
+</head>
+<body>
+    <h1>$i18n.getText("cp.config.label")</h1>
+    <form id="config" class="aui">
+        <div class="column">
+            <div>
+                <div class="label">$i18n.getText("cp.config.list1.label")</div>
+                <input type="text" id="list1" name="list1" class="text text-input" placeholder="level 1 customers">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.list2.label")</div>
+                <input type="text" id="list2" name="list2" class="text text-input" placeholder="level 2 customers" >
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.list3.label")</div>
+                <input type="text" id="list3" name="list3" class="text text-input" placeholder="level 3 customers">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.list4.label")</div>
+                <input type="text" id="list4" name="list4" class="text text-input" placeholder="level 4 customers">
+            </div>
+        </div>
+
+        <div class="column">
+            <div>
+                <div class="label">$i18n.getText("cp.config.text1.label")</div>
+                <input type="text" id="text1" name="text1" class="text text-narrow" placeholder="level 1 text">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.text2.label")</div>
+                <input type="text" id="text2" name="text2" class="text text-narrow" placeholder="level 2 text">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.text3.label")</div>
+                <input type="text" id="text3" name="text3" class="text text-narrow" placeholder="level 3 text">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.text4.label")</div>
+                <input type="text" id="text4" name="text4" class="text text-narrow" placeholder="level 4 text">
+            </div>
+        </div>
+
+        <div class="column">
+            <div>
+                <div class="label">$i18n.getText("cp.config.style1.label")</div>
+                <input type="text" id="style1" name="style1" class="text" placeholder="level 1 style">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.style2.label")</div>
+                <input type="text" id="style2" name="style2" class="text" placeholder="level 2 style">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.style3.label")</div>
+                <input type="text" id="style3" name="style3" class="text" placeholder="level 3 style">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.style4.label")</div>
+                <input type="text" id="style4" name="style4" class="text" placeholder="level 4 style">
+            </div>
+        </div>
+
+        <div class="column">
+            <div>
+                <div class="label">$i18n.getText("cp.config.color1.label")</div>
+                <input type="text" id="color1" name="color1" class="text text-narrow" placeholder="level 1 color">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.color2.label")</div>
+                <input type="text" id="color2" name="color2" class="text text-narrow" placeholder="level 2 color">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.color3.label")</div>
+                <input type="text" id="color3" name="color3" class="text text-narrow" placeholder="level 3 color">
+            </div>
+            <div>
+                <div class="label">$i18n.getText("cp.config.color4.label")</div>
+                <input type="text" id="color4" name="color4" class="text text-narrow" placeholder="level 4 color">
+            </div>
+        </div>
+        <div class="field-group">
+            <div class="label">$i18n.getText("cp.config.viewers.label")</div>
+            <input type="text" id="viewers" name="viewers" class="text" placeholder="users to show customer priority to">
+        </div>
+        <div class="field-group">
+            <button class="submit_button" onclick="updateConfig();" type='button'>$i18n.getText("cp.config.save.label")</button>
+        </div>
+    </form>
+</body>
+</html>

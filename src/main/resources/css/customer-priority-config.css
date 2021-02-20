@@ -1,0 +1,42 @@
+.column {
+    float:left;
+    /*border: 2px solid blue;*/
+    margin: 10px 10px 10px 10px;
+    /*padding: 10px 10px 10px 10px;*/
+    display: block;
+    /*width: 400px;*/
+}
+
+.text {
+    color: #888888;
+    min-width: 350px;
+}
+
+.text-narrow {
+    color: #888888;
+    min-width: 100px;
+}
+
+.textColor {
+    color: #888888;
+    min-width: 150px;
+}
+
+.colorSpan {
+    min-width: 50px;
+    display: inline-block;
+}
+
+
+.label {
+    margin-top: 10px;
+    padding-top: 10px;
+    color: #888888;
+    /*min-width: 350px;*/
+}
+
+.submit_button {
+    text-align: left;
+    font-size: larger;
+    font-weight: lighter;
+}

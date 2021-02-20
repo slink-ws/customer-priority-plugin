@@ -36,6 +36,55 @@
     </servlet>
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ config ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <web-resource key="customer-priority-plugin-config" name="Config Web Resource">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
+        <resource type="download" name="customer-priority-config.css" location="/css/customer-priority-config.css"/>
+        <context>customer-priority-plugin</context>
+    </web-resource>
+    <servlet key="config-servlet" class="ws.slink.cp.servlet.ConfigServlet">
+        <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
+        <url-pattern>
+            /project-config/*/ws-slink-customer-priority
+        </url-pattern>
+    </servlet>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~ config menu ~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <web-section key="cp-item-cfg-section" location="atl.jira.proj.config" weight="1000">
+        <conditions type="AND" >
+            <condition class="ws.slink.cp.condition.ConfigurationEnabledCondition"/>
+        </conditions>
+    </web-section>
+    <web-item key="cp-item-cfg" section="atl.jira.proj.config/cp-item-cfg-section">
+        <description key="cp-config-item.description" />
+        <label key="cp-config-item.label" />
+        <link linkId="cp-config-item-cfg.link">
+            /plugins/servlet/project-config/$helper.project.key/ws-slink-customer-priority
+        </link>
+    </web-item>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ panel ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--  <web-resource key="customer-priority-plugin-panel" name="customer-priority-plugin-panel Web Resources">-->
+    <!--    <dependency>com.atlassian.auiplugin:ajs</dependency>-->
+    <!--    <resource type="download" name="customer-priority-panel.css" location="/css/customer-priority-panel.css"/>-->
+    <!--    <resource type="download" name="customer-priority-panel.js" location="js/customer-priority-panel.js"/>-->
+    <!--    <resource type="download" name="images/" location="/images"/>  -->
+    <!--    <context>customer-priority-plugin</context>-->
+    <!--    <context>jira.view.issue</context>-->
+    <!--  </web-resource>-->
+    <!--  <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1">-->
+    <!--    <description key="customer-priority-panel.description">Customer Priority Panel Module</description>-->
+    <!--    <conditions type="AND">-->
+    <!--      <condition class="ws.slink.atlassian.conditions.PanelCondition"/>-->
+    <!--    </conditions>-->
+    <!--    <context-provider class="ws.slink.atlassian.context.PanelContextProvider"/>-->
+    <!--    <resource name="view" type="velocity" location="templates/panel.vm"/>-->
+    <!--  </web-panel>-->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ common ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <rest key="rest" path="/ws-slink-customer-priority" version="2.0">
         <description>provides REST resources for the admin/config UI</description>
