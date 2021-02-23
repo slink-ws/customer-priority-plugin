@@ -1,4 +1,4 @@
-export PROJECT_KEY=TA
+export PROJECT_KEY=TEST
 export BASE_URL=http://localhost:2990/jira/rest/ws-slink-customer-priority/2.0/styles
 export STYLE_ID=test-style-id
 export USER=admin

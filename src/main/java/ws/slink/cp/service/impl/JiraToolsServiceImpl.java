@@ -1,4 +1,4 @@
-package ws.slink.cp.service;
+package ws.slink.cp.service.impl;
 
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.project.Project;
@@ -11,6 +11,8 @@ import com.atlassian.plugin.spring.scanner.annotation.component.JiraComponent;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.sal.api.user.UserProfile;
+import ws.slink.cp.service.ConfigService;
+import ws.slink.cp.service.JiraToolsService;
 
 import javax.inject.Inject;
 import java.util.Arrays;

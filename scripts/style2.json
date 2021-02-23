@@ -1,13 +1,14 @@
 {
-    "id": "test-style-id",
-    "title": "important customers - updated",
-    "text": "attention v2",
+    "id": "test-style-id-2",
+    "title": "not so important customers",
+    "text": "warning",
     "style": {
-      "glance": "glance style",
-      "list": "list style",
-      "issue": "issue style"
+      "glance": "background-color: #aaaaff;",
+      "list": "efefff",
+      "issue": "eeeeff"
     },
     "reporters": [
-       "*@mail.ru"
+       "test@test1.com",
+       "*@test2.com"
     ]
 }

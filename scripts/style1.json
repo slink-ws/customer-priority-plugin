@@ -3,11 +3,11 @@
     "title": "important customers",
     "text": "attention!",
     "style": {
-      "glance": "glance style",
+      "glance": "background-color: red;",
       "list": "list style",
       "issue": "issue style"
     },
     "reporters": [
-       "*@mail.ru"
+       "admin"
     ]
 }

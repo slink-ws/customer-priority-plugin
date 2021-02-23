@@ -1,14 +1,19 @@
 package ws.slink.cp.servlet;
 
+import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.issue.Issue;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugin.webresource.impl.support.Tuple;
 import com.atlassian.sal.api.transaction.TransactionTemplate;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import ws.slink.cp.model.StyleElement;
+import ws.slink.cp.model.StyledElement;
 import ws.slink.cp.service.ConfigService;
+import ws.slink.cp.service.CustomerPriorityService;
 import ws.slink.cp.service.JiraToolsService;
 import ws.slink.cp.tools.Common;
 
@@ -35,17 +40,20 @@ public class RestResource {
 
     private final ConfigService configService;
     private final JiraToolsService jiraToolsService;
+    private final CustomerPriorityService customerPriorityService;
 
     @Inject
     public RestResource(
         UserManager userManager,
         TransactionTemplate transactionTemplate,
         ConfigService configService,
-        JiraToolsService jiraToolsService) {
+        JiraToolsService jiraToolsService,
+        CustomerPriorityService customerPriorityService) {
         this.userManager = userManager;
         this.transactionTemplate = transactionTemplate;
         this.configService = configService;
         this.jiraToolsService = jiraToolsService;
+        this.customerPriorityService = customerPriorityService;
     }
 
     @XmlRootElement
@@ -115,6 +123,46 @@ public class RestResource {
         if (!inputCheck.getFirst())
             return inputCheck.getLast();
         return Response.ok(Common.instance().getGsonObject().toJson(configService.getStyles(projectKey))).build();
+    }
+
+    @GET
+    @Path("/color/issue/{issueKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getIssueViewColor(
+            @PathParam("issueKey") String issueKey,
+            @Context HttpServletRequest request
+    ) {
+        Issue issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueKey);
+        if (null == issue)
+            return Response.ok(resultMessage("issue #" + issueKey + " not found", HttpStatus.SC_NOT_FOUND)).build();
+        String color = customerPriorityService.getStyle(issue.getProjectObject().getKey(), issue.getReporter().getEmailAddress(), StyledElement.ISSUE);
+        if (StringUtils.isBlank(color))
+            return Response.ok(resultMessage("color not found for #" + issueKey, HttpStatus.SC_NOT_FOUND)).build();
+        if (!color.startsWith("#"))
+            color = "#" + color;
+        return Response.ok("{\"color\": \"" + color + "\"}").build();
+    }
+    @GET
+    @Path("/color/list/{issueKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getIssueListColor(
+            @PathParam("issueKey") String issueKey,
+            @Context HttpServletRequest request
+    ) {
+        System.out.println("-----> get color for " + issueKey);
+        Issue issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueKey);
+        System.out.println("-----> issue " + issue);
+        if (null == issue)
+            return Response.ok(resultMessage("issue #" + issueKey + " not found", HttpStatus.SC_NOT_FOUND)).build();
+        String color = customerPriorityService.getStyle(issue.getProjectObject().getKey(), issue.getReporter().getEmailAddress(), StyledElement.LIST);
+        System.out.println("-----> color for " + issueKey + ": " + color);
+        if (StringUtils.isBlank(color))
+            return Response.ok(resultMessage("color not found for #" + issueKey, HttpStatus.SC_NOT_FOUND)).build();
+        if (!color.startsWith("#"))
+            color = "#" + color;
+        return Response.ok("{\"color\": \"" + color + "\"}").build();
     }
 
     @GET

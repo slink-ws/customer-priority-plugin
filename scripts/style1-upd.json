@@ -1,0 +1,13 @@
+{
+    "id": "test-style-id",
+    "title": "important customers - updated",
+    "text": "attention v2",
+    "style": {
+      "glance": "background-color: red; padding: 3px; color: white;",
+      "list": "#ffefef",
+      "issue": "#ffeeee"
+    },
+    "reporters": [
+       "admin"
+    ]
+}

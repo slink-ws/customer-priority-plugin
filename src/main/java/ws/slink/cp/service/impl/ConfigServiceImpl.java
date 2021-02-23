@@ -1,4 +1,4 @@
-package ws.slink.cp.service;
+package ws.slink.cp.service.impl;
 
 import com.atlassian.plugin.spring.scanner.annotation.component.JiraComponent;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import ws.slink.cp.model.StyleElement;
+import ws.slink.cp.service.ConfigService;
 import ws.slink.cp.tools.Common;
 
 import javax.inject.Inject;
@@ -17,8 +18,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-//@Named("configService")
-//@ExportAsService({ConfigService.class})
 @Scanned
 @ExportAsService
 @JiraComponent

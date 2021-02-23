@@ -1,0 +1,13 @@
+##$webResourceManager.requireResource("ws.slink.customer-priority-plugin:customer-priority-plugin-panel")
+#if ($panelStyle)
+    <div style="$panelStyle">
+        $panelText
+    </div>
+    <input type="hidden" id="currentIssueKey" value="$issueKey" />
+    <script>
+        AJS.toInit(function() {
+            $customerPriority.setIssueColor();
+##            $customerPriority.updateIssuesList();
+        })
+    </script>
+#end

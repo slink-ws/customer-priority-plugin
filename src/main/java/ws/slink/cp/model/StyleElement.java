@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,13 +62,5 @@ public class StyleElement {
 
     public String toString() {
         return Common.instance().getGsonObject().toJson(this);
-//        return new StringBuilder()
-//            .append("id: ").append(id).append(", ")
-//            .append("desc: ").append(title).append(", ")
-//            .append("text: ").append(text).append(", ")
-//            .append("reps: ").append(reporters).append(", ")
-//            .append("style: ").append(style)
-//            .toString()
-//        ;
     }
 }

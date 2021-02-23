@@ -20,7 +20,8 @@
         <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>
         <resource type="download" name="images/" location="/images"/>
 
-        <context>customer-priority-plugin</context>
+<!--        <context>customer-priority-plugin</context>-->
+        <context>jira.view.issue</context>
     </web-resource>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -75,14 +76,14 @@
     <!--    <context>customer-priority-plugin</context>-->
     <!--    <context>jira.view.issue</context>-->
     <!--  </web-resource>-->
-    <!--  <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1">-->
-    <!--    <description key="customer-priority-panel.description">Customer Priority Panel Module</description>-->
-    <!--    <conditions type="AND">-->
-    <!--      <condition class="ws.slink.atlassian.conditions.PanelCondition"/>-->
-    <!--    </conditions>-->
-    <!--    <context-provider class="ws.slink.atlassian.context.PanelContextProvider"/>-->
-    <!--    <resource name="view" type="velocity" location="templates/panel.vm"/>-->
-    <!--  </web-panel>-->
+      <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1">
+        <description key="customer-priority-panel.description">Customer Priority Panel Module</description>
+<!--        <conditions type="AND">-->
+<!--          <condition class="ws.slink.atlassian.conditions.PanelCondition"/>-->
+<!--        </conditions>-->
+        <context-provider class="ws.slink.cp.context.PanelContextProvider"/>
+        <resource name="view" type="velocity" location="templates/panel.vm"/>
+      </web-panel>
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ common ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
