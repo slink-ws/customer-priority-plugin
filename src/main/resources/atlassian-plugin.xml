@@ -14,23 +14,29 @@
     
     <!-- add our web resources -->
     <web-resource key="customer-priority-plugin-resources" name="customer-priority-plugin web resources">
+        <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>
+        <resource type="download" name="common.js" location="/js/common.js"/>
         <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>
+        <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>
         <resource type="download" name="images/" location="/images"/>
-
 <!--        <context>customer-priority-plugin</context>-->
         <context>jira.view.issue</context>
     </web-resource>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <web-resource key="customer-priority-plugin-admin-resources" name="customer-priority-plugin admin web resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <resource type="download" name="customer-priority-admin.css" location="/css/customer-priority-admin.css"/>
-        <resource type="download" name="customer-priority-admin.js" location="/js/customer-priority-admin.js"/>
-        <context>atl.admin</context>
-    </web-resource>
+<!--    <web-resource key="customer-priority-plugin-admin-resources" name="customer-priority-plugin admin web resources">-->
+<!--        <transformation extension="js">-->
+<!--            <transformer key="jsI18n"/>-->
+<!--        </transformation>-->
+<!--        <dependency>com.atlassian.auiplugin:ajs</dependency>-->
+<!--        <resource type="download" name="common.js" location="/js/common.js"/>-->
+<!--        <resource type="download" name="customer-priority-admin.js" location="/js/customer-priority-admin.js"/>-->
+<!--        <resource type="download" name="customer-priority-admin.css" location="/css/customer-priority-admin.css"/>-->
+<!--        <context>atl.admin</context>-->
+<!--    </web-resource>-->
     <servlet key="admin-servlet" class="ws.slink.cp.servlet.AdminServlet">
         <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
         <url-pattern>/ws-slink-customer-priority/admin</url-pattern>
@@ -39,10 +45,20 @@
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~ config ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <web-resource key="customer-priority-plugin-config" name="Config Web Resource">
+        <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
+<!--        <dependency>customer-priority-plugin:customer-priority-plugin-resources</dependency>-->
+        <resource type="download" name="common.js" location="/js/common.js"/>
+<!--        <resource type="download" name="common.js" location="/js/common.js"/>-->
+<!--&lt;!&ndash;        <resource type="download" name="color-picker.js" location="/js/jsColorPicker.min.js">&ndash;&gt;-->
+<!--&lt;!&ndash;            <property key="content-type" value="application/x-javascript"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        </resource>&ndash;&gt;-->
         <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
         <resource type="download" name="customer-priority-config.css" location="/css/customer-priority-config.css"/>
         <context>customer-priority-plugin</context>
+<!--        <context>atl.jira.proj.config</context>-->
     </web-resource>
     <servlet key="config-servlet" class="ws.slink.cp.servlet.ConfigServlet">
         <resource type="i18n" name="i18n" location="customer-priority-plugin"/>

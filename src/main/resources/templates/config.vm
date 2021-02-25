@@ -12,89 +12,237 @@
 </head>
 <body>
     <h1>$i18n.getText("cp.config.label")</h1>
-    <form id="config" class="aui">
-        <div class="column">
-            <div>
-                <div class="label">$i18n.getText("cp.config.list1.label")</div>
-                <input type="text" id="list1" name="list1" class="text text-input" placeholder="level 1 customers">
+
+    <div class="styles-list" id="styles-list">
+        #foreach($style in $configuredStyles)
+            <div class="styles-list-row">
+                <div class="styles-list-item styles-list-title" title="$style.description()">$style.id()</div>
+                <div class="styles-list-item styles-list-glance-style" style='$style.style("glance")'>
+                    $style.text()&nbsp;
+                </div>
+                <div class="styles-list-item styles-list-issue-color" style="background-color: $style.style("issue");">Details</div>
+                <div class="styles-list-item styles-list-list-color" style="background-color: $style.style("list");">List</div>
+                <div class="styles-list-item">
+                    <div
+                        onclick='editStyle("$style.id()")'
+                        title="Edit style"
+                        class="aui-icon aui-icon-small aui-iconfont-new-edit style-button style-button-edit">EDIT</div>
+                    <div
+                        onclick='deleteStyle("$style.id()")'
+                        title="Delete style"
+                        class="aui-icon aui-icon-small aui-iconfont-trash style-button style-button-delete">DELETE</div>
+                </div>
+                <input type="hidden" class="style-list-reporters" value="$style.reporterStr()" />
             </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.list2.label")</div>
-                <input type="text" id="list2" name="list2" class="text text-input" placeholder="level 2 customers" >
+        #end
+    </div>
+
+    <button hidden="true"
+            class="aui-button aui-button-primary button"
+            id="customer-priority-add-style-button"
+            type="submit"
+            onclick="createStyle()">
+        $i18n.getText('cp.config.button-add.title')
+    </button>
+
+##    <input type="hidden" id="projectKey" value="$projectKey" />
+
+    <section id="delete-confirm-dialog"
+             data-aui-modal="false"
+             class="aui-dialog2 aui-dialog2-small aui-dialog2-warning aui-layer"
+             role="dialog"
+             aria-hidden="true">
+        <header class="aui-dialog2-header">
+            <h2 class="aui-dialog2-header-main">$i18n.getText('cp.config.style-delete.dialog.title')</h2>
+            <a class="aui-dialog2-header-close">
+                <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">$i18n.getText('cp.config.style-delete.dialog.close')</span>
+            </a>
+        </header>
+        <div class="aui-dialog2-content">
+            <p>$i18n.getText('cp.config.style-delete.dialog.message') '<span id="style-id-to-delete">test</span>'?</p>
+        </div>
+        <footer class="aui-dialog2-footer">
+            <div class="aui-dialog2-footer-actions">
+                <button id="confirm-dialog-confirm" class="aui-button aui-button-primary" onclick="confirmDialogSubmit()">$i18n.getText('cp.config.style-delete.dialog.confirm')</button>
+                <button id="confirm-dialog-cancel" class="aui-button aui-button-link" onclick="confirmDialogCancel()">$i18n.getText('cp.config.style-delete.dialog.cancel')</button>
             </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.list3.label")</div>
-                <input type="text" id="list3" name="list3" class="text text-input" placeholder="level 3 customers">
-            </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.list4.label")</div>
-                <input type="text" id="list4" name="list4" class="text text-input" placeholder="level 4 customers">
-            </div>
+        </footer>
+    </section>
+
+    <section id="style-edit-dialog"
+             data-aui-modal="false"
+             class="aui-dialog2 aui-dialog2-medium aui-layer"
+             role="dialog"
+             aria-hidden="true">
+
+        <header class="aui-dialog2-header">
+            <h2 class="aui-dialog2-header-main">$i18n.getText('cp.config.style-edit.dialog.title')</h2>
+            <a class="aui-dialog2-header-close">
+                <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">$i18n.getText('cp.config.style-edit.dialog.close')</span>
+            </a>
+        </header>
+
+        <div class="aui-dialog2-content">
+            <form class="aui">
+                <div class="field-group">
+                    <label for="edit-style-id">$i18n.getText('cp.config.style-edit.dialog.form.label.style-id')</label>
+                    <input class="text long-field" type="text" id="edit-style-id" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.style-id.placeholder')"/>
+                    <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.label.style-id.description')</div>
+                </div>
+                <div class="field-group">
+                    <label for="edit-style-title">$i18n.getText('cp.config.style-edit.dialog.form.label.style-title')</label>
+                    <input class="text long-field" type="text" id="edit-style-title" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.style-title.placeholder')"/>
+                    <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.label.style-title.description')</div>
+                </div>
+                <div class="field-group">
+                    <label for="edit-glance-style">$i18n.getText('cp.config.style-edit.dialog.form.label.glance-style')</label>
+                    <input class="text long-field" type="text" id="edit-glance-style" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.glance-style.placeholder')"/>
+                    <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.glance-style.description')</div>
+                </div>
+                <div class="field-group">
+                    <label for="edit-glance-text">$i18n.getText('cp.config.style-edit.dialog.form.label.glance-text')</label>
+                    <input class="text long-field" type="text" id="edit-glance-text" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.glance-text.placeholder')"/>
+                    <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.glance-text.description')</div>
+                </div>
+                <div class="field-group">
+                    <label for="edit-color-issue">$i18n.getText('cp.config.style-edit.dialog.form.label.issue-color')</label>
+                    <input class="text long-field" type="text" id="edit-color-issue" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.issue-color.placeholder')"/>
+                    <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.issue-color.description')</div>
+                </div>
+                <div class="field-group">
+                    <label for="edit-color-list">$i18n.getText('cp.config.style-edit.dialog.form.label.list-color')</label>
+                    <input class="text long-field" type="text" id="edit-color-list" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.list-color.placeholder')"/>
+                    <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.list-color.description')</div>
+                </div>
+                <div class="field-group">
+                    <label for="edit-reporters">$i18n.getText('cp.config.style-edit.dialog.form.label.reporters')</label>
+                    <input class="text long-field" type="text" id="edit-reporters" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.label.reporters.placeholder')"/>
+                    <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.label.reporters.description')</div>
+                </div>
+            </form>
         </div>
 
-        <div class="column">
-            <div>
-                <div class="label">$i18n.getText("cp.config.text1.label")</div>
-                <input type="text" id="text1" name="text1" class="text text-narrow" placeholder="level 1 text">
+        <footer class="aui-dialog2-footer">
+            <div class="aui-dialog2-footer-actions">
+                <button id="confirm-dialog-confirm" class="aui-button aui-button-primary" onclick="styleDialogSubmit()">$i18n.getText('cp.config.style-edit.dialog.confirm')</button>
+                <button id="confirm-dialog-cancel" class="aui-button aui-button-link" onclick="styleDialogCancel()">$i18n.getText('cp.config.style-edit.dialog.cancel')</button>
             </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.text2.label")</div>
-                <input type="text" id="text2" name="text2" class="text text-narrow" placeholder="level 2 text">
-            </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.text3.label")</div>
-                <input type="text" id="text3" name="text3" class="text text-narrow" placeholder="level 3 text">
-            </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.text4.label")</div>
-                <input type="text" id="text4" name="text4" class="text text-narrow" placeholder="level 4 text">
-            </div>
-        </div>
+        </footer>
+    </section>
 
-        <div class="column">
-            <div>
-                <div class="label">$i18n.getText("cp.config.style1.label")</div>
-                <input type="text" id="style1" name="style1" class="text" placeholder="level 1 style">
-            </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.style2.label")</div>
-                <input type="text" id="style2" name="style2" class="text" placeholder="level 2 style">
-            </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.style3.label")</div>
-                <input type="text" id="style3" name="style3" class="text" placeholder="level 3 style">
-            </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.style4.label")</div>
-                <input type="text" id="style4" name="style4" class="text" placeholder="level 4 style">
-            </div>
-        </div>
+    <script>
+##        #include("/js/common.js")
+##        #include("/js/customer-priority-plugin.js")
+##        #include("/js/customer-priority-config.js")
+        function deleteStyle(styleId) {
+            $customerPriorityConfig.deleteStyleConfirmation(styleId);
+        }
+        function confirmDialogCancel() {
+            $customerPriorityConfig.confirmDialogCancel();
+        }
+        function confirmDialogSubmit() {
+            $customerPriorityConfig.confirmDialogSubmit();
+        }
+        function editStyle(styleId) {
+            $customerPriorityConfig.editDialogShow(styleId);
+        }
+        function createStyle() {
+            $customerPriorityConfig.createDialogShow();
+        }
+        function styleDialogCancel() {
+            $customerPriorityConfig.editDialogCancel();
+        }
+        function styleDialogSubmit() {
+            $customerPriorityConfig.editStyleDialogSubmitCallback();
+        }
+    </script>
 
-        <div class="column">
-            <div>
-                <div class="label">$i18n.getText("cp.config.color1.label")</div>
-                <input type="text" id="color1" name="color1" class="text text-narrow" placeholder="level 1 color">
-            </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.color2.label")</div>
-                <input type="text" id="color2" name="color2" class="text text-narrow" placeholder="level 2 color">
-            </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.color3.label")</div>
-                <input type="text" id="color3" name="color3" class="text text-narrow" placeholder="level 3 color">
-            </div>
-            <div>
-                <div class="label">$i18n.getText("cp.config.color4.label")</div>
-                <input type="text" id="color4" name="color4" class="text text-narrow" placeholder="level 4 color">
-            </div>
-        </div>
-        <div class="field-group">
-            <div class="label">$i18n.getText("cp.config.viewers.label")</div>
-            <input type="text" id="viewers" name="viewers" class="text" placeholder="users to show customer priority to">
-        </div>
-        <div class="field-group">
-            <button class="submit_button" onclick="updateConfig();" type='button'>$i18n.getText("cp.config.save.label")</button>
-        </div>
-    </form>
 </body>
 </html>
+
+##    <form id="config" class="aui">
+##        <div class="column">
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.list1.label")</div>
+##                <input type="text" id="list1" name="list1" class="text text-input" placeholder="level 1 customers">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.list2.label")</div>
+##                <input type="text" id="list2" name="list2" class="text text-input" placeholder="level 2 customers" >
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.list3.label")</div>
+##                <input type="text" id="list3" name="list3" class="text text-input" placeholder="level 3 customers">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.list4.label")</div>
+##                <input type="text" id="list4" name="list4" class="text text-input" placeholder="level 4 customers">
+##            </div>
+##        </div>
+##
+##        <div class="column">
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.text1.label")</div>
+##                <input type="text" id="text1" name="text1" class="text text-narrow" placeholder="level 1 text">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.text2.label")</div>
+##                <input type="text" id="text2" name="text2" class="text text-narrow" placeholder="level 2 text">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.text3.label")</div>
+##                <input type="text" id="text3" name="text3" class="text text-narrow" placeholder="level 3 text">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.text4.label")</div>
+##                <input type="text" id="text4" name="text4" class="text text-narrow" placeholder="level 4 text">
+##            </div>
+##        </div>
+##
+##        <div class="column">
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.style1.label")</div>
+##                <input type="text" id="style1" name="style1" class="text" placeholder="level 1 style">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.style2.label")</div>
+##                <input type="text" id="style2" name="style2" class="text" placeholder="level 2 style">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.style3.label")</div>
+##                <input type="text" id="style3" name="style3" class="text" placeholder="level 3 style">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.style4.label")</div>
+##                <input type="text" id="style4" name="style4" class="text" placeholder="level 4 style">
+##            </div>
+##        </div>
+##
+##        <div class="column">
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.color1.label")</div>
+##                <input type="text" id="color1" name="color1" class="text text-narrow" placeholder="level 1 color">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.color2.label")</div>
+##                <input type="text" id="color2" name="color2" class="text text-narrow" placeholder="level 2 color">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.color3.label")</div>
+##                <input type="text" id="color3" name="color3" class="text text-narrow" placeholder="level 3 color">
+##            </div>
+##            <div>
+##                <div class="label">$i18n.getText("cp.config.color4.label")</div>
+##                <input type="text" id="color4" name="color4" class="text text-narrow" placeholder="level 4 color">
+##            </div>
+##        </div>
+##        <div class="field-group">
+##            <div class="label">$i18n.getText("cp.config.viewers.label")</div>
+##            <input type="text" id="viewers" name="viewers" class="text" placeholder="users to show customer priority to">
+##        </div>
+##        <div class="field-group">
+##            <button class="submit_button" onclick="updateConfig();" type='button'>$i18n.getText("cp.config.save.label")</button>
+##        </div>
+##    </form>
+##</body>
+##</html>

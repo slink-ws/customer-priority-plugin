@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -42,7 +43,13 @@ public class StyleElement {
     }
     public String style(String key) {
         String elementStyle = style.get(key);
+        if (key.equals(StyledElement.LIST.title()) || key.equals(StyledElement.ISSUE.title()))
+            if (!elementStyle.startsWith("#"))
+                elementStyle = "#" + elementStyle;
         return (StringUtils.isBlank(elementStyle)) ? "" : elementStyle;
+    }
+    public String reporterStr() {
+        return reporters().stream().collect(Collectors.joining(" "));
     }
 
     public boolean equals(Object other) {

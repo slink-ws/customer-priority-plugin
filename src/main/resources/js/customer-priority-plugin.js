@@ -1,6 +1,7 @@
 let $customerPriority = {
-    colorUrl: AJS.contextPath() + "/rest/ws-slink-customer-priority/2.0/color",
+    colorUrl: $common.restBaseUrl + "/color",
     focusedColor: '#DEEBFF',
+    refreshTimer: null,
 
     colorQuery: async function(path, issueKey) {
         return await jQuery.get($customerPriority.colorUrl + path + issueKey)
@@ -8,7 +9,7 @@ let $customerPriority = {
     setIssueColor: function () {
         let issueKey = AJS.$("#currentIssueKey").val();
         if (issueKey) {
-            console.log("----> set color for " + issueKey);
+            // console.log("----> set color for " + issueKey);
             $customerPriority.colorQuery("/issue/", issueKey)
                 .then(function(config) {
                     if (config && config.color) {
@@ -59,6 +60,17 @@ let $customerPriority = {
             }
         })
     },
+
+    issueRefreshed: function() {
+        $customerPriority.setIssueColor();
+        // if (this.refreshTimer != null) {
+        //     window.clearTimeout(this.refreshTimer);
+        //     this.refreshTimer = null;
+        // }
+        // this.refreshTimer = setTimeout($customerPriority.setIssueColor(), 1500);
+    },
+    pageLoaded: function() {
+    },
 }
 
 JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function(e, context, reason) {
@@ -67,7 +79,7 @@ JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function(e, context, reason) {
     }
 });
 JIRA.bind("issueRefreshed", function()  {
-    $customerPriority.setIssueColor();
+    $customerPriority.issueRefreshed();
 });
 
 

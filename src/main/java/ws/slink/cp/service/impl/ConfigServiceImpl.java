@@ -114,7 +114,7 @@ public class ConfigServiceImpl implements ConfigService {
             return Collections.emptyList();
         } else {
             List<StyleElement> result = Common.instance().getGsonObject().fromJson(stylesStr, new TypeToken<ArrayList<StyleElement>>(){}.getType());
-            return result;
+            return result.stream().sorted(Comparator.comparing(StyleElement::id)).collect(Collectors.toList());
         }
     }
     public Optional<StyleElement> getStyle(String projectKey, String styleId) {

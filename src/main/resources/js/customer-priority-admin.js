@@ -73,7 +73,7 @@ function admin_update_config() {
     AJS.log("       roles   : " + roles);
     AJS.log("~~~~~~~~~~~~~~~~~~~~~~~~~~")
     AJS.$.ajax({
-        url: AJS.contextPath() + "/rest/ws-slink-customer-priority/2.0/admin",
+        url: $common.restBaseUrl + "/admin",
         type: "PUT",
         contentType: "application/json",
         data: '{ "projects": "' + projects + '", "roles": "' +  roles + '"}',

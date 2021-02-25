@@ -27,11 +27,14 @@ public class CustomerPriorityServiceImpl implements CustomerPriorityService {
     public Optional<StyleElement> getStyleElement(String projectKey, String customerId) {
         for (StyleElement styleElement : configService.getStyles(projectKey)) {
             for (String reporter : styleElement.reporters()) {
-                if (reporter.equals("*"))
+                // exact match first
+                if (customerId.toLowerCase().equalsIgnoreCase(reporter))
                     return Optional.of(styleElement);
+                // wildcard match next
                 else if (customerId.toLowerCase().contains(reporter.replaceAll("\\*", "").toLowerCase()))
                     return Optional.of(styleElement);
-                else if (customerId.toLowerCase().equalsIgnoreCase(reporter))
+                // any match last
+                else if (reporter.equals("*"))
                     return Optional.of(styleElement);
             }
         }

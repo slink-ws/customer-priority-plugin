@@ -5,9 +5,11 @@
     </div>
     <input type="hidden" id="currentIssueKey" value="$issueKey" />
     <script>
+        #include("/js/common.js")
+        #include("/js/customer-priority-plugin.js")
         AJS.toInit(function() {
             $customerPriority.setIssueColor();
-##            $customerPriority.updateIssuesList();
+            $customerPriority.updateIssuesList();
         })
     </script>
 #end

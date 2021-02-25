@@ -1,0 +1,13 @@
+{
+    "id": "test-style-id-3",
+    "title": "non-important customers",
+    "text": "take it easy",
+    "style": {
+      "glance": "background-color: #fcffc1;",
+      "list": "#fcffc1",
+      "issue": ""
+    },
+    "reporters": [
+       "*@test3.com"
+    ]
+}

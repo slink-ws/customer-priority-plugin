@@ -287,13 +287,17 @@ public class RestResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response removeStyle(
         @PathParam("projectKey") String projectKey,
+        @PathParam("styleId") String styleId,
         @Context HttpServletRequest request
     ) {
+        System.out.println("----> delete style " + styleId +" from " + projectKey);
         Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
         if (!inputCheck.getFirst())
             return inputCheck.getLast();
-        configService.setStyles(projectKey, null);
-        return Response.ok().build();
+        if (configService.removeStyle(projectKey, styleId))
+            return Response.ok().build();
+        else
+            return Response.serverError().entity(resultMessage("could not remove style " + styleId + " from project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
     }
 
     @DELETE

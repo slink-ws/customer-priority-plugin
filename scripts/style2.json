@@ -5,7 +5,7 @@
     "style": {
       "glance": "background-color: #aaaaff;",
       "list": "efefff",
-      "issue": "eeeeff"
+      "issue": ""
     },
     "reporters": [
        "test@test1.com",
