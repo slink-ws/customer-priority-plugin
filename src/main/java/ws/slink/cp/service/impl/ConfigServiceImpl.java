@@ -58,7 +58,11 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public Collection<String> getViewers(String projectKey) {
-        return Arrays.asList(getConfigValue(projectKey, CONFIG_VIEWERS).split(" ")).stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        try {
+            return Arrays.asList(getConfigValue(projectKey, CONFIG_VIEWERS).split(" ")).stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -111,12 +115,16 @@ public class ConfigServiceImpl implements ConfigService {
             return value;
     }
     private String getConfigValue(String projectKey, String key) {
-        String cfgKey = (StringUtils.isBlank(projectKey))
-                ? CONFIG_PREFIX + "." + key
-                : CONFIG_PREFIX + "." + projectKey + "." + key;
-//        System.out.println("----> get config key " + cfgKey);
-        String result = pluginSettings.get(cfgKey).toString();
-        return StringUtils.isBlank(result) ? "" : result;
+        try {
+            String cfgKey = (StringUtils.isBlank(projectKey))
+                    ? CONFIG_PREFIX + "." + key
+                    : CONFIG_PREFIX + "." + projectKey + "." + key;
+            //        System.out.println("----> get config key " + cfgKey);
+            String result = (String) pluginSettings.get(cfgKey);
+            return StringUtils.isBlank(result) ? "" : result;
+        } catch (Exception e) {
+            return "";
+        }
     }
     private void setConfigValue(String projectKey, String key, String value) {
         String cfgKey = (StringUtils.isBlank(projectKey))
