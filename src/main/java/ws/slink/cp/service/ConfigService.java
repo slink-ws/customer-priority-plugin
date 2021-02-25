@@ -16,9 +16,10 @@ public interface ConfigService {
 
     void setAdminRoles(String roles);
 
-    String getViewers(String projectKey);
-
-    void setViewers(String projectKey, String value);
+    Collection<String> getViewers(String projectKey);
+    boolean setViewers(String projectKey, Collection<String> value);
+    boolean addViewer(String projectKey, String viewer);
+    boolean removeViewer(String projectKey, String viewer);
 
     List<StyleElement> getStyles(String projectKey);
     Optional<StyleElement> getStyle(String projectKey, String styleId);

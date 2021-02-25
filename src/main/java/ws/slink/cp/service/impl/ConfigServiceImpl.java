@@ -29,6 +29,7 @@ public class ConfigServiceImpl implements ConfigService {
 //    public static final String CONFIG_MGMT_ROLES              = "config.roles.view";
 //    public static final String CONFIG_VIEW_ROLES              = "config.view.roles";
     public static final String CONFIG_STYLES                  = "config.styles";
+    public static final String CONFIG_VIEWERS                 = "config.viewers";
 
     @ComponentImport
     private final PluginSettingsFactory pluginSettingsFactory;
@@ -55,17 +56,42 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
 
-    public String getViewers(String projectKey) {
-        return getConfigValue(projectKey, ".viewers");
+    @Override
+    public Collection<String> getViewers(String projectKey) {
+        return Arrays.asList(getConfigValue(projectKey, CONFIG_VIEWERS).split(" ")).stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
     }
-    public void setViewers(String projectKey, String value) {
-        setConfigValue(projectKey, ".viewers", setString(value, "", ""));
+
+    @Override
+    public boolean setViewers(String projectKey, Collection<String> value) {
+        setConfigValue(projectKey, CONFIG_VIEWERS, value.stream().collect(Collectors.joining(" ")));
+        return true;
+    }
+
+    @Override
+    public boolean addViewer(String projectKey, String viewer) {
+        Collection<String> currentViewers = getViewers(projectKey);
+        if (currentViewers.contains(viewer))
+            return false;
+        currentViewers.add(viewer);
+        setViewers(projectKey, currentViewers);
+        return true;
+    }
+
+    @Override
+    public boolean removeViewer(String projectKey, String viewer) {
+        Collection<String> currentViewers = getViewers(projectKey);
+        if (!currentViewers.contains(viewer)) {
+            return false;
+        }
+        currentViewers.remove(viewer);
+        setViewers(projectKey, currentViewers);
+        return true;
     }
 
     private List<String> getListParam(String param) {
-//        System.out.println("----> getListParam: " + param);
         try {
             Object value = pluginSettings.get(CONFIG_PREFIX + "." + param);
+//            System.out.println("----> getListParam: " + (CONFIG_PREFIX + "." + param) + ": " + value);
             if (null == value || StringUtils.isBlank(value.toString())) {
                 return Collections.EMPTY_LIST;
             } else {
@@ -85,9 +111,11 @@ public class ConfigServiceImpl implements ConfigService {
             return value;
     }
     private String getConfigValue(String projectKey, String key) {
-        String result = (StringUtils.isBlank(projectKey))
-            ? (String) pluginSettings.get(CONFIG_PREFIX + "." + key)
-            : (String) pluginSettings.get(CONFIG_PREFIX + "." + projectKey + "." + key);
+        String cfgKey = (StringUtils.isBlank(projectKey))
+                ? CONFIG_PREFIX + "." + key
+                : CONFIG_PREFIX + "." + projectKey + "." + key;
+//        System.out.println("----> get config key " + cfgKey);
+        String result = pluginSettings.get(cfgKey).toString();
         return StringUtils.isBlank(result) ? "" : result;
     }
     private void setConfigValue(String projectKey, String key, String value) {

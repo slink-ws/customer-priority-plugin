@@ -1,5 +1,6 @@
 source ./env
-OUTPUT=$(curl -u $USER:$PASS -H "Accepts: application/json" --silent $BASE_URL/styles/$PROJECT_KEY)
+
+OUTPUT=$(curl -u $USER:$PASS -H "Accepts: application/json" --silent $BASE_URL/viewers/$PROJECT_KEY)
 JQ_OUTPUT=$(echo "$OUTPUT" | jq -r ".")
 STATUS=$?
 if [ "0" == "$STATUS" ]; then

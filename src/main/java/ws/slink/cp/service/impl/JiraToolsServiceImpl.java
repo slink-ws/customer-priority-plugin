@@ -12,6 +12,7 @@ import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.sal.api.user.UserProfile;
 import ws.slink.cp.service.ConfigService;
+import ws.slink.cp.service.CustomerPriorityService;
 import ws.slink.cp.service.JiraToolsService;
 
 import javax.inject.Inject;
@@ -27,10 +28,12 @@ import java.util.stream.Collectors;
 public class JiraToolsServiceImpl implements JiraToolsService {
 
     private final ConfigService configService;
+    private final CustomerPriorityService customerPriorityService;
 
     @Inject
-    public JiraToolsServiceImpl(ConfigService configService) {
+    public JiraToolsServiceImpl(ConfigService configService, CustomerPriorityService customerPriorityService) {
         this.configService = configService;
+        this.customerPriorityService = customerPriorityService;
     }
 
     public boolean isPluginManager(UserProfile user) {
@@ -56,15 +59,16 @@ public class JiraToolsServiceImpl implements JiraToolsService {
     }
 
     public boolean isViewer(String projectKey, ApplicationUser applicationUser) {
-        boolean result =
-            // TODO: add support for "*" to allow views for all ?
-            Arrays.asList(configService.getViewers(projectKey).trim().split(" "))
-                .stream()
-                .anyMatch(s -> ((s.contains("*")
-                    && applicationUser.getEmailAddress().toLowerCase().contains(s.replaceAll("\\*", "").toLowerCase()))
-                    || applicationUser.getEmailAddress().equalsIgnoreCase(s))
-                );
-        return result;
+        return customerPriorityService.isViewer(projectKey, applicationUser.getEmailAddress());
+//        boolean result =
+//            // TODO: add support for "*" to allow views for all ?
+//            Arrays.asList(configService.getViewers(projectKey).trim().split(" "))
+//                .stream()
+//                .anyMatch(s -> ((s.contains("*")
+//                    && applicationUser.getEmailAddress().toLowerCase().contains(s.replaceAll("\\*", "").toLowerCase()))
+//                    || applicationUser.getEmailAddress().equalsIgnoreCase(s))
+//                );
+//        return result;
     }
 
     public boolean userHasRolesInProjects(Collection<Project> projects, Collection<ProjectRole> roles, ApplicationUser user) {

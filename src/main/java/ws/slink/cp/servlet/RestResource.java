@@ -27,9 +27,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Scanned
 @Path("/")
@@ -151,13 +155,13 @@ public class RestResource {
             @PathParam("issueKey") String issueKey,
             @Context HttpServletRequest request
     ) {
-        System.out.println("-----> get color for " + issueKey);
+//        System.out.println("-----> get color for " + issueKey);
         Issue issue = ComponentAccessor.getIssueManager().getIssueByCurrentKey(issueKey);
-        System.out.println("-----> issue " + issue);
+//        System.out.println("-----> issue " + issue);
         if (null == issue)
             return Response.ok(resultMessage("issue #" + issueKey + " not found", HttpStatus.SC_NOT_FOUND)).build();
         String color = customerPriorityService.getStyle(issue.getProjectObject().getKey(), issue.getReporter().getEmailAddress(), StyledElement.LIST);
-        System.out.println("-----> color for " + issueKey + ": " + color);
+//        System.out.println("-----> color for " + issueKey + ": " + color);
         if (StringUtils.isBlank(color))
             return Response.ok(resultMessage("color not found for #" + issueKey, HttpStatus.SC_NOT_FOUND)).build();
         if (!color.startsWith("#"))
@@ -335,7 +339,96 @@ public class RestResource {
         if (configService.addReporter(projectKey, styleId, reporter))
             return Response.ok(resultMessage("reporter " + reporter + " added", HttpStatus.SC_OK)).build();
         else
-            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not add reporter " + reporter + " from style #" + styleId +" for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not add reporter " + reporter + " to style #" + styleId +" for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+    }
+
+    @GET
+    @Path("/viewers/{projectKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getViewers(
+            @PathParam("projectKey") String projectKey,
+            @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        Collection<String> viewers = configService.getViewers(projectKey);
+        if (null != viewers && !viewers.isEmpty())
+            return Response.ok(viewers).build();
+        else
+            return Response.status(HttpStatus.SC_NOT_FOUND).entity(resultMessage("viewers not found for project " + projectKey, HttpStatus.SC_NOT_FOUND)).build();
+    }
+
+    @POST
+    @Path("/viewers/{projectKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setViewers(
+            final List<String> viewers,
+            @PathParam("projectKey") String projectKey,
+            @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        if (configService.setViewers(projectKey, viewers))
+            return Response.ok(resultMessage("viewers set", HttpStatus.SC_OK)).build();
+        else
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not set viewers for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+    }
+
+    @PUT
+    @Path("/viewers/{projectKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addViewer(
+        @PathParam("projectKey") String projectKey,
+        @QueryParam("viewer") String viewer,
+        @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        if (configService.addViewer(projectKey, viewer))
+            return Response.ok(resultMessage("viewer " + viewer + " added", HttpStatus.SC_OK)).build();
+        else
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not add viewer " + viewer + " to project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+    }
+
+    @DELETE
+    @Path("/viewers/{projectKey}/{viewer}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteViewer(
+        @PathParam("projectKey") String projectKey,
+        @PathParam("viewer") String viewer,
+        @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        if (configService.removeViewer(projectKey, viewer))
+            return Response.ok(resultMessage("viewer " + viewer + " removed", HttpStatus.SC_OK)).build();
+        else
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not remove viewer " + viewer + " from project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+    }
+
+    @DELETE
+    @Path("/viewers/{projectKey}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response cleanViewers(
+        @PathParam("projectKey") String projectKey,
+        @Context HttpServletRequest request
+    ) {
+        Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
+        if (!inputCheck.getFirst())
+            return inputCheck.getLast();
+        if (configService.setViewers(projectKey, Collections.emptyList()))
+            return Response.ok(resultMessage("cleared viewers for project " + projectKey, HttpStatus.SC_OK)).build();
+        else
+            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not clear viewers for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
     }
 
     private Tuple<Boolean, Response> inputCheck(String projectKey) {
@@ -357,7 +450,6 @@ public class RestResource {
             return new Tuple<>(false, Response.status(HttpStatus.SC_BAD_REQUEST).entity(resultMessage("null style passed as input", HttpStatus.SC_BAD_REQUEST)).build());
         return new Tuple<>(true, null);
     }
-
     private String resultMessage(String message, int code) {
         return "{\"message\": \"" + message + "\", \"code\": " + code + "}";
     }

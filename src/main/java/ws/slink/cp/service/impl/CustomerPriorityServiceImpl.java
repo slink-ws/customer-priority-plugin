@@ -9,6 +9,7 @@ import ws.slink.cp.service.ConfigService;
 import ws.slink.cp.service.CustomerPriorityService;
 
 import javax.inject.Inject;
+import java.util.Collection;
 import java.util.Optional;
 
 @Scanned
@@ -24,19 +25,15 @@ public class CustomerPriorityServiceImpl implements CustomerPriorityService {
     }
 
     @Override
+    public boolean isViewer(String projectKey, String userEmail) {
+        return templateMatch(configService.getViewers(projectKey), userEmail);
+    }
+
+    @Override
     public Optional<StyleElement> getStyleElement(String projectKey, String customerId) {
         for (StyleElement styleElement : configService.getStyles(projectKey)) {
-            for (String reporter : styleElement.reporters()) {
-                // exact match first
-                if (customerId.toLowerCase().equalsIgnoreCase(reporter))
-                    return Optional.of(styleElement);
-                // wildcard match next
-                else if (customerId.toLowerCase().contains(reporter.replaceAll("\\*", "").toLowerCase()))
-                    return Optional.of(styleElement);
-                // any match last
-                else if (reporter.equals("*"))
-                    return Optional.of(styleElement);
-            }
+            if (templateMatch(styleElement.reporters(), customerId))
+                return Optional.of(styleElement);
         }
         return Optional.empty();
     }
@@ -55,6 +52,21 @@ public class CustomerPriorityServiceImpl implements CustomerPriorityService {
         if (styleElement.isPresent())
             return styleElement.get().text();
         return "";
+    }
+
+    private boolean templateMatch(Collection<String> templates, String value) {
+        for (String template : templates) {
+            // exact match first
+            if (value.equalsIgnoreCase(template))
+                return true;
+            // wildcard match next
+            else if (value.toLowerCase().contains(template.replaceAll("\\*", "").toLowerCase()))
+                return true;
+            // any match last
+            else if (template.equals("*"))
+                return true;
+        }
+        return false;
     }
 
 }

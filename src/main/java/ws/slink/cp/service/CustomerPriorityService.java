@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface CustomerPriorityService {
 
+    boolean isViewer(String projectKey, String userEmail);
     Optional<StyleElement> getStyleElement(String projectKey, String customerId);
     String getStyle(String projectKey, String customerId, StyledElement type);
     String getText(String projectKey, String customerId);
