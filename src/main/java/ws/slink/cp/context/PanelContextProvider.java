@@ -34,7 +34,7 @@ public class PanelContextProvider extends AbstractJiraContextProvider {
         if (StringUtils.isNotBlank(text))
             contextMap.put("panelText", text);
         contextMap.put("issueKey", currentIssue.getKey());
-        System.out.println("----> panel context: " + contextMap);
+        // System.out.println("----> panel context: " + contextMap);
         return contextMap;
     }
 

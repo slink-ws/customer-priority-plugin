@@ -372,10 +372,20 @@ public class RestResource {
         Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
         if (!inputCheck.getFirst())
             return inputCheck.getLast();
-        if (configService.setViewers(projectKey, viewers))
-            return Response.ok(resultMessage("viewers set", HttpStatus.SC_OK)).build();
-        else
-            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not set viewers for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+        List<String> viewersFiltered = viewers.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        if (viewersFiltered.isEmpty()) {
+            if (configService.setViewers(projectKey, Collections.emptyList())) {
+                return Response.ok(viewersFiltered).build();
+            } else {
+                return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not set viewers for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+            }
+        } else {
+            if (configService.setViewers(projectKey, viewersFiltered)) {
+                return Response.ok(viewersFiltered).build();
+            } else {
+                return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).entity(resultMessage("could not set viewers for project " + projectKey, HttpStatus.SC_INTERNAL_SERVER_ERROR)).build();
+            }
+        }
     }
 
     @PUT
@@ -422,6 +432,7 @@ public class RestResource {
         @PathParam("projectKey") String projectKey,
         @Context HttpServletRequest request
     ) {
+        System.out.println("trying to clear viewers");
         Tuple<Boolean, Response> inputCheck = inputCheck(projectKey);
         if (!inputCheck.getFirst())
             return inputCheck.getLast();

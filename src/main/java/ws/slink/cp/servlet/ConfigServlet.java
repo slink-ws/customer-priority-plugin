@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Scanned
 public class ConfigServlet extends HttpServlet {
@@ -66,7 +67,7 @@ public class ConfigServlet extends HttpServlet {
 
         // System.out.println("CONTEXT PARAMS: " + contextParams);
 
-
+        contextParams.put("configuredViewers", configService.getViewers(project.getKey()).stream().collect(Collectors.joining(" ")));
         contextParams.put("configuredStyles", configService.getStyles(project.getKey()));
         response.setContentType("text/html;charset=utf-8");
         renderer.render("templates/config.vm", contextParams, response.getWriter());

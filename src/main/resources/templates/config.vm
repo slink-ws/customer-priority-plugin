@@ -40,15 +40,34 @@
     </div>
 
     <button hidden="true"
-            class="aui-button aui-button-primary button"
+            class="aui-button button"
             id="customer-priority-add-style-button"
             type="submit"
             onclick="createStyle()">
         $i18n.getText('cp.config.button-add.title')
     </button>
 
-##    <input type="hidden" id="projectKey" value="$projectKey" />
+    <form class="aui" onSubmit="return false;">
+        <label for="">$i18n.getText('cp.config.viewers.input.label')</label><br>
+        <div>
+            <span>
+                <input class="text long-field" type="text" id="viewers-input" value="$configuredViewers" placeholder="$i18n.getText('cp.config.viewers.input.placeholder')"/>
+            </span>
+            <span>
+                <button id="viewers-save-button"
+                        style="margin-top: 1em;"
+                        class="aui-button button"
+                        type="submit"
+                        onclick="saveViewers()">
+                    $i18n.getText('cp.config.viewers.button.title')
+                </button>
+            </span>
+        </div>
+        <div class="description">$i18n.getText('cp.config.viewers.input.description')</div>
+    </form>
 
+
+    <!-- pop-up dialogs -->
     <section id="delete-confirm-dialog"
              data-aui-modal="false"
              class="aui-dialog2 aui-dialog2-small aui-dialog2-warning aui-layer"
@@ -70,7 +89,6 @@
             </div>
         </footer>
     </section>
-
     <section id="style-edit-dialog"
              data-aui-modal="false"
              class="aui-dialog2 aui-dialog2-medium aui-layer"
@@ -156,6 +174,9 @@
         }
         function styleDialogSubmit() {
             $customerPriorityConfig.editStyleDialogSubmitCallback();
+        }
+        function saveViewers() {
+            $customerPriorityConfig.saveViewers();
         }
     </script>
 

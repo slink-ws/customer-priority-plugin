@@ -119,6 +119,31 @@ let $customerPriorityConfig = {
         });
     },
 
+    saveViewers: function() {
+        let viewers = $customerPriorityConfig.sanitize(AJS.$("#viewers-input").val().replaceAll(","," ").replaceAll(";", " ")).split(" ");
+        $.ajax({
+            url        : $common.restBaseUrl + "/viewers/" + $customerPriorityConfig.getProjectKey(),
+            type       : "POST",
+            data       : JSON.stringify(viewers),
+            contentType: "application/json; charset=utf-8",
+            dataType   : "json",
+            success    : function(data) {
+                JIRA.Messages.showSuccessMsg(AJS.I18n.getText('cp.config.message.viewers-save.success'));
+                let viewersUpdated = "";
+                data.forEach(function(item) {
+                    viewersUpdated += item + " ";
+                })
+                AJS.$("#viewers-input").val(viewersUpdated.trim());
+            },
+            error      : function(XMLHttpRequest, message, error) {
+                AJS.log("[viewers set] error");
+                AJS.log(JSON.stringify(error, null ,2));
+                AJS.log(message);
+                JIRA.Messages.showErrorMsg(AJS.I18n.getText('cp.config.message.viewers-save.error'))
+            }
+        });
+    },
+
     resetStyleForm: function() {
         AJS.$("#edit-style-id").val("");
         AJS.$("#edit-style-id").prop("disabled", false);

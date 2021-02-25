@@ -29,11 +29,8 @@ public class ConfigurationEnabledCondition extends AbstractWebCondition {
         }
         else {
             boolean isPluginManager   = jiraToolsService.isPluginManager(applicationUser);
-//            System.out.println("----> is manager: " + isPluginManager);
             boolean enabledForProject = configService.getAdminProjects().contains(jiraHelper.getProject().getKey());
-//            System.out.println("----> is enabled: " + enabledForProject);
             boolean result = isPluginManager && enabledForProject;
-//            System.out.println("----> configuration enabled condition: " + result);
             return result;
         }
     }

@@ -94,9 +94,9 @@
     <!--  </web-resource>-->
       <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1">
         <description key="customer-priority-panel.description">Customer Priority Panel Module</description>
-<!--        <conditions type="AND">-->
-<!--          <condition class="ws.slink.atlassian.conditions.PanelCondition"/>-->
-<!--        </conditions>-->
+        <conditions type="AND">
+            <condition class="ws.slink.cp.condition.PanelVisibleCondition"/>
+        </conditions>
         <context-provider class="ws.slink.cp.context.PanelContextProvider"/>
         <resource name="view" type="velocity" location="templates/panel.vm"/>
       </web-panel>
