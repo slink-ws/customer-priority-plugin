@@ -20,7 +20,7 @@ let $customerPriorityConfig = {
     confirmDialogSubmit: function() {
         let styleId = AJS.$("#style-id-to-delete").html();
         // let projectKey = AJS.$('meta[name=projectKey]').attr('content'); //AJS.Meta.get("projectKey");//AJS.$("#projectKey").val();
-        console.log("----> removing " + styleId + " from " + $customerPriorityConfig.getProjectKey());
+        // console.log("----> removing " + styleId + " from " + $customerPriorityConfig.getProjectKey());
         AJS.$.ajax({
             url: $common.restBaseUrl + "/styles/" + $customerPriorityConfig.getProjectKey() + "/" + encodeURIComponent(styleId),
             type: "DELETE",
@@ -88,6 +88,7 @@ let $customerPriorityConfig = {
             JIRA.Messages.showErrorMsg(AJS.I18n.getText('cp.config.message.style-update.error'))
         });
     },
+
     createDialogShow: function() {
         $customerPriorityConfig.editStyleDialog = AJS.dialog2("#style-edit-dialog");
         $customerPriorityConfig.editStyleDialogSubmitCallback = $customerPriorityConfig.createDialogSubmit;
@@ -95,7 +96,7 @@ let $customerPriorityConfig = {
     },
     createDialogSubmit: function() {
         let request = $customerPriorityConfig.getStyleFormData();
-        console.log("create style: " + JSON.stringify(request));
+        // console.log("create style: " + JSON.stringify(request));
         AJS.$.ajax({
             url: $common.restBaseUrl + "/styles/" + $customerPriorityConfig.getProjectKey(),
             type: "POST",
@@ -104,10 +105,12 @@ let $customerPriorityConfig = {
             processData: false
         }).done(function () {
             JIRA.Messages.showSuccessMsg(AJS.I18n.getText('cp.config.message.style-create.success'));
-            $customerPriorityConfig.addStyle(request);
-            $customerPriorityConfig.resetStyleForm();
+            // $customerPriorityConfig.addStyle(request);
+            // $customerPriorityConfig.resetStyleForm();
             $customerPriorityConfig.editStyleDialog.hide();
             $customerPriorityConfig.editStyleDialog = null;
+            window.onbeforeunload = null;
+            location.replace(location.pathname);
         }).error(function (error, message) {
             AJS.log("[style create] error");
             AJS.log(error);
@@ -115,6 +118,7 @@ let $customerPriorityConfig = {
             JIRA.Messages.showErrorMsg(AJS.I18n.getText('cp.config.message.style-create.error'))
         });
     },
+
     resetStyleForm: function() {
         AJS.$("#edit-style-id").val("");
         AJS.$("#edit-style-id").prop("disabled", false);
@@ -136,9 +140,11 @@ let $customerPriorityConfig = {
         request.style.issue  = $customerPriorityConfig.sanitize(AJS.$("#edit-color-issue").val().trim(), true);
         request.style.list   = $customerPriorityConfig.sanitize(AJS.$("#edit-color-list").val().trim(), true);
         $customerPriorityConfig.sanitize(AJS.$("#edit-reporters").val().trim(), false)
+            .replaceAll(",", " ")
+            .replaceAll(";", " ")
             .split(" ")
             .forEach(function(item) {
-                request.reporters.push(item);
+                request.reporters.push(item.trim());
         });
         return request;
     },
@@ -148,42 +154,24 @@ let $customerPriorityConfig = {
         }).parent();
     },
     addStyle: function(style) {
-        console.log("adding style " + style.id);
+        // console.log("adding style " + style.id);
         AJS.$("#styles-list").append(this.makeStyleRow(style));
         $customerPriorityConfig.sortStyles();
     },
-    makeStyleRow: function(style) {
-        let styleRow = "";
-
-        styleRow += '<div class="styles-list-row">';
-        styleRow += '<div class="styles-list-item styles-list-title" title="' + style.title + '">' + style.id + '</div>';
-        styleRow += '<div class="styles-list-item styles-list-glance-style" style=' + style.style.glance + '>';
-        styleRow += style.text + '&nbsp;</div>';
-        styleRow += '<div class="styles-list-item styles-list-issue-color" style="background-color: ' + $customerPriorityConfig.fixColor(style.style.issue) + ';">Details</div>';
-        styleRow += '<div class="styles-list-item styles-list-list-color" style="background-color: ' + $customerPriorityConfig.fixColor(style.style.list) + ';">List</div>';
-        styleRow += '<div class="styles-list-item">';
-        styleRow += '<div onClick=\'editStyle("' + style.id.trim() + '")\' title="Edit style" class="aui-icon aui-icon-small aui-iconfont-new-edit style-button style-button-edit">EDIT</div>';
-        styleRow += '<div onClick=\'deleteStyle("' + style.id.trim() + '")\' title="Delete style" class="aui-icon aui-icon-small aui-iconfont-trash style-button style-button-delete">DELETE</div>';
-        styleRow += '</div>'; // buttons
-        styleRow += '<input type="hidden" className="style-list-reporters" value="' + $customerPriorityConfig.reportersStr(style.reporters) + '"/>';
-        styleRow += '</div>'; // styles-list-row
-
-        return styleRow;
-    },
     updateStyle: function(style) {
-        console.log("updating style " + style.id);
+        // console.log("updating style " + style.id);
         let row = $customerPriorityConfig.getStyleRowElement(style.id);
         if (row) {
             row.find(".styles-list-title").attr("title", style.title);
             row.find(".styles-list-glance-style").attr("style", style.style.glance);
             row.find(".styles-list-glance-style").text(style.text);
-            row.find(".styles-list-issue-color").css("background-color", style.style.issue);
-            row.find(".styles-list-list-color").css("background-color", style.style.list);
+            row.find(".styles-list-issue-color").css("background-color", this.fixColor(style.style.issue));
+            row.find(".styles-list-list-color").css("background-color", this.fixColor(style.style.list));
             row.find(".style-list-reporters").val(style.reporters);
         }
     },
     removeStyle: function(styleId) {
-        console.log("removing style " + styleId);
+        // console.log("removing style " + styleId);
         $customerPriorityConfig.getStyleRowElement(styleId).remove();
     },
     getProjectKey: function() {
@@ -219,6 +207,8 @@ let $customerPriorityConfig = {
         reporters.forEach(function(item) {
             result += item + " ";
         });
+        // console.log("----> reporters    : " + reporters);
+        // console.log("----> reporters str: " + result);
         return result.trim();
     },
     sortStyles: function() {
@@ -231,7 +221,7 @@ let $customerPriorityConfig = {
            else
                return 0;
         });
-        console.log(JSON.stringify(styles, null, 2));
+        // console.log(JSON.stringify(styles, null, 2));
         AJS.$("#styles-list").html("");
         stylesSorted.forEach(function(style) {
             AJS.$("#styles-list").append($customerPriorityConfig.makeStyleRow(style));
@@ -267,7 +257,30 @@ let $customerPriorityConfig = {
                 style.style.list = "";
         }
         return style;
-    }
+    },
+    makeStyleRow: function(style) {
+        let styleRow = "";
+
+        styleRow += '<div class="styles-list-row">';
+        styleRow += '<div class="styles-list-item styles-list-title" title="' + style.title + '">' + style.id + '</div>';
+
+        styleRow += '<div className="styles-list-item styles-list-glance-style-wrapper">';
+        styleRow += '<div class="styles-list-glance-style" style="' + style.style.glance + '" width="100%">';
+        styleRow += style.text + "&nbsp;";
+        styleRow += '</div></div>';
+        // styleRow += '<div class="styles-list-item styles-list-glance-style" style=' + style.style.glance + '>';
+        // styleRow += style.text + '&nbsp;</div>';
+        styleRow += '<div class="styles-list-item styles-list-issue-color" style="background-color: ' + $customerPriorityConfig.fixColor(style.style.issue) + ';">Details</div>';
+        styleRow += '<div class="styles-list-item styles-list-list-color" style="background-color: ' + $customerPriorityConfig.fixColor(style.style.list) + ';">List</div>';
+        styleRow += '<div class="styles-list-item">';
+        styleRow += '<div onClick=\'editStyle("' + style.id.trim() + '")\' title="Edit style" class="aui-icon aui-icon-small aui-iconfont-new-edit style-button style-button-edit">EDIT</div>';
+        styleRow += '<div onClick=\'deleteStyle("' + style.id.trim() + '")\' title="Delete style" class="aui-icon aui-icon-small aui-iconfont-trash style-button style-button-delete">DELETE</div>';
+        styleRow += '</div>'; // buttons
+        styleRow += '<input type="hidden" className="style-list-reporters" value="' + $customerPriorityConfig.reportersStr(style.reporters) + '"/>';
+        styleRow += '</div>'; // styles-list-row
+
+        return styleRow;
+    },
 }
 
 // (function ($) {

@@ -17,8 +17,10 @@
         #foreach($style in $configuredStyles)
             <div class="styles-list-row">
                 <div class="styles-list-item styles-list-title" title="$style.description()">$style.id()</div>
-                <div class="styles-list-item styles-list-glance-style" style='$style.style("glance")'>
-                    $style.text()&nbsp;
+                <div class="styles-list-item styles-list-glance-style-wrapper">
+                    <div class="styles-list-glance-style" style='$style.style("glance")' width="100%">
+                        $style.text()&nbsp;
+                    </div>
                 </div>
                 <div class="styles-list-item styles-list-issue-color" style="background-color: $style.style("issue");">Details</div>
                 <div class="styles-list-item styles-list-list-color" style="background-color: $style.style("list");">List</div>
