@@ -48,24 +48,26 @@ let $customerPriorityConfig = {
         let issueColor  = $customerPriorityConfig.rgb2hex(row.find(".styles-list-issue-color").css("background-color"));
         let listColor   = $customerPriorityConfig.rgb2hex(row.find(".styles-list-list-color").css("background-color"));
         let reporters   = row.find(".style-list-reporters").val();
-        if (issueColor == "#000000") issueColor = "";
-        if (listColor == "#000000")  listColor = "";
+        if (issueColor == "#000000" || issueColor.toUpperCase() == "#FFFFFF") issueColor = "";
+        if (listColor == "#000000"  || listColor.toUpperCase()  == "#FFFFFF")  listColor = "";
         AJS.$("#edit-style-id").val(styleId);
         AJS.$("#edit-style-id").prop("disabled", true);
         AJS.$("#edit-style-title").val(styleTitle);
         AJS.$("#edit-glance-style").val(glanceStyle);
         AJS.$("#edit-glance-text").val(glanceText.trim());
         AJS.$("#edit-color-issue").val(issueColor);
+        AJS.$("#edit-color-issue").css("background-color", issueColor);
         AJS.$("#edit-color-list").val(listColor);
+        AJS.$("#edit-color-list").css("background-color", listColor);
         AJS.$("#edit-reporters").val(reporters);
         $customerPriorityConfig.editStyleDialog = AJS.dialog2("#style-edit-dialog");
         $customerPriorityConfig.editStyleDialogSubmitCallback = $customerPriorityConfig.editDialogSubmit;
         $customerPriorityConfig.editStyleDialog.show();
     },
     editDialogCancel: function() {
+        $customerPriorityConfig.resetStyleForm();
         $customerPriorityConfig.editStyleDialog.hide();
         $customerPriorityConfig.editStyleDialog = null;
-        $customerPriorityConfig.resetStyleForm();
     },
     editDialogSubmit: function() {
         let request = $customerPriorityConfig.getStyleFormData();
@@ -90,6 +92,7 @@ let $customerPriorityConfig = {
     },
 
     createDialogShow: function() {
+        $customerPriorityConfig.resetStyleForm();
         $customerPriorityConfig.editStyleDialog = AJS.dialog2("#style-edit-dialog");
         $customerPriorityConfig.editStyleDialogSubmitCallback = $customerPriorityConfig.createDialogSubmit;
         $customerPriorityConfig.editStyleDialog.show();
@@ -151,7 +154,9 @@ let $customerPriorityConfig = {
         AJS.$("#edit-glance-style").val("");
         AJS.$("#edit-glance-text").val("");
         AJS.$("#edit-color-issue").val("");
+        AJS.$("#edit-color-issue").css("background-color", "");
         AJS.$("#edit-color-list").val("");
+        AJS.$("#edit-color-list").css("background-color", "");
         AJS.$("#edit-reporters").val("");
     },
     getStyleFormData: function() {
@@ -164,6 +169,8 @@ let $customerPriorityConfig = {
         request.style.glance = $customerPriorityConfig.sanitize(AJS.$("#edit-glance-style").val().trim(), true);
         request.style.issue  = $customerPriorityConfig.sanitize(AJS.$("#edit-color-issue").val().trim(), true);
         request.style.list   = $customerPriorityConfig.sanitize(AJS.$("#edit-color-list").val().trim(), true);
+        if (request.style.issue == "#000000" || request.style.issue == "#FFFFFF" ) request.style.issue = "";
+        if (request.style.list  == "#000000" || request.style.list  == "#FFFFFF" ) request.style.list  = "";
         $customerPriorityConfig.sanitize(AJS.$("#edit-reporters").val().trim(), false)
             .replaceAll(",", " ")
             .replaceAll(";", " ")
@@ -217,10 +224,13 @@ let $customerPriorityConfig = {
         }
     },
     fixColor: function(color) {
-      if (!color.startsWith("#"))
-          return "#" + color;
-      else
-          return color;
+        console.log("---> fix color '" + color + "'");
+        if (color.trim() == "" || color.trim() == "#")
+            return "";
+        if (!color.startsWith("#"))
+              return "#" + color;
+        else
+              return color;
     },
     sanitize: function (s, forAttribute) {
         return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function(c) {
@@ -308,70 +318,17 @@ let $customerPriorityConfig = {
     },
 }
 
-// (function ($) {
-//     $(document).ready(function() {
-//         $.ajax({
-//             url: AJS.contextPath() + "/rest/customer-priority/1.0/config/" + JIRA.API.Projects.getCurrentProjectKey(),
-//             dataType: "json"
-//         }).done(function(config) {
-//             $("#viewers").val(config.viewers);
-//             $("#style1").val(config.style1);
-//             $("#style2").val(config.style2);
-//             $("#style3").val(config.style3);
-//             $("#style4").val(config.style4);
-//             $("#text1").val(config.text1);
-//             $("#text2").val(config.text2);
-//             $("#text3").val(config.text3);
-//             $("#text4").val(config.text4);
-//             $("#list1").val(config.list1);
-//             $("#list2").val(config.list2);
-//             $("#list3").val(config.list3);
-//             $("#list4").val(config.list4);
-//             $("#color1").val(config.color1);
-//             $("#color2").val(config.color2);
-//             $("#color3").val(config.color3);
-//             $("#color4").val(config.color4);
-//             $("#viewers").val(config.viewers);
-//
-//             $("#color-span-1").style.backgroundColor = config.color1;
-//             $("#color-span-2").style.backgroundColor = config.color2;
-//             $("#color-span-3").style.backgroundColor = config.color3;
-//             $("#color-span-4").style.backgroundColor = config.color4;
-//         });
-//     });
-//
-// })(AJS.$ || jQuery);
-//
-// function updateConfig() {
-//     AJS.$.ajax({
-//         url: AJS.contextPath() + "/rest/customer-priority/1.0/config/" + JIRA.API.Projects.getCurrentProjectKey(),
-//         type: "PUT",
-//         contentType: "application/json",
-//         processData: false,
-//         data:'{ ' +
-//             // '  "viewers":"'+ sanitize(AJS.$("#viewers").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             '  "style1":"' + sanitize(AJS.$("#style1").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"style2":"' + sanitize(AJS.$("#style2").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"style3":"' + sanitize(AJS.$("#style3").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"style4":"' + sanitize(AJS.$("#style4").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"text1": "' + sanitize(AJS.$("#text1").attr("value"), false)  + '"' +
-//             ' ,"text2": "' + sanitize(AJS.$("#text2").attr("value"), false)  + '"' +
-//             ' ,"text3": "' + sanitize(AJS.$("#text3").attr("value"), false)  + '"' +
-//             ' ,"text4": "' + sanitize(AJS.$("#text4").attr("value"), false)  + '"' +
-//             ' ,"list1":"'  + sanitize(AJS.$("#list1").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"list2":"'  + sanitize(AJS.$("#list2").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"list3":"'  + sanitize(AJS.$("#list3").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"list4":"'  + sanitize(AJS.$("#list4").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"color1":"' + sanitize(AJS.$("#color1").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"color2":"' + sanitize(AJS.$("#color2").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"color3":"' + sanitize(AJS.$("#color3").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"color4":"' + sanitize(AJS.$("#color4").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             ' ,"viewers":"'+ sanitize(AJS.$("#viewers").attr("value").replace(/\n/g, "\\n"), true) + '"' +
-//             '}',
-//     }).done(function () {
-//         JIRA.Messages.showSuccessMsg("configuration saved")
-//     }).error(function () {
-//         JIRA.Messages.showErrorMsg("could not save configuration")
-//     });
-// }
-//
+AJS.toInit(function() {
+    $( "#edit-color-issue" ).on('input', function() {
+        if ($("#edit-color-issue").val().trim() == "" || $("#edit-color-issue").val().trim() == "#") {
+            $("#edit-color-issue").css("background-color", "");
+            $("#edit-color-issue").css("color", "");
+        }
+    });
+    $( "#edit-color-list" ).on('input', function() {
+        if ($("#edit-color-list").val().trim() == "" || $("#edit-color-list").val().trim() == "#") {
+            $("#edit-color-list").css("background-color", "");
+            $("#edit-color-list").css("color", "");
+        }
+    });
+});

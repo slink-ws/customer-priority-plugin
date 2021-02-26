@@ -19,7 +19,7 @@
                 <div class="styles-list-row">
                     <div class="styles-list-item styles-list-title" title="$style.description()">$style.id()</div>
                     <div class="styles-list-item styles-list-glance-style-wrapper">
-                        <div class="styles-list-glance-style" style='margin: 0 auto; $style.style("glance")' width="100%">
+                        <div class="styles-list-glance-style" style='$style.style("glance")' width="100%">
                             $style.text()&nbsp;
                         </div>
                     </div>
@@ -116,22 +116,26 @@
                 </div>
                 <div class="field-group">
                     <label for="edit-glance-style">$i18n.getText('cp.config.style-edit.dialog.form.label.glance-style')</label>
-                    <input class="text long-field" type="text" id="edit-glance-style" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.glance-style.placeholder')"/>
+                    <textarea class="textarea" cols="2" rows="8" id="edit-glance-style" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.glance-style.placeholder')">
+                    </textarea>
+##                  <input class="text long-field" type="text" id="edit-glance-style" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.glance-style.placeholder')"/>
                     <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.glance-style.description')</div>
                 </div>
                 <div class="field-group">
                     <label for="edit-glance-text">$i18n.getText('cp.config.style-edit.dialog.form.label.glance-text')</label>
                     <input class="text long-field" type="text" id="edit-glance-text" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.glance-text.placeholder')"/>
+##                    <textarea class="textarea" cols="2" rows="8" id="edit-glance-text" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.glance-text.placeholder')">
+##                    </textarea>
                     <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.glance-text.description')</div>
                 </div>
                 <div class="field-group">
                     <label for="edit-color-issue">$i18n.getText('cp.config.style-edit.dialog.form.label.issue-color')</label>
-                    <input class="text long-field" type="text" id="edit-color-issue" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.issue-color.placeholder')"/>
+                    <input class="text long-field color-input" data-huebee='{ "notation": "hex", "saturations": 2 }' type="text" id="edit-color-issue" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.issue-color.placeholder')"/>
                     <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.issue-color.description')</div>
                 </div>
                 <div class="field-group">
                     <label for="edit-color-list">$i18n.getText('cp.config.style-edit.dialog.form.label.list-color')</label>
-                    <input class="text long-field" type="text" id="edit-color-list" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.list-color.placeholder')"/>
+                    <input class="text long-field color-input" data-huebee='{ "notation": "hex", "saturations": 2 }' type="text" id="edit-color-list" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.list-color.placeholder')"/>
                     <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.list-color.description')</div>
                 </div>
                 <div class="field-group">
