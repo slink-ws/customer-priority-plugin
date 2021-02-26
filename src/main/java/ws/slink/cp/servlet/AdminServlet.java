@@ -68,6 +68,7 @@ public class AdminServlet extends HttpServlet {
                 context.put("selectedProjects" , selectedProjects);
                 context.put("availableRoles"   , availableRoles);
                 context.put("selectedRoles"    , selectedRoles);
+                context.put("customFieldId"    , configService.getAdminParticipantsFieldId().orElse(""));
 
                 renderer.render("templates/admin.vm", context, response.getWriter());
             }

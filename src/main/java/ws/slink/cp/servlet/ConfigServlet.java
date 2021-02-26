@@ -49,27 +49,31 @@ public class ConfigServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Map<String, Object> contextParams = new HashMap<>();
-        Project project = jiraToolsService.getCurrentProject();//JiraTools.getProjectByKey(projectKey);
+        try {
+            Map<String, Object> contextParams = new HashMap<>();
+            Project project = jiraToolsService.getCurrentProject();//JiraTools.getProjectByKey(projectKey);
 
-        if (null != project) {
-            contextParams.put("projectKey", project.getKey());
-            contextParams.put("projectId", project.getId());
-        } else {
-            System.out.println("----> could not get current project");
-        }
+            if (null != project) {
+                contextParams.put("projectKey", project.getKey());
+                contextParams.put("projectId", project.getId());
+            } else {
+                System.out.println("----> could not get current project");
+            }
 
-        if (!jiraToolsService.isPluginManager(userManager.getRemoteUser())) {
+            if (!jiraToolsService.isPluginManager(userManager.getRemoteUser())) {
+                response.setContentType("text/html;charset=utf-8");
+                renderer.render("templates/unauthorized.vm", contextParams, response.getWriter());
+                return;
+            }
+
+            // System.out.println("CONTEXT PARAMS: " + contextParams);
+
+            contextParams.put("configuredViewers", configService.getViewers(project.getKey()).stream().collect(Collectors.joining(" ")));
+            contextParams.put("configuredStyles", configService.getStyles(project.getKey()));
             response.setContentType("text/html;charset=utf-8");
-            renderer.render("templates/unauthorized.vm", contextParams, response.getWriter());
-            return;
+            renderer.render("templates/config.vm", contextParams, response.getWriter());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // System.out.println("CONTEXT PARAMS: " + contextParams);
-
-        contextParams.put("configuredViewers", configService.getViewers(project.getKey()).stream().collect(Collectors.joining(" ")));
-        contextParams.put("configuredStyles", configService.getStyles(project.getKey()));
-        response.setContentType("text/html;charset=utf-8");
-        renderer.render("templates/config.vm", contextParams, response.getWriter());
     }
 }

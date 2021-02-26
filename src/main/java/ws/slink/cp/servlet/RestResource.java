@@ -65,6 +65,7 @@ public class RestResource {
     private static final class AdminParams {
         @XmlElement private String projects;
         @XmlElement private String roles;
+        @XmlElement private String fieldId;
         public String getProjects() {
             return projects;
         }
@@ -77,6 +78,13 @@ public class RestResource {
         }
         public AdminParams setRoles(String roles) {
             this.roles = roles;
+            return this;
+        }
+        public String getFieldId() {
+            return fieldId;
+        }
+        public AdminParams setFieldId(String value) {
+            this.fieldId = value;
             return this;
         }
         public String toString() {
@@ -105,6 +113,7 @@ public class RestResource {
             config.log("----> received configuration: " + config);
             configService.setAdminProjects(config.getProjects());
             configService.setAdminRoles(config.getRoles());
+            configService.setAdminParticipantsFieldId(config.getFieldId());
             saveResult.set(true);
             return null;
         });

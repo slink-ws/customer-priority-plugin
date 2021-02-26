@@ -73,6 +73,11 @@
             </div>
         </div>
 
+        <div class="field-group">
+            <label for="custom-field-id-input">$i18n.getText('cp.admin.custom-field-id.label')</label>
+            <input class="text medium-field" type="text" id="custom-field-id-input" value="$customFieldId" placeholder="$i18n.getText('cp.admin.custom-field-id.placeholder')"/>
+        </div>
+
         <div style="width: 100%; overflow: hidden; padding-top: 1em;">
             <div style="width: 250px; float: left">&nbsp;</div>
             <div style="width: 70px; float: left; text-align: center; align-content: center;">

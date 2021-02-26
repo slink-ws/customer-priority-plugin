@@ -67,16 +67,18 @@ function admin_update_config() {
 
     let projects   = get_select_values_string("selected-projects");
     let roles      = get_select_values_string("selected-roles");
+    let fieldId    = AJS.$("#custom-field-id-input").val();
 
     AJS.log("~~~ SAVING CONFIGURATION:");
     AJS.log("       projects: " + projects);
     AJS.log("       roles   : " + roles);
+    AJS.log("       field id: " + fieldId);
     AJS.log("~~~~~~~~~~~~~~~~~~~~~~~~~~")
     AJS.$.ajax({
         url: $common.restBaseUrl + "/admin",
         type: "PUT",
         contentType: "application/json",
-        data: '{ "projects": "' + projects + '", "roles": "' +  roles + '"}',
+        data: '{ "projects": "' + projects + '", "roles": "' +  roles + '", "fieldId": ' + fieldId + '}',
         processData: false
     }).done(function () {
         JIRA.Messages.showSuccessMsg("configuration saved")

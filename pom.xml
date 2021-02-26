@@ -144,6 +144,18 @@
                         <!-- Ensure plugin is spring powered -->
                         <Spring-Context>*</Spring-Context>
                     </instructions>
+
+                    <applications>
+                        <application>
+                            <applicationKey>jira-software</applicationKey>
+                            <version>${jira.version}</version>
+                        </application>
+                        <application>
+                            <applicationKey>jira-servicedesk</applicationKey>
+                            <version>${jira.servicedesk.version}</version>
+                        </application>
+                    </applications>
+
                 </configuration>
             </plugin>
             <plugin>
@@ -166,7 +178,8 @@
     </build>
 
     <properties>
-        <jira.version>8.3.1</jira.version>
+        <jira.version>8.15.0</jira.version>
+        <jira.servicedesk.version>4.15.0</jira.servicedesk.version>
         <amps.version>8.1.0</amps.version>
         <plugin.testrunner.version>2.0.1</plugin.testrunner.version>
         <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
