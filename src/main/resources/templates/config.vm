@@ -13,39 +13,39 @@
 <body>
     <h1>$i18n.getText("cp.config.label")</h1>
 
-    <div class="styles-list" id="styles-list">
-        #foreach($style in $configuredStyles)
-            <div class="styles-list-row">
-                <div class="styles-list-item styles-list-title" title="$style.description()">$style.id()</div>
-                <div class="styles-list-item styles-list-glance-style-wrapper">
-                    <div class="styles-list-glance-style" style='$style.style("glance")' width="100%">
-                        $style.text()&nbsp;
+    <form class="aui" onSubmit="return false;">
+        <div class="styles-list" id="styles-list">
+            #foreach($style in $configuredStyles)
+                <div class="styles-list-row">
+                    <div class="styles-list-item styles-list-title" title="$style.description()">$style.id()</div>
+                    <div class="styles-list-item styles-list-glance-style-wrapper">
+                        <div class="styles-list-glance-style" style='margin: 0 auto; $style.style("glance")' width="100%">
+                            $style.text()&nbsp;
+                        </div>
                     </div>
+                    <div class="styles-list-item styles-list-issue-color" style="background-color: $style.style("issue");">Details</div>
+                    <div class="styles-list-item styles-list-list-color" style="background-color: $style.style("list");">List</div>
+                    <div class="styles-list-item">
+                        <div
+                                onclick='editStyle("$style.id()")'
+                                title="Edit style"
+                                class="aui-icon aui-icon-small aui-iconfont-new-edit style-button style-button-edit">EDIT</div>
+                        <div
+                                onclick='deleteStyle("$style.id()")'
+                                title="Delete style"
+                                class="aui-icon aui-icon-small aui-iconfont-trash style-button style-button-delete">DELETE</div>
+                    </div>
+                    <input type="hidden" class="style-list-reporters" value="$style.reporterStr()" />
                 </div>
-                <div class="styles-list-item styles-list-issue-color" style="background-color: $style.style("issue");">Details</div>
-                <div class="styles-list-item styles-list-list-color" style="background-color: $style.style("list");">List</div>
-                <div class="styles-list-item">
-                    <div
-                        onclick='editStyle("$style.id()")'
-                        title="Edit style"
-                        class="aui-icon aui-icon-small aui-iconfont-new-edit style-button style-button-edit">EDIT</div>
-                    <div
-                        onclick='deleteStyle("$style.id()")'
-                        title="Delete style"
-                        class="aui-icon aui-icon-small aui-iconfont-trash style-button style-button-delete">DELETE</div>
-                </div>
-                <input type="hidden" class="style-list-reporters" value="$style.reporterStr()" />
-            </div>
-        #end
-    </div>
-
-    <button hidden="true"
-            class="aui-button button"
-            id="customer-priority-add-style-button"
-            type="submit"
-            onclick="createStyle()">
-        $i18n.getText('cp.config.button-add.title')
-    </button>
+            #end
+        </div>
+        <button class="aui-button button"
+                id="customer-priority-add-style-button"
+                type="submit"
+                onclick="createStyle()">
+            $i18n.getText('cp.config.button-add.title')
+        </button>
+    </form>
 
     <form class="aui" onSubmit="return false;">
         <label for="">$i18n.getText('cp.config.viewers.input.label')</label><br>

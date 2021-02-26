@@ -78,7 +78,7 @@ function admin_update_config() {
         url: $common.restBaseUrl + "/admin",
         type: "PUT",
         contentType: "application/json",
-        data: '{ "projects": "' + projects + '", "roles": "' +  roles + '", "fieldId": ' + fieldId + '}',
+        data: '{ "projects": "' + projects + '", "roles": "' +  roles + '", "fieldId": "' + fieldId + '"}',
         processData: false
     }).done(function () {
         JIRA.Messages.showSuccessMsg("configuration saved")

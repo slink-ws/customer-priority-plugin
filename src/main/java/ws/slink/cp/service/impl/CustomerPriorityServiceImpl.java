@@ -7,9 +7,9 @@ import ws.slink.cp.model.StyleElement;
 import ws.slink.cp.model.StyledElement;
 import ws.slink.cp.service.ConfigService;
 import ws.slink.cp.service.CustomerPriorityService;
+import ws.slink.cp.service.JiraToolsService;
 
 import javax.inject.Inject;
-import java.util.Collection;
 import java.util.Optional;
 
 @Scanned
@@ -18,21 +18,23 @@ import java.util.Optional;
 public class CustomerPriorityServiceImpl implements CustomerPriorityService {
 
     private ConfigService configService;
+    private JiraToolsService jiraToolsService;
 
     @Inject
-    public CustomerPriorityServiceImpl(ConfigService configService) {
+    public CustomerPriorityServiceImpl(ConfigService configService, JiraToolsService jiraToolsService) {
         this.configService = configService;
+        this.jiraToolsService = jiraToolsService;
     }
 
     @Override
     public boolean isViewer(String projectKey, String userEmail) {
-        return templateMatch(configService.getViewers(projectKey), userEmail);
+        return jiraToolsService.templateMatch(configService.getViewers(projectKey), userEmail);
     }
 
     @Override
     public Optional<StyleElement> getStyleElement(String projectKey, String customerId) {
         for (StyleElement styleElement : configService.getStyles(projectKey)) {
-            if (templateMatch(styleElement.reporters(), customerId))
+            if (jiraToolsService.templateMatch(styleElement.reporters(), customerId))
                 return Optional.of(styleElement);
         }
         return Optional.empty();
@@ -52,21 +54,6 @@ public class CustomerPriorityServiceImpl implements CustomerPriorityService {
         if (styleElement.isPresent())
             return styleElement.get().text();
         return "";
-    }
-
-    private boolean templateMatch(Collection<String> templates, String value) {
-        for (String template : templates) {
-            // exact match first
-            if (value.equalsIgnoreCase(template))
-                return true;
-            // wildcard match next
-            else if (value.toLowerCase().contains(template.replaceAll("\\*", "").toLowerCase()))
-                return true;
-            // any match last
-            else if (template.equals("*"))
-                return true;
-        }
-        return false;
     }
 
 }

@@ -1,6 +1,8 @@
 package ws.slink.cp.service.impl;
 
 import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.JiraAuthenticationContext;
 import com.atlassian.jira.security.roles.ProjectRole;
@@ -16,10 +18,7 @@ import ws.slink.cp.service.CustomerPriorityService;
 import ws.slink.cp.service.JiraToolsService;
 
 import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Scanned
@@ -28,12 +27,10 @@ import java.util.stream.Collectors;
 public class JiraToolsServiceImpl implements JiraToolsService {
 
     private final ConfigService configService;
-    private final CustomerPriorityService customerPriorityService;
 
     @Inject
-    public JiraToolsServiceImpl(ConfigService configService, CustomerPriorityService customerPriorityService) {
+    public JiraToolsServiceImpl(ConfigService configService) {
         this.configService = configService;
-        this.customerPriorityService = customerPriorityService;
     }
 
     public boolean isPluginManager(UserProfile user) {
@@ -59,7 +56,8 @@ public class JiraToolsServiceImpl implements JiraToolsService {
     }
 
     public boolean isViewer(String projectKey, ApplicationUser applicationUser) {
-        return customerPriorityService.isViewer(projectKey, applicationUser.getEmailAddress());
+        return templateMatch(configService.getViewers(projectKey), applicationUser.getEmailAddress());
+//        return customerPriorityService.isViewer(projectKey, applicationUser.getEmailAddress());
 //        boolean result =
 //            // TODO: add support for "*" to allow views for all ?
 //            Arrays.asList(configService.getViewers(projectKey).trim().split(" "))
@@ -93,6 +91,25 @@ public class JiraToolsServiceImpl implements JiraToolsService {
             return null;
         }
     }
+    public List<ApplicationUser> getIssueParticipants(Issue issue) {
+        List<ApplicationUser> result = new ArrayList<>();
+        configService.getAdminParticipantsFieldId().ifPresent(fieldId -> {
+            CustomField customField = null;
+            try {
+                customField = ComponentAccessor.getCustomFieldManager().getCustomFieldObject(Long.valueOf(fieldId));
+            } catch (NumberFormatException e) {
+                customField = ComponentAccessor.getCustomFieldManager().getCustomFieldObject(fieldId);
+            }
+            if (null != customField) {
+                Object object = issue.getCustomFieldValue(customField);
+                if (null != object && object instanceof ArrayList) {
+                    result.addAll((List)object);
+                }
+            }
+        });
+        return result;
+    }
+
 
     public Project getCurrentProject() {
         try {
@@ -114,5 +131,20 @@ public class JiraToolsServiceImpl implements JiraToolsService {
         return jiraAuthenticationContext.getLoggedInUser();
     }
 
+    @Override
+    public boolean templateMatch(Collection<String> templates, String value) {
+        for (String template : templates) {
+            // exact match first
+            if (value.equalsIgnoreCase(template))
+                return true;
+                // wildcard match next
+            else if (value.toLowerCase().contains(template.replaceAll("\\*", "").toLowerCase()))
+                return true;
+                // any match last
+            else if (template.equals("*"))
+                return true;
+        }
+        return false;
+    }
 
 }

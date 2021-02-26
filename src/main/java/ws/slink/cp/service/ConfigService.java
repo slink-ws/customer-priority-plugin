@@ -9,12 +9,13 @@ import java.util.Optional;
 public interface ConfigService {
 
     Collection<String> getAdminProjects();
-
     void setAdminProjects(String projects);
 
     Collection<String> getAdminRoles();
-
     void setAdminRoles(String roles);
+
+    Optional<String> getAdminParticipantsFieldId();
+    void setAdminParticipantsFieldId(String value);
 
     Collection<String> getViewers(String projectKey);
     boolean setViewers(String projectKey, Collection<String> value);
@@ -30,6 +31,7 @@ public interface ConfigService {
 
     boolean addReporter(String projectKey, String styleId, String reporter);
     boolean removeReporter(String projectKey, String styleId, String reporter);
+
 }
 
 //    Collection<String> getConfigMgmtRoles(String projectKey);

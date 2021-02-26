@@ -2,6 +2,12 @@
 #if ($panelStyle)
     <div style="$panelStyle">
         $panelText
+        #if ($participantsStyle)
+            <div style="$participantsStyle">
+                $i18n.getText('customer-priority-panel.participants.text')
+            </div>
+            <div style="height: 1px;"></div>
+        #end
     </div>
     <input type="hidden" id="currentIssueKey" value="$issueKey" />
     <script>
