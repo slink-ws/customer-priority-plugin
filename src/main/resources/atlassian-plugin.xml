@@ -52,8 +52,10 @@
 <!--        <resource type="download" name="common.js" location="/js/common.js"/>-->
         <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
         <resource type="download" name="customer-priority-config.css" location="/css/customer-priority-config.css"/>
-        <resource type="download" name="huebee.css" location="/css/huebee.min.css"/>
-        <resource type="download" name="huebee.js" location="/js/huebee.pkgd.min.js"/>
+<!--        <resource type="download" name="huebee.css" location="/css/huebee.min.css"/>-->
+        <resource type="download" name="spectrum.css" location="/css/spectrum.css"/>
+<!--        <resource type="download" name="huebee.js" location="/js/huebee.pkgd.min.js"/>-->
+        <resource type="download" name="spectrum.js" location="/js/spectrum.js"/>
 <!--        <context>customer-priority-plugin</context>-->
         <context>atl.jira.proj.config</context>
     </web-resource>

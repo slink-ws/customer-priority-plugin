@@ -55,10 +55,12 @@ let $customerPriorityConfig = {
         AJS.$("#edit-style-title").val(styleTitle);
         AJS.$("#edit-glance-style").val(glanceStyle);
         AJS.$("#edit-glance-text").val(glanceText.trim());
-        AJS.$("#edit-color-issue").val(issueColor);
-        AJS.$("#edit-color-issue").css("background-color", issueColor);
-        AJS.$("#edit-color-list").val(listColor);
-        AJS.$("#edit-color-list").css("background-color", listColor);
+        // AJS.$("#edit-color-issue").val(issueColor);
+        // AJS.$("#edit-color-issue").css("background-color", issueColor);
+        // AJS.$("#edit-color-list").val(listColor);
+        // AJS.$("#edit-color-list").css("background-color", listColor);
+        AJS.$("#edit-color-issue").spectrum("set", issueColor);
+        AJS.$("#edit-color-list").spectrum("set", listColor);
         AJS.$("#edit-reporters").val(reporters);
         $customerPriorityConfig.editStyleDialog = AJS.dialog2("#style-edit-dialog");
         $customerPriorityConfig.editStyleDialogSubmitCallback = $customerPriorityConfig.editDialogSubmit;
@@ -153,11 +155,15 @@ let $customerPriorityConfig = {
         AJS.$("#edit-style-title").val("");
         AJS.$("#edit-glance-style").val("");
         AJS.$("#edit-glance-text").val("");
+        AJS.$("#edit-reporters").val("");
+
         AJS.$("#edit-color-issue").val("");
         AJS.$("#edit-color-issue").css("background-color", "");
         AJS.$("#edit-color-list").val("");
         AJS.$("#edit-color-list").css("background-color", "");
-        AJS.$("#edit-reporters").val("");
+
+        AJS.$("#edit-color-issue").spectrum("set", null);
+        AJS.$("#edit-color-list").spectrum("set", null);
     },
     getStyleFormData: function() {
         let request          = {};
@@ -167,10 +173,12 @@ let $customerPriorityConfig = {
         request.title        = $customerPriorityConfig.sanitize(AJS.$("#edit-style-title").val().trim(), false);
         request.text         = $customerPriorityConfig.sanitize(AJS.$("#edit-glance-text").val().trim(), false);
         request.style.glance = $customerPriorityConfig.sanitize(AJS.$("#edit-glance-style").val().trim(), true);
-        request.style.issue  = $customerPriorityConfig.sanitize(AJS.$("#edit-color-issue").val().trim(), true);
-        request.style.list   = $customerPriorityConfig.sanitize(AJS.$("#edit-color-list").val().trim(), true);
-        if (request.style.issue == "#000000" || request.style.issue == "#FFFFFF" ) request.style.issue = "";
-        if (request.style.list  == "#000000" || request.style.list  == "#FFFFFF" ) request.style.list  = "";
+        request.style.issue  = AJS.$("#edit-color-issue").spectrum("get") || ""; //$customerPriorityConfig.sanitize(AJS.$("#edit-color-issue").val().trim(), true);
+        request.style.list   = AJS.$("#edit-color-list").spectrum("get")  || "";  //$customerPriorityConfig.sanitize(AJS.$("#edit-color-list").val().trim(), true);
+        if (request.style.issue != "") request.style.issue = request.style.issue.toHexString();
+        if (request.style.list  != "") request.style.list  = request.style.list.toHexString();
+        if (request.style.issue.toLowerCase() == "#ffffff")  request.style.issue = "";
+        if (request.style.list.toLowerCase() == "#ffffff")   request.style.list  = "";
         $customerPriorityConfig.sanitize(AJS.$("#edit-reporters").val().trim(), false)
             .replaceAll(",", " ")
             .replaceAll(";", " ")
@@ -197,8 +205,8 @@ let $customerPriorityConfig = {
             row.find(".styles-list-title").attr("title", style.title);
             row.find(".styles-list-glance-style").attr("style", style.style.glance);
             row.find(".styles-list-glance-style").text(style.text);
-            row.find(".styles-list-issue-color").css("background-color", this.fixColor(style.style.issue));
-            row.find(".styles-list-list-color").css("background-color", this.fixColor(style.style.list));
+            row.find(".styles-list-issue-color").css("background-color", style.style.issue);
+            row.find(".styles-list-list-color").css("background-color", style.style.list);
             row.find(".style-list-reporters").val(style.reporters);
         }
     },
@@ -223,15 +231,15 @@ let $customerPriorityConfig = {
             return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
         }
     },
-    fixColor: function(color) {
-        console.log("---> fix color '" + color + "'");
-        if (color.trim() == "" || color.trim() == "#")
-            return "";
-        if (!color.startsWith("#"))
-              return "#" + color;
-        else
-              return color;
-    },
+    // fixColor: function(color) {
+    //     console.log("---> fix color '" + color + "'");
+    //     if (color.trim() == "" || color.trim() == "#")
+    //         return "";
+    //     if (!color.startsWith("#"))
+    //           return "#" + color;
+    //     else
+    //           return color;
+    // },
     sanitize: function (s, forAttribute) {
         return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function(c) {
             return $customerPriorityConfig.ESC_MAP[c];
@@ -305,8 +313,8 @@ let $customerPriorityConfig = {
         styleRow += '</div></div>';
         // styleRow += '<div class="styles-list-item styles-list-glance-style" style=' + style.style.glance + '>';
         // styleRow += style.text + '&nbsp;</div>';
-        styleRow += '<div class="styles-list-item styles-list-issue-color" style="background-color: ' + $customerPriorityConfig.fixColor(style.style.issue) + ';">Details</div>';
-        styleRow += '<div class="styles-list-item styles-list-list-color" style="background-color: ' + $customerPriorityConfig.fixColor(style.style.list) + ';">List</div>';
+        styleRow += '<div class="styles-list-item styles-list-issue-color" style="background-color: ' + style.style.issue + ';">Details</div>';
+        styleRow += '<div class="styles-list-item styles-list-list-color" style="background-color: ' + style.style.list + ';">List</div>';
         styleRow += '<div class="styles-list-item">';
         styleRow += '<div onClick=\'editStyle("' + style.id.trim() + '")\' title="Edit style" class="aui-icon aui-icon-small aui-iconfont-new-edit style-button style-button-edit">EDIT</div>';
         styleRow += '<div onClick=\'deleteStyle("' + style.id.trim() + '")\' title="Delete style" class="aui-icon aui-icon-small aui-iconfont-trash style-button style-button-delete">DELETE</div>';
@@ -319,16 +327,44 @@ let $customerPriorityConfig = {
 }
 
 AJS.toInit(function() {
-    $( "#edit-color-issue" ).on('input', function() {
-        if ($("#edit-color-issue").val().trim() == "" || $("#edit-color-issue").val().trim() == "#") {
-            $("#edit-color-issue").css("background-color", "");
-            $("#edit-color-issue").css("color", "");
-        }
-    });
-    $( "#edit-color-list" ).on('input', function() {
-        if ($("#edit-color-list").val().trim() == "" || $("#edit-color-list").val().trim() == "#") {
-            $("#edit-color-list").css("background-color", "");
-            $("#edit-color-list").css("color", "");
-        }
-    });
+
+    let spectrum_config = {
+        preferredFormat: "hex",
+        allowEmpty: true,
+        // showAlpha: true,
+        showInput: true,
+        showButtons: false,
+        showPaletteOnly: true,
+        showPalette:true,
+        togglePaletteOnly: true,
+        togglePaletteMoreText: 'more',
+        togglePaletteLessText: 'less',
+        hideAfterPaletteSelect:true,
+        palette: [
+            ["rgba(255, 255, 255, 0);", "#000","#444","#666","#999","#ccc","#eee","#f3f3f3"],
+            ["#f00","#f90","#ff0","#0f0","#0ff","#00f","#90f","#f0f"],
+            ["#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc"],
+            ["#ea9999","#f9cb9c","#ffe599","#b6d7a8","#a2c4c9","#9fc5e8","#b4a7d6","#d5a6bd"],
+            ["#e06666","#f6b26b","#ffd966","#93c47d","#76a5af","#6fa8dc","#8e7cc3","#c27ba0"],
+            ["#c00","#e69138","#f1c232","#6aa84f","#45818e","#3d85c6","#674ea7","#a64d79"],
+            ["#900","#b45f06","#bf9000","#38761d","#134f5c","#0b5394","#351c75","#741b47"],
+            ["#600","#783f04","#7f6000","#274e13","#0c343d","#073763","#20124d","#4c1130"]
+        ]
+    };
+    $("#edit-color-issue").spectrum(spectrum_config);
+
+    $("#edit-color-list").spectrum(spectrum_config);
+
+    // $( "#edit-color-issue" ).on('input', function() {
+    //     if ($("#edit-color-issue").val().trim() == "" || $("#edit-color-issue").val().trim() == "#") {
+    //         $("#edit-color-issue").css("background-color", "");
+    //         $("#edit-color-issue").css("color", "");
+    //     }
+    // });
+    // $( "#edit-color-list" ).on('input', function() {
+    //     if ($("#edit-color-list").val().trim() == "" || $("#edit-color-list").val().trim() == "#") {
+    //         $("#edit-color-list").css("background-color", "");
+    //         $("#edit-color-list").css("color", "");
+    //     }
+    // });
 });

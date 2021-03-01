@@ -130,12 +130,12 @@
                 </div>
                 <div class="field-group">
                     <label for="edit-color-issue">$i18n.getText('cp.config.style-edit.dialog.form.label.issue-color')</label>
-                    <input class="text long-field color-input" data-huebee='{ "notation": "hex", "saturations": 2 }' type="text" id="edit-color-issue" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.issue-color.placeholder')"/>
+                    <input class="text long-field" type="text" id="edit-color-issue" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.issue-color.placeholder')"/>
                     <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.issue-color.description')</div>
                 </div>
                 <div class="field-group">
                     <label for="edit-color-list">$i18n.getText('cp.config.style-edit.dialog.form.label.list-color')</label>
-                    <input class="text long-field color-input" data-huebee='{ "notation": "hex", "saturations": 2 }' type="text" id="edit-color-list" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.list-color.placeholder')"/>
+                    <input class="text long-field" type="text" id="edit-color-list" value="" placeholder="$i18n.getText('cp.config.style-edit.dialog.form.input.list-color.placeholder')"/>
                     <div class="description">$i18n.getText('cp.config.style-edit.dialog.form.input.list-color.description')</div>
                 </div>
                 <div class="field-group">
