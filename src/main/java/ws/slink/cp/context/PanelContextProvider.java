@@ -53,8 +53,12 @@ public class PanelContextProvider extends AbstractJiraContextProvider {
         if (reporterStyle.isPresent()) {
             if (StringUtils.isNotBlank(reporterStyle.get().style(StyledElement.GLANCE)))
                 contextMap.put("panelStyle", reporterStyle.get().style(StyledElement.GLANCE));
+            else
+                contextMap.put("panelStyle", "");
             if (StringUtils.isNotBlank(reporterStyle.get().text()))
                 contextMap.put("panelText", reporterStyle.get().text());
+            else
+                contextMap.put("panelText", "");
         } else {
             getParticipantsStyle(currentIssue).ifPresent(pStyle -> {
                 contextMap.put("panelText"        , pStyle.text());
