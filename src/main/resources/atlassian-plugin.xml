@@ -52,7 +52,6 @@
             <transformer key="jsI18n"/>
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-<!--        <dependency>customer-priority-plugin:customer-priority-plugin-resources</dependency>-->
         <resource type="download" name="common.js" location="/js/common.js"/>
         <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
         <resource type="download" name="customer-priority-config.css" location="/css/customer-priority-config.css"/>
@@ -86,18 +85,6 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ panel ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-<!--    <web-resource key="customer-priority-plugin-panel" name="customer-priority-plugin-panel Web Resources">-->
-<!--        <transformation extension="js">-->
-<!--            <transformer key="jsI18n"/>-->
-<!--        </transformation>-->
-<!--        <dependency>com.atlassian.auiplugin:ajs</dependency>-->
-<!--        <resource type="download" name="common.js" location="/js/common.js"/>-->
-<!--        <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>-->
-<!--        <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>-->
-<!--        <resource type="download" name="images/" location="/images"/>-->
-<!--        <context>jira.view.issue</context>-->
-        <!--        <context>customer-priority-plugin</context>-->
-<!--    </web-resource>-->
     <web-panel name="cp-panel" i18n-name-key="customer-priority-panel.name" key="customer-priority-panel" location="atl.jira.view.issue.right.context" weight="1">
         <description key="customer-priority-panel.description">Customer Priority Panel Module</description>
         <conditions type="AND">

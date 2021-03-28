@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ws.slink</groupId>
     <artifactId>customer-priority-plugin</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
 
     <organization>
         <name>slink</name>
@@ -15,7 +15,7 @@
     </organization>
 
     <name>Customer Priority Plugin</name>
-    <description>This is the ws.slink:customer-priority-plugin plugin for Atlassian JIRA.</description>
+    <description>Customer Priority Plugin for Atlassian JIRA.</description>
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
