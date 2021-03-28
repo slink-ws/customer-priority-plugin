@@ -67,7 +67,7 @@ public class AdminServlet extends HttpServlet {
                 Map<String, Object> context = new HashMap<>();
                 context.put("projects"       , configProjects);
                 context.put("roles"          , configRoles);
-                context.put("customFieldId"  , configService.getAdminParticipantsFieldId().orElse(""));
+                context.put("customFieldId"  , configService.getAdminParticipantsFieldId());
 
                 renderer.render("templates/admin.vm", context, response.getWriter());
             }

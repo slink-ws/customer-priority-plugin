@@ -9,6 +9,8 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ws.slink.cp.model.StyleElement;
 import ws.slink.cp.service.ConfigService;
 import ws.slink.cp.tools.Common;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @ExportAsService
 @JiraComponent
 public class ConfigServiceImpl implements ConfigService {
+
+    private static final Logger log = LoggerFactory.getLogger(ConfigServiceImpl.class);
 
     public static final String CONFIG_PREFIX                  = "ws.slink.customer-priority-plugin";
     public static final String CONFIG_ADMIN_PROJECTS          = "admin.projects";
@@ -37,35 +41,38 @@ public class ConfigServiceImpl implements ConfigService {
     @Inject
     private ConfigServiceImpl(PluginSettingsFactory pluginSettingsFactory) {
         this.pluginSettingsFactory = pluginSettingsFactory;
-        this.pluginSettings = pluginSettingsFactory.createGlobalSettings();
-        System.out.println("----> created config service");
+        this.pluginSettings = pluginSettingsFactory.createSettingsForKey(CONFIG_PREFIX);
+        log.trace("--- [CUSTOMER PRIORITY] [CONFIG] service instantiated");
     }
 
     public Collection<String> getAdminProjects() { // returns list of projectKey
         return getListParam(CONFIG_ADMIN_PROJECTS);
     }
+    public void setAdminProjects(String projects) {
+        setParam(CONFIG_ADMIN_PROJECTS, projects);
+    }
+
     public Collection<String> getAdminRoles() { // returns list of roleId
         return getListParam(CONFIG_ADMIN_ROLES);
     }
-    public void setAdminProjects(String projects) {
-         pluginSettings.put(CONFIG_PREFIX + "." + CONFIG_ADMIN_PROJECTS, projects);
-    }
     public void setAdminRoles(String roles) {
-         pluginSettings.put(CONFIG_PREFIX + "." + CONFIG_ADMIN_ROLES, roles);
+        setParam(CONFIG_ADMIN_ROLES, roles);
     }
-    public Optional<String> getAdminParticipantsFieldId() {
-        Object value = pluginSettings.get(CONFIG_PREFIX + "." + CONFIG_ADMIN_FIELD_ID);
-        if (null != value) {
-            return Optional.ofNullable(value.toString());
+
+    public String getAdminParticipantsFieldId() {
+        String value = getParam(CONFIG_ADMIN_FIELD_ID);
+        if (StringUtils.isBlank(value)) {
+            return "";
+        } else {
+            return value;
         }
-        return Optional.empty();
     }
     public void setAdminParticipantsFieldId(String value) {
-        pluginSettings.put(CONFIG_PREFIX + "." + CONFIG_ADMIN_FIELD_ID, value);
+        setParam(CONFIG_ADMIN_FIELD_ID, value);
     }
 
     public List<StyleElement> getStyles(String projectKey) {
-        String stylesStr = getConfigValue(projectKey, CONFIG_STYLES);
+        String stylesStr = getParam(CONFIG_STYLES, projectKey);
         if (StringUtils.isBlank(stylesStr)) {
             return Collections.emptyList();
         } else {
@@ -73,6 +80,14 @@ public class ConfigServiceImpl implements ConfigService {
             return result.stream().sorted(Comparator.comparing(StyleElement::id)).collect(Collectors.toList());
         }
     }
+    public void setStyles(String projectKey, List<StyleElement> styles) {
+        if (null == styles || styles.isEmpty()) {
+            setParam(CONFIG_STYLES, projectKey,  "");
+        } else {
+            setParam(CONFIG_STYLES, projectKey,  Common.instance().getGsonObject().toJson(styles));
+        }
+    }
+
     public Optional<StyleElement> getStyle(String projectKey, String styleId) {
         return getStyles(projectKey)
                 .stream()
@@ -104,14 +119,6 @@ public class ConfigServiceImpl implements ConfigService {
         setStyles(projectKey, styles);
         return true;
     }
-    public void setStyles(String projectKey, List<StyleElement> styles) {
-        if (null == styles || styles.isEmpty()) {
-            setConfigValue(projectKey, CONFIG_STYLES, null);
-        } else {
-            String stylesStr = Common.instance().getGsonObject().toJson(styles);
-            setConfigValue(projectKey, CONFIG_STYLES, stylesStr);
-        }
-    }
     public boolean updateStyle(String projectKey, StyleElement style) {
         if (null != style) {
             Optional<StyleElement> found = getStyle(projectKey, style.id());
@@ -141,14 +148,10 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     public Collection<String> getViewers(String projectKey) {
-        try {
-            return Arrays.asList(getConfigValue(projectKey, CONFIG_VIEWERS).split(" ")).stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
+        return getListParam(CONFIG_VIEWERS, projectKey);
     }
     public boolean setViewers(String projectKey, Collection<String> value) {
-        setConfigValue(projectKey, CONFIG_VIEWERS, value.stream().collect(Collectors.joining(" ")));
+        setParam(CONFIG_VIEWERS, projectKey, value.stream().collect(Collectors.joining(" ")));
         return true;
     }
     public boolean addViewer(String projectKey, String viewer) {
@@ -169,47 +172,6 @@ public class ConfigServiceImpl implements ConfigService {
         return true;
     }
 
-    private List<String> getListParam(String param) {
-        try {
-            Object value = pluginSettings.get(CONFIG_PREFIX + "." + param);
-//            System.out.println("----> getListParam: " + (CONFIG_PREFIX + "." + param) + ": " + value);
-            if (null == value || StringUtils.isBlank(value.toString())) {
-                return Collections.EMPTY_LIST;
-            } else {
-                return Arrays.stream(value.toString().split(",")).map(s -> s.trim()).collect(Collectors.toList());
-            }
-        } catch (Exception e) {
-            return Collections.EMPTY_LIST;
-        }
-    }
-    private String getParam(String param) {
-//        System.out.println("----> getParam: " + param);
-        String key = CONFIG_PREFIX + "." + param;
-        String value = (String) pluginSettings.get(key);
-        if (StringUtils.isBlank(value))
-            return "";
-        else
-            return value;
-    }
-    private String getConfigValue(String projectKey, String key) {
-        try {
-            String cfgKey = (StringUtils.isBlank(projectKey))
-                    ? CONFIG_PREFIX + "." + key
-                    : CONFIG_PREFIX + "." + projectKey + "." + key;
-            //        System.out.println("----> get config key " + cfgKey);
-            String result = (String) pluginSettings.get(cfgKey);
-            return StringUtils.isBlank(result) ? "" : result;
-        } catch (Exception e) {
-            return "";
-        }
-    }
-    private void setConfigValue(String projectKey, String key, String value) {
-        String cfgKey = (StringUtils.isBlank(projectKey))
-            ? CONFIG_PREFIX + "." + key
-            : CONFIG_PREFIX + "." + projectKey + "." + key;
-//        System.out.println("----> set config key " + cfgKey + " to " + value);
-        pluginSettings.put(cfgKey, value);
-    }
     private String setString(String value, String defaultValue, String newLineReplacement) {
         if (null == value || value.isEmpty())
             return defaultValue;
@@ -220,4 +182,55 @@ public class ConfigServiceImpl implements ConfigService {
                 .replaceAll("," , " ")
                 .replaceAll("\n", newLineReplacement);
     }
+
+    private void setParam(String paramKey, String value) {
+        setParam(paramKey, null, value);
+    }
+    private void setParam(String paramKey, String projectKey, Object value) {
+        String key = CONFIG_PREFIX + "." + paramKey;
+        if (StringUtils.isNotBlank(projectKey)) {
+            key += "." + projectKey;
+        }
+        log.info("--- [CUSTOMER PRIORITY] [CONFIG] SET KEY {} : {}", key, value);
+        pluginSettings.put(key, value);
+    }
+
+    private String getParam(String paramKey) {
+        return getParam(paramKey, null);
+    }
+    private String getParam(String paramKey, String projectKey) {
+        String key = CONFIG_PREFIX + "." + paramKey;
+        if (StringUtils.isNotBlank(projectKey)) {
+            key += "." + projectKey;
+        }
+        String value = (String) pluginSettings.get(key);
+        log.info("--- [CUSTOMER PRIORITY] [CONFIG] GET KEY {}.{} : empty", CONFIG_PREFIX, key);
+        if (StringUtils.isBlank(value))
+            return "";
+        else
+            return value;
+    }
+
+    private List<String> getListParam(String paramKey) {
+        return getListParam(paramKey, null);
+    }
+    private List<String> getListParam(String paramKey, String projectKey) {
+        try {
+            String value = getParam(paramKey, projectKey);
+            if (StringUtils.isBlank(value)) {
+                log.info("--- [CUSTOMER PRIORITY] [CONFIG] GET LIST {} : null", paramKey);
+                return Collections.EMPTY_LIST;
+            } else {
+                List<String> result = Arrays.stream(value.split(","))
+                    .map(s -> s.trim())
+                    .collect(Collectors.toList());
+                log.info("--- [CUSTOMER PRIORITY] [CONFIG] GET LIST {} : {}", paramKey, result);
+                return result;
+            }
+        } catch (Exception e) {
+            log.info("--- [CUSTOMER PRIORITY] [CONFIG] GET LIST {} : empty", paramKey);
+            return Collections.EMPTY_LIST;
+        }
+    }
+
 }

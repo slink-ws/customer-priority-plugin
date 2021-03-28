@@ -22,7 +22,7 @@ let $customerPriorityConfig = {
         // let projectKey = AJS.$('meta[name=projectKey]').attr('content'); //AJS.Meta.get("projectKey");//AJS.$("#projectKey").val();
         // console.log("----> removing " + styleId + " from " + $customerPriorityConfig.getProjectKey());
         AJS.$.ajax({
-            url: $common.restBaseUrl + "/styles/" + $customerPriorityConfig.getProjectKey() + "/" + encodeURIComponent(styleId),
+            url: $customerPriorityCommon.restBaseUrl + "/styles/" + $customerPriorityConfig.getProjectKey() + "/" + encodeURIComponent(styleId),
             type: "DELETE",
             contentType: "application/json",
             processData: false
@@ -74,7 +74,7 @@ let $customerPriorityConfig = {
     editDialogSubmit: function() {
         let request = $customerPriorityConfig.getStyleFormData();
         AJS.$.ajax({
-            url: $common.restBaseUrl + "/styles/" + $customerPriorityConfig.getProjectKey(),
+            url: $customerPriorityCommon.restBaseUrl + "/styles/" + $customerPriorityConfig.getProjectKey(),
             type: "PUT",
             contentType: "application/json",
             data: JSON.stringify(request, null, 2),
@@ -103,7 +103,7 @@ let $customerPriorityConfig = {
         let request = $customerPriorityConfig.getStyleFormData();
         // console.log("create style: " + JSON.stringify(request));
         AJS.$.ajax({
-            url: $common.restBaseUrl + "/styles/" + $customerPriorityConfig.getProjectKey(),
+            url: $customerPriorityCommon.restBaseUrl + "/styles/" + $customerPriorityConfig.getProjectKey(),
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify(request, null, 2),
@@ -127,7 +127,7 @@ let $customerPriorityConfig = {
     saveViewers: function() {
         let viewers = $customerPriorityConfig.sanitize(AJS.$("#viewers-input").val().replaceAll(","," ").replaceAll(";", " ")).split(" ");
         $.ajax({
-            url        : $common.restBaseUrl + "/viewers/" + $customerPriorityConfig.getProjectKey(),
+            url        : $customerPriorityCommon.restBaseUrl + "/viewers/" + $customerPriorityConfig.getProjectKey(),
             type       : "POST",
             data       : JSON.stringify(viewers),
             contentType: "application/json; charset=utf-8",
@@ -327,6 +327,8 @@ let $customerPriorityConfig = {
 }
 
 AJS.toInit(function() {
+
+    // AJS.log("[CUSTOMER PRIORITY CONFIG JS LOADED]");
 
     let spectrum_config = {
         preferredFormat: "hex",

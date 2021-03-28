@@ -13,6 +13,7 @@ import com.atlassian.plugin.spring.scanner.annotation.component.JiraComponent;
 import com.atlassian.plugin.spring.scanner.annotation.component.Scanned;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.sal.api.user.UserProfile;
+import org.apache.commons.lang.StringUtils;
 import ws.slink.cp.service.ConfigService;
 import ws.slink.cp.service.CustomerPriorityService;
 import ws.slink.cp.service.JiraToolsService;
@@ -93,7 +94,8 @@ public class JiraToolsServiceImpl implements JiraToolsService {
     }
     public List<ApplicationUser> getIssueParticipants(Issue issue) {
         List<ApplicationUser> result = new ArrayList<>();
-        configService.getAdminParticipantsFieldId().ifPresent(fieldId -> {
+        String fieldId = configService.getAdminParticipantsFieldId();
+        if (StringUtils.isNotBlank(fieldId )) {
             CustomField customField = null;
             try {
                 customField = ComponentAccessor.getCustomFieldManager().getCustomFieldObject(Long.valueOf(fieldId));
@@ -106,7 +108,7 @@ public class JiraToolsServiceImpl implements JiraToolsService {
                     result.addAll((List)object);
                 }
             }
-        });
+        };
         return result;
     }
 

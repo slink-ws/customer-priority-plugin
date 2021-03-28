@@ -21,12 +21,13 @@
         <resource type="download" name="common.js" location="/js/common.js"/>
         <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>
         <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>
-        <context>atl.general</context>
+<!--        <context>atl.general</context>-->
 <!--        <context>jira.view.issue</context>-->
+        <context>ws.slink.customer-priority.panel</context>
     </web-resource>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <web-resource key="customer-priority-plugin-admin-resources" name="customer-priority-plugin admin web resources">
+    <web-resource key="customer-priority-plugin-admin" name="Admin Web Resource">
         <transformation extension="js">
             <transformer key="jsI18n"/>
         </transformation>
@@ -35,7 +36,9 @@
         <resource type="download" name="common.js" location="/js/common.js"/>
         <resource type="download" name="customer-priority-admin.js" location="/js/customer-priority-admin.js"/>
         <resource type="download" name="customer-priority-admin.css" location="/css/customer-priority-admin.css"/>
-        <context>atl.admin</context>
+<!--        <context>atl.admin</context>-->
+<!--        <context>jira.general</context>-->
+        <context>ws.slink.customer-priority.admin</context>
     </web-resource>
     <servlet key="admin-servlet" class="ws.slink.cp.servlet.AdminServlet">
         <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
@@ -50,15 +53,14 @@
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
 <!--        <dependency>customer-priority-plugin:customer-priority-plugin-resources</dependency>-->
-<!--        <resource type="download" name="common.js" location="/js/common.js"/>-->
+        <resource type="download" name="common.js" location="/js/common.js"/>
         <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
         <resource type="download" name="customer-priority-config.css" location="/css/customer-priority-config.css"/>
-<!--        <resource type="download" name="huebee.css" location="/css/huebee.min.css"/>-->
         <resource type="download" name="spectrum.css" location="/css/spectrum.css"/>
-<!--        <resource type="download" name="huebee.js" location="/js/huebee.pkgd.min.js"/>-->
         <resource type="download" name="spectrum.js" location="/js/spectrum.js"/>
 <!--        <context>customer-priority-plugin</context>-->
-        <context>atl.jira.proj.config</context>
+<!--        <context>atl.jira.proj.config</context>-->
+        <context>ws.slink.customer-priority.config</context>
     </web-resource>
     <servlet key="config-servlet" class="ws.slink.cp.servlet.ConfigServlet">
         <resource type="i18n" name="i18n" location="customer-priority-plugin"/>

@@ -14,7 +14,7 @@
         <url>http://www.github.com/ws-slink/</url>
     </organization>
 
-    <name>customer-priority-plugin</name>
+    <name>Customer Priority Plugin</name>
     <description>This is the ws.slink:customer-priority-plugin plugin for Atlassian JIRA.</description>
     <packaging>atlassian-plugin</packaging>
 

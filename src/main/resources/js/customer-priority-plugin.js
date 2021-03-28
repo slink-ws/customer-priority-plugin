@@ -1,5 +1,5 @@
 let $customerPriority = {
-    colorUrl: $common.restBaseUrl + "/color",
+    colorUrl: $customerPriorityCommon.restBaseUrl + "/color",
     focusedColor: '#DEEBFF',
     refreshTimer: null,
 
@@ -72,6 +72,9 @@ let $customerPriority = {
     pageLoaded: function() {
     },
 }
+AJS.toInit(function() {
+    // AJS.log("[CUSTOMER PRIORITY PLUGIN JS LOADED]");
+});
 
 // JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function(e, context, reason) {
 //     if (reason==JIRA.CONTENT_ADDED_REASON.pageLoad) {
@@ -81,22 +84,6 @@ let $customerPriority = {
 // JIRA.bind("issueRefreshed", function()  {
 //     $customerPriority.issueRefreshed();
 // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // -----------------------------------------------------------------------
 // AJS.toInit(function() {
 //    // alert("ready!");

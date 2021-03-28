@@ -14,7 +14,7 @@ public interface ConfigService {
     Collection<String> getAdminRoles();
     void setAdminRoles(String roles);
 
-    Optional<String> getAdminParticipantsFieldId();
+    String getAdminParticipantsFieldId();
     void setAdminParticipantsFieldId(String value);
 
     Collection<String> getViewers(String projectKey);
@@ -33,9 +33,3 @@ public interface ConfigService {
     boolean removeReporter(String projectKey, String styleId, String reporter);
 
 }
-
-//    Collection<String> getConfigMgmtRoles(String projectKey);
-//    void setConfigMgmtRoles(String projectKey, String roles);
-
-//    Collection<String> getConfigViewRoles(String projectKey);
-//    void setConfigViewRoles(String projectKey, String roles);

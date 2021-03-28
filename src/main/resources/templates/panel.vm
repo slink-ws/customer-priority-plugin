@@ -1,4 +1,5 @@
 ##$webResourceManager.requireResource("ws.slink.customer-priority-plugin:customer-priority-plugin-panel")
+$webResourceManager.requireResourcesForContext("ws.slink.customer-priority.panel")
 #if ($panelStyle)
     <div style="$panelStyle">
         $panelText

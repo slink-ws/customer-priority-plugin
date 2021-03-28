@@ -4,7 +4,8 @@
     <title>$i18n.getText("cp.admin.label")</title>
     <meta name="decorator" content="atl.admin" />
     $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
-    $webResourceManager.requireResource("ws.slink.customer-prioriry-plugin:customer-prioriry-plugin-admin-resources")
+    $webResourceManager.requireResource("ws.slink.customer-priority-plugin:customer-priority-plugin-admin")
+    $webResourceManager.requireResourcesForContext("ws.slink.customer-priority.admin")
 </head>
 <body>
     <h1>$i18n.getText("cp.admin.label")</h1>
@@ -44,13 +45,16 @@
             <input class="text medium-field" type="text" id="custom-field-id-input" value="$customFieldId" placeholder="$i18n.getText('cp.admin.custom-field-id.placeholder')"/>
         </div>
         <div class="field-group">
-            <input onclick="admin_update_config();" class="aui-button button" type="button" value="$i18n.getText('cp.admin.save.label')" />
+            <input onclick="customerPriorityPluginConfigUpdate();" class="aui-button button" type="button" value="$i18n.getText('cp.admin.save.label')" />
         </div>
     </form>
     <br>
     <script>
         AJS.$("#projects").auiSelect2();
         AJS.$("#roles").auiSelect2();
+        function customerPriorityPluginConfigUpdate() {
+            $customerPriorityAdmin.updateConfig();
+        }
     </script>
 </body>
 </html>
