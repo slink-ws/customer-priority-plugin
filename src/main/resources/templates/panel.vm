@@ -1,5 +1,5 @@
 ##$webResourceManager.requireResource("ws.slink.customer-priority-plugin:customer-priority-plugin-panel")
-$webResourceManager.requireResourcesForContext("ws.slink.customer-priority.panel")
+##$webResourceManager.requireResourcesForContext("jira.view.issue")
 #if ($panelStyle)
     <div style="$panelStyle">
         $panelText
@@ -12,11 +12,8 @@ $webResourceManager.requireResourcesForContext("ws.slink.customer-priority.panel
     </div>
     <input type="hidden" id="currentIssueKey" value="$issueKey" />
     <script>
-        #include("/js/common.js")
-        #include("/js/customer-priority-plugin.js")
         AJS.toInit(function() {
             $customerPriority.setIssueColor();
-            $customerPriority.updateIssuesList();
         })
     </script>
 #end

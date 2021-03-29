@@ -12,7 +12,5 @@ let $customerPriorityCommon = {
     }
 }
 AJS.toInit(function() {
-   // alert("ready!");
-   // console.log("loaded common.js")
    // AJS.log("[CUSTOMER PRIORITY COMMON JS LOADED]");
 });

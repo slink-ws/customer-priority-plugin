@@ -73,17 +73,18 @@ let $customerPriority = {
     },
 }
 AJS.toInit(function() {
-    // AJS.log("[CUSTOMER PRIORITY PLUGIN JS LOADED]");
+    AJS.log("[CUSTOMER PRIORITY PLUGIN JS LOADED]");
+    JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function(e, context, reason) {
+        if (reason==JIRA.CONTENT_ADDED_REASON.pageLoad) {
+            $customerPriority.updateIssuesList();
+        }
+    });
+    JIRA.bind("issueRefreshed", function()  {
+        $customerPriority.issueRefreshed();
+    });
+    // $customerPriority.updateIssuesList();
 });
 
-// JIRA.bind(JIRA.Events.NEW_CONTENT_ADDED, function(e, context, reason) {
-//     if (reason==JIRA.CONTENT_ADDED_REASON.pageLoad) {
-//         $customerPriority.updateIssuesList();
-//     }
-// });
-// JIRA.bind("issueRefreshed", function()  {
-//     $customerPriority.issueRefreshed();
-// });
 // -----------------------------------------------------------------------
 // AJS.toInit(function() {
 //    // alert("ready!");

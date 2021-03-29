@@ -231,15 +231,6 @@ let $customerPriorityConfig = {
             return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
         }
     },
-    // fixColor: function(color) {
-    //     console.log("---> fix color '" + color + "'");
-    //     if (color.trim() == "" || color.trim() == "#")
-    //         return "";
-    //     if (!color.startsWith("#"))
-    //           return "#" + color;
-    //     else
-    //           return color;
-    // },
     sanitize: function (s, forAttribute) {
         return s.replace(forAttribute ? /[&<>'"]/g : /[&<>]/g, function(c) {
             return $customerPriorityConfig.ESC_MAP[c];
@@ -357,16 +348,4 @@ AJS.toInit(function() {
 
     $("#edit-color-list").spectrum(spectrum_config);
 
-    // $( "#edit-color-issue" ).on('input', function() {
-    //     if ($("#edit-color-issue").val().trim() == "" || $("#edit-color-issue").val().trim() == "#") {
-    //         $("#edit-color-issue").css("background-color", "");
-    //         $("#edit-color-issue").css("color", "");
-    //     }
-    // });
-    // $( "#edit-color-list" ).on('input', function() {
-    //     if ($("#edit-color-list").val().trim() == "" || $("#edit-color-list").val().trim() == "#") {
-    //         $("#edit-color-list").css("background-color", "");
-    //         $("#edit-color-list").css("color", "");
-    //     }
-    // });
 });

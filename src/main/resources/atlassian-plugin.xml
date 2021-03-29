@@ -22,8 +22,8 @@
         <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>
         <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>
 <!--        <context>atl.general</context>-->
-<!--        <context>jira.view.issue</context>-->
-        <context>ws.slink.customer-priority.panel</context>
+        <context>jira.view.issue</context>
+<!--        <context>ws.slink.customer-priority.panel</context>-->
     </web-resource>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -70,12 +70,12 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~ config menu ~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <web-section key="cp-item-cfg-section" location="atl.jira.proj.config" weight="1000">
+    <web-section key="ws.slink.priority.plugin-cfg-section" location="atl.jira.proj.config" weight="1000">
         <conditions type="AND" >
             <condition class="ws.slink.cp.condition.ConfigurationEnabledCondition"/>
         </conditions>
     </web-section>
-    <web-item key="cp-item-cfg" section="atl.jira.proj.config/cp-item-cfg-section">
+    <web-item key="cp-item-cfg" section="atl.jira.proj.config/ws.slink.priority.plugin-cfg-section">
         <description key="cp-config-item.description" />
         <label key="cp-config-item.label" />
         <link linkId="cp-config-item-cfg.link">
