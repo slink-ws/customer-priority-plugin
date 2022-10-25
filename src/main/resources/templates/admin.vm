@@ -4,9 +4,9 @@
     <title>$i18n.getText("cp.admin.label")</title>
     <meta name="decorator" content="atl.admin" />
     $webResourceManager.requireResource("com.atlassian.auiplugin:ajs")
-    $webResourceManager.requireResource("ws.slink.customer-priority-plugin:customer-priority-jquery-plugin")
-    <!--
     $webResourceManager.requireResourcesForContext("ws.slink.customer-priority.admin")
+    <!--
+    $webResourceManager.requireResource("ws.slink.customer-priority-plugin:customer-priority-jquery-plugin")
     $webResourceManager.requireResource("ws.slink.customer-priority-plugin:customer-priority-plugin-admin")
     -->
 </head>
