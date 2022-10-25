@@ -157,28 +157,28 @@
 
     <script>
         function deleteStyle(styleId) {
-            $customerPriorityConfig.deleteStyleConfirmation(styleId);
+            $cupriConfig.deleteStyleConfirmation(styleId);
         }
         function confirmDialogCancel() {
-            $customerPriorityConfig.confirmDialogCancel();
+            $cupriConfig.confirmDialogCancel();
         }
         function confirmDialogSubmit() {
-            $customerPriorityConfig.confirmDialogSubmit();
+            $cupriConfig.confirmDialogSubmit();
         }
         function editStyle(styleId) {
-            $customerPriorityConfig.editDialogShow(styleId);
+            $cupriConfig.editDialogShow(styleId);
         }
         function createStyle() {
-            $customerPriorityConfig.createDialogShow();
+            $cupriConfig.createDialogShow();
         }
         function styleDialogCancel() {
-            $customerPriorityConfig.editDialogCancel();
+            $cupriConfig.editDialogCancel();
         }
         function styleDialogSubmit() {
-            $customerPriorityConfig.editStyleDialogSubmitCallback();
+            $cupriConfig.editStyleDialogSubmitCallback();
         }
         function saveViewers() {
-            $customerPriorityConfig.saveViewers();
+            $cupriConfig.saveViewers();
         }
     </script>
 
