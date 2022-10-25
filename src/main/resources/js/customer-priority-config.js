@@ -21,8 +21,6 @@
     confirmDialogSubmit: function() {
       let caller = this;
       let styleId = AJS.$("#style-id-to-delete").html();
-      // let projectKey = AJS.$('meta[name=projectKey]').attr('content'); //AJS.Meta.get("projectKey");//AJS.$("#projectKey").val();
-        // console.log("----> removing " + styleId + " from " + $cupriCommon.getProjectKey());
       AJS.$.ajax({
         url: $cupriCommon.baseUrl() + "/styles/" + $cupriCommon.getProjectKey() + "/" + encodeURIComponent(styleId),
         type: "DELETE",
@@ -57,10 +55,6 @@
       AJS.$("#edit-style-title").val(styleTitle);
       AJS.$("#edit-glance-style").val(glanceStyle);
       AJS.$("#edit-glance-text").val(glanceText.trim());
-      // AJS.$("#edit-color-issue").val(issueColor);
-      // AJS.$("#edit-color-issue").css("background-color", issueColor);
-      // AJS.$("#edit-color-list").val(listColor);
-      // AJS.$("#edit-color-list").css("background-color", listColor);
       AJS.$("#edit-color-issue").spectrum("set", issueColor);
       AJS.$("#edit-color-list").spectrum("set", listColor);
       AJS.$("#edit-reporters").val(reporters);
@@ -105,7 +99,6 @@
     createDialogSubmit: function() {
       let caller = this;
       let request = this.getStyleFormData();
-      // console.log("create style: " + JSON.stringify(request));
       AJS.$.ajax({
         url: $cupriCommon.baseUrl() + "/styles/" + $cupriCommon.getProjectKey(),
         type: "POST",
@@ -114,8 +107,6 @@
         processData: false
       }).done(function () {
         JIRA.Messages.showSuccessMsg(AJS.I18n.getText('cp.config.message.style-create.success'));
-        // this.addStyle(request);
-        // this.resetStyleForm();
         caller.editStyleDialog.hide();
         caller.editStyleDialog = null;
         window.onbeforeunload = null;
@@ -177,8 +168,8 @@
       request.title        = this.sanitize(AJS.$("#edit-style-title").val().trim(), false);
       request.text         = this.sanitize(AJS.$("#edit-glance-text").val().trim(), false);
       request.style.glance = this.sanitize(AJS.$("#edit-glance-style").val().trim(), true);
-      request.style.issue  = AJS.$("#edit-color-issue").spectrum("get") || ""; //this.sanitize(AJS.$("#edit-color-issue").val().trim(), true);
-      request.style.list   = AJS.$("#edit-color-list").spectrum("get")  || ""; //this.sanitize(AJS.$("#edit-color-list").val().trim(), true);
+      request.style.issue  = AJS.$("#edit-color-issue").spectrum("get") || "";
+      request.style.list   = AJS.$("#edit-color-list").spectrum("get")  || "";
       if (request.style.issue != "") request.style.issue = request.style.issue.toHexString();
       if (request.style.list  != "") request.style.list  = request.style.list.toHexString();
       if (request.style.issue.toLowerCase() == "#ffffff")  request.style.issue = "";
@@ -199,12 +190,10 @@
         }).parent();
     },
     addStyle: function(style) {
-      // console.log("adding style " + style.id);
       AJS.$("#styles-list").append(this.makeStyleRow(style));
       this.sortStyles();
     },
     updateStyle: function(style) {
-      // console.log("updating style " + style.id);
       let row = this.getStyleRowElement(style.id);
       if (row) {
         row.find(".styles-list-title").attr("title", style.title);
@@ -216,7 +205,6 @@
       }
     },
     removeStyle: function(styleId) {
-      // console.log("removing style " + styleId);
       this.getStyleRowElement(styleId).remove();
     },
     rgb2hex: function (rgb) {
@@ -243,8 +231,6 @@
       reporters.forEach(function(item) {
         result += item + " ";
       });
-      // console.log("----> reporters    : " + reporters);
-      // console.log("----> reporters str: " + result);
       return result.trim();
     },
     sortStyles: function() {
@@ -257,7 +243,6 @@
        else
          return 0;
       });
-      // console.log(JSON.stringify(styles, null, 2));
       AJS.$("#styles-list").html("");
       stylesSorted.forEach(function(style) {
         AJS.$("#styles-list").append(this.makeStyleRow(style));
@@ -304,8 +289,6 @@
       styleRow += '<div class="styles-list-glance-style" style="' + style.style.glance + '" width="100%">';
       styleRow += style.text + "&nbsp;";
       styleRow += '</div></div>';
-      // styleRow += '<div class="styles-list-item styles-list-glance-style" style=' + style.style.glance + '>';
-      // styleRow += style.text + '&nbsp;</div>';
       styleRow += '<div class="styles-list-item styles-list-issue-color" style="background-color: ' + style.style.issue + ';">Details</div>';
       styleRow += '<div class="styles-list-item styles-list-list-color" style="background-color: ' + style.style.list + ';">List</div>';
       styleRow += '<div class="styles-list-item">';

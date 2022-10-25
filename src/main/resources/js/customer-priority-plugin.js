@@ -1,7 +1,6 @@
 let $customerPriority = {
     colorUrl: $cupriCommon.baseUrl() + "/color",
     focusedColor: '#DEEBFF',
-    refreshTimer: null,
 
     colorQuery: async function(path, issueKey) {
         return await jQuery.get($customerPriority.colorUrl + path + issueKey)
@@ -9,7 +8,6 @@ let $customerPriority = {
     setIssueColor: function () {
         let issueKey = AJS.$("#currentIssueKey").val();
         if (issueKey) {
-            // console.log("----> set color for " + issueKey);
             $customerPriority.colorQuery("/issue/", issueKey)
                 .then(function(config) {
                     if (config && config.color) {
@@ -18,10 +16,6 @@ let $customerPriority = {
                     }
                 })
                 .catch(function(error) {
-                    // $customerPriority.resetColor(issueKey);
-                    // console.log("~~~~~~ ISSUE COLOR QUERY ERROR ~~~~~~");
-                    // console.log(JSON.stringify(error, null, 2));
-                    // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                 })
             ;
         }
@@ -40,9 +34,6 @@ let $customerPriority = {
             })
             .catch(function(error) {
                 $customerPriority.resetColor(item);
-                // console.log("~~~~~~ LIST COLOR QUERY ERROR ~~~~~~");
-                // console.log(JSON.stringify(error, null, 2));
-                // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             })
         ;
     },
@@ -50,9 +41,7 @@ let $customerPriority = {
         item.parentNode.style.backgroundColor = $customerPriority.focusedColor;
     },
     updateIssuesList: function () {
-        // let issueLinks = document.getElementsByClassName('splitview-issue-link');
         AJS.$(".splitview-issue-link").each(function() {
-            // console.log(this);
             if (this.parentNode.className.split(' ').indexOf('focused')>=0) {
                 $customerPriority.setFocusedColor(this);
             } else {
@@ -63,11 +52,6 @@ let $customerPriority = {
 
     issueRefreshed: function() {
         $customerPriority.setIssueColor();
-        // if (this.refreshTimer != null) {
-        //     window.clearTimeout(this.refreshTimer);
-        //     this.refreshTimer = null;
-        // }
-        // this.refreshTimer = setTimeout($customerPriority.setIssueColor(), 1500);
     },
     pageLoaded: function() {
     },
@@ -82,20 +66,4 @@ AJS.toInit(function() {
     JIRA.bind("issueRefreshed", function()  {
         $customerPriority.issueRefreshed();
     });
-    // $customerPriority.updateIssuesList();
 });
-
-// -----------------------------------------------------------------------
-// AJS.toInit(function() {
-//    // alert("ready!");
-//    // $customerPriority.setIssueColor();
-// });
-// JIRA.bind("layoutRendered", function()  {
-//     setIssueColor();
-// });
-// (function ($) {
-//     $(document).ready(function() {
-//         $customerPriority.setIssueColor();
-//     });
-// })(AJS.$ || jQuery);
-
