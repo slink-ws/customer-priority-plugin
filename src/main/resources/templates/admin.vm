@@ -54,6 +54,8 @@
     <br>
     <div id="CustomerPriorityConfig"></div>
     <script>
+        AJS.$("#projects").auiSelect2();
+        AJS.$("#roles").auiSelect2();
         function customerPriorityPluginConfigUpdate() {
             $cupriAdmin.updatePluginConfig("projects", "roles", "custom-field-id-input");
         }
