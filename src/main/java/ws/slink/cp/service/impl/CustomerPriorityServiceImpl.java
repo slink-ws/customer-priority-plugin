@@ -36,7 +36,7 @@ public class CustomerPriorityServiceImpl implements CustomerPriorityService {
     public Optional<StyleElement> getStyleElement(String projectKey, String customerId) {
         for (StyleElement styleElement : configService.getStyles(projectKey)) {
             if (jiraToolsService.templateMatch(styleElement.reporters(), customerId)) {
-                if (shouldColorize(projectKey, customerId)) {
+                if (shouldColorize(projectKey)) {
                     return Optional.of(styleElement);
                 }
             }
@@ -60,14 +60,10 @@ public class CustomerPriorityServiceImpl implements CustomerPriorityService {
         return "";
     }
 
-    private boolean shouldColorize(String projectKey, String customerId) {
-
+    private boolean shouldColorize(String projectKey) {
         String user = jiraToolsService.getLoggedInUser().getEmailAddress();
-        System.out.printf(
-            "~~~~~~~ project: %s, creator: %s, user: %s%n",
-            projectKey, customerId, user
-        );
-        return true;
+        //System.out.printf("~~~~~~~ project: %s, user: %s%n", projectKey, user);
+        return isViewer(projectKey, user);
     }
 
 }

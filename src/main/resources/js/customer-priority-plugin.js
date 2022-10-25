@@ -1,5 +1,5 @@
 let $customerPriority = {
-    colorUrl: $customerPriorityCommon.restBaseUrl + "/color",
+    colorUrl: $cupriCommon.baseUrl() + "/color",
     focusedColor: '#DEEBFF',
     refreshTimer: null,
 
