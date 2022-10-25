@@ -22,3 +22,8 @@
     }
   };
 })(window);
+
+AJS.toInit(function() {
+  AJS.log("[CUSTOMER PRIORITY COMMON JS LOADED]");
+});
+

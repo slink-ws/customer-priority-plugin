@@ -20,7 +20,7 @@
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <dependency>com.atlassian.auiplugin:aui-select2</dependency>
         <resource type="download" name="customer-priority-common.js" location="/js/customer-priority-common.js"/>
-        <resource type="download" name="customer-priority-admin.js" location="/js/customer-priority-admin.js"/>
+        <resource type="download" name="customer-priority-admin.js"  location="/js/customer-priority-admin.js"/>
         <resource type="download" name="customer-priority-admin.css" location="/css/customer-priority-admin.css"/>
 <!--        <context>atl.admin</context>-->
 <!--        <context>jira.general</context>-->
@@ -38,10 +38,10 @@
             <transformer key="jsI18n"/>
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <resource type="download" name="spectrum.css" location="/css/spectrum.css"/>
-        <resource type="download" name="spectrum.js" location="/js/spectrum.js"/>
-        <resource type="download" name="customer-priority-common.js" location="/js/customer-priority-common.js"/>
-        <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
+        <resource type="download" name="spectrum.css"                 location="/css/spectrum.css"/>
+        <resource type="download" name="spectrum.js"                  location="/js/spectrum.js"/>
+        <resource type="download" name="customer-priority-common.js"  location="/js/customer-priority-common.js"/>
+        <resource type="download" name="customer-priority-config.js"  location="/js/customer-priority-config.js"/>
         <resource type="download" name="customer-priority-config.css" location="/css/customer-priority-config.css"/>
 <!--        <context>customer-priority-plugin</context>-->
 <!--        <context>atl.jira.proj.config</context>-->
@@ -56,7 +56,7 @@
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ plugin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-    <web-resource key="customer-priority-plugin-resources" name="customer-priority-plugin web resources">
+    <web-resource key="customer-priority-plugin-resources" name="Plugin Web Resources">
         <transformation extension="js">
             <transformer key="jsI18n"/>
         </transformation>

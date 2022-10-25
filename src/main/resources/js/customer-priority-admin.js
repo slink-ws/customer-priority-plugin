@@ -18,3 +18,7 @@
     }
   };
 })(window);
+
+AJS.toInit(function() {
+  AJS.log("[CUSTOMER PRIORITY ADMIN JS LOADED]");
+});
