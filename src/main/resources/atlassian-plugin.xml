@@ -11,20 +11,6 @@
 
     <!-- add our i18n resource -->
     <resource type="i18n" name="i18n" location="customer-priority-plugin"/>
-    
-    <!-- add our web resources -->
-    <web-resource key="customer-priority-plugin-resources" name="customer-priority-plugin web resources">
-        <transformation extension="js">
-            <transformer key="jsI18n"/>
-        </transformation>
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <resource type="download" name="common.js" location="/js/common.js"/>
-        <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>
-        <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>
-<!--        <context>atl.general</context>-->
-        <context>jira.view.issue</context>
-<!--        <context>ws.slink.customer-priority.panel</context>-->
-    </web-resource>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ admin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <web-resource key="customer-priority-plugin-admin" name="Admin Web Resource">
@@ -33,7 +19,7 @@
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <dependency>com.atlassian.auiplugin:aui-select2</dependency>
-        <resource type="download" name="common.js" location="/js/common.js"/>
+        <resource type="download" name="customer-priority-common.js" location="/js/customer-priority-common.js"/>
         <resource type="download" name="customer-priority-admin.js" location="/js/customer-priority-admin.js"/>
         <resource type="download" name="customer-priority-admin.css" location="/css/customer-priority-admin.css"/>
 <!--        <context>atl.admin</context>-->
@@ -52,11 +38,11 @@
             <transformer key="jsI18n"/>
         </transformation>
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <resource type="download" name="common.js" location="/js/common.js"/>
-        <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
-        <resource type="download" name="customer-priority-config.css" location="/css/customer-priority-config.css"/>
         <resource type="download" name="spectrum.css" location="/css/spectrum.css"/>
         <resource type="download" name="spectrum.js" location="/js/spectrum.js"/>
+        <resource type="download" name="customer-priority-common.js" location="/js/customer-priority-common.js"/>
+        <resource type="download" name="customer-priority-config.js" location="/js/customer-priority-config.js"/>
+        <resource type="download" name="customer-priority-config.css" location="/css/customer-priority-config.css"/>
 <!--        <context>customer-priority-plugin</context>-->
 <!--        <context>atl.jira.proj.config</context>-->
         <context>ws.slink.customer-priority.config</context>
@@ -67,6 +53,21 @@
             /project-config/*/ws-slink-customer-priority
         </url-pattern>
     </servlet>
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~ plugin ~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <web-resource key="customer-priority-plugin-resources" name="customer-priority-plugin web resources">
+        <transformation extension="js">
+            <transformer key="jsI18n"/>
+        </transformation>
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <resource type="download" name="customer-priority-common.js" location="/js/customer-priority-common.js"/>
+        <resource type="download" name="customer-priority-plugin.js" location="/js/customer-priority-plugin.js"/>
+        <resource type="download" name="customer-priority-plugin.css" location="/css/customer-priority-plugin.css"/>
+        <!--        <context>atl.general</context>-->
+        <context>jira.view.issue</context>
+        <!--        <context>ws.slink.customer-priority.panel</context>-->
+    </web-resource>
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~ config menu ~~~~~~~~~~~~~~~~~~~~~~~ -->

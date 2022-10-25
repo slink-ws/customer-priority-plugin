@@ -1,3 +1,4 @@
+alert("customerPriorityConfig");
 let $customerPriorityConfig = {
 
     ESC_MAP: {
@@ -319,7 +320,7 @@ let $customerPriorityConfig = {
 
 AJS.toInit(function() {
 
-    // AJS.log("[CUSTOMER PRIORITY CONFIG JS LOADED]");
+    AJS.log("[CUSTOMER PRIORITY CONFIG JS LOADED]");
 
     let spectrum_config = {
         preferredFormat: "hex",
