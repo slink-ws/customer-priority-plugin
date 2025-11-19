@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>ws.slink</groupId>
     <artifactId>customer-priority-plugin</artifactId>
-    <version>3.0.4</version>
+    <version>3.0.5</version>
 
     <organization>
         <name>slink</name>
@@ -19,6 +19,12 @@
     <packaging>atlassian-plugin</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>jta</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.0.1b</version>
+            <scope>provided</scope>
+        </dependency> <!-- bundled jta dependency replacement -->
         <dependency>
             <groupId>com.atlassian.templaterenderer</groupId>
             <artifactId>atlassian-template-renderer-api</artifactId>
